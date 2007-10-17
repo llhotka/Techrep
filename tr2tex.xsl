@@ -44,7 +44,7 @@ technical reports.
   <!-- Translation variables 
        characters that have special meaning in TeX are mapped to their
        exotic Unicode relatives (mainly FULLWIDTH ...) and these are
-       then mapped by EncTeX to appropriate control sequences.
+       then made active and appropriately defined for XeTeX.
   -->
 
   <xsl:variable name="chfrom">
@@ -510,11 +510,9 @@ technical reports.
 	</xsl:choose>
       </xsl:with-param>
     </xsl:call-template>
-    <xsl:choose>
-      <xsl:when test="following-sibling::tr:image">
-	<xsl:text>\hfil</xsl:text>
-      </xsl:when>
-    </xsl:choose>
+    <xsl:if test="following-sibling::tr:image">
+      <xsl:text>\hfil</xsl:text>
+    </xsl:if>
     <xsl:value-of select="$NL"/>
   </xsl:template>
 
