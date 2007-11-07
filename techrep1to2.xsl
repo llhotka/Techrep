@@ -67,6 +67,26 @@ Translates the original techrep v1 to version 2.
     </xsl:choose>
   </xsl:template>
 
+  <xsl:template match="p|pre|blockquote|ol|ul|dl|figure|table"
+		mode="prec-siblings">
+    <xsl:value-of select="preceding-siblings::*"/>
+  </xsl:template>
+
+  <xsl:template match="p|pre|blockquote|ol|ul|dl|figure|table"
+		mode="foll-siblings">
+    <xsl:value-of select="following-siblings::*"/>
+  </xsl:template>
+
+  <xsl:template name="rectify-hybrid">
+    <xsl:param name="sentinel"/>
+    <xsl:if test="
+      <xsl:element name="p">
+	<xsl:apply-templates select="$nodes"/>
+      </xsl:element>
+      <xsl:apply-templates select="$senti
+    </xsl:if>
+  </xsl:template>
+
   <xsl:template match="@id">
     <xsl:attribute name="xml:id">
       <xsl:value-of select="."/>

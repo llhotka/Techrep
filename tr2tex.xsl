@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="utf-8"?>
 
 <!-- Program name: tr2proc.xsl
 
@@ -10,6 +10,9 @@ technical reports.
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 		xmlns:tr="http://cesnet.cz/ns/techrep/base/2.0"
                 version="1.0">
+
+  <!-- This parameter selects the draft of final mode -->
+  <xsl:param name="draft-mode" select="1"/>
 
   <!-- This parameter controls whether tilde is used as no-break space -->
   <xsl:param name="nbsp-tilde" select="0"/>
@@ -223,7 +226,9 @@ technical reports.
   <!-- Root element -->
 
   <xsl:template match="tr:report">
-    <xsl:value-of select="concat('\article',$NL)"/>
+    <xsl:text>\input techrep</xsl:text>
+    <xsl:value-of select="$NLNL"/>
+    <xsl:value-of select="concat('\report',$NL)"/>
     <xsl:apply-templates select="tr:title"/>
     <xsl:apply-templates select="tr:author"/>
     <xsl:if test="tr:title">
@@ -234,7 +239,7 @@ technical reports.
     <xsl:apply-templates select="tr:keywords"/>
     <xsl:apply-templates select="tr:body"/>
     <xsl:value-of select="$NL"/>
-    <xsl:value-of select="concat('\endArticle',$NL)"/>
+    <xsl:value-of select="concat('\endReport',$NL)"/>
   </xsl:template>
 
   <xsl:template match="tr:title">
@@ -295,7 +300,7 @@ technical reports.
   <xsl:template match="tr:h1">
     <xsl:choose>
       <xsl:when test="@role='loose'">
-	<xsl:text>\looseSection</xsl:text>
+	<xsl:text>\section{}</xsl:text>
       </xsl:when>
       <xsl:otherwise>
 	<xsl:text>\section</xsl:text>
@@ -360,8 +365,26 @@ technical reports.
   </xsl:template>
 
   <xsl:template match="tr:p">
+    <xsl:if test="$draft-mode>0">
+      <xsl:if test="not(parent::tr:abstract or parent::tr:li)
+		    or preceding-sibling::tr:p">
+	<xsl:value-of select="concat('\beginTextNum', $NL)"/>
+      </xsl:if>
+    </xsl:if>
+    <xsl:if test="name(preceding-sibling::*[1])='h1' or
+		  name(preceding-sibling::*[1])='h2' or
+		  name(preceding-sibling::*[1])='h3' or
+		  parent::tr:abstract">
+      <xsl:text>\noindent </xsl:text>
+    </xsl:if>
     <xsl:apply-templates/>
     <xsl:value-of select="$NLNL"/>
+    <xsl:if test="$draft-mode>0">
+      <xsl:if test="not(parent::tr:abstract or parent::tr:li)
+		    or following-sibling::tr:p">
+	<xsl:value-of select="concat('\endTextNum', $NLNL)"/>
+      </xsl:if>
+    </xsl:if>
   </xsl:template>
 
   <xsl:template match="tr:pre">
@@ -425,6 +448,7 @@ technical reports.
   <xsl:template match="tr:li">
     <xsl:text>\item </xsl:text>
     <xsl:apply-templates/>
+    <xsl:value-of select="$NL"/>
   </xsl:template>
 
   <xsl:template match="tr:ul">
@@ -726,7 +750,7 @@ technical reports.
   </xsl:template>
 
   <xsl:template match="tr:biblist">
-    <xsl:value-of select="concat('\looseSection{References}',$NLNL)"/>
+    <xsl:value-of select="concat('\section{}{References}',$NLNL)"/>
     <xsl:value-of select="concat('\bibList',$NL)"/>
     <xsl:apply-templates/>
     <xsl:value-of select="concat('\endList',$NLNL)"/>

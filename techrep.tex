@@ -1,22 +1,19 @@
-\input epsf
-
+% -*- mode: fundamental; -*-
 \catcode`_=11 % to hide private macros
 \catcode`@=11 % to borrow plain TeX macros
 
 % Allocation of registers
-\newcount\count_one % temporary storage
-\newcount\part_count % part number
+\newcount\count_one % temporary counter
 \newcount\auth_count % number authors
 \newcount\appendix_no % appendix label
 \newcount\itemCount % counter for list items
 \newcount\foot_count % counter for footnotes
 \newcount\tab_count % counter for tables
-\newcount\lineno_count % line counter in verbatim listings
+\newcount\text_lno % line counter for text paragraphs
+\newcount\verb_lno % line counter in verbatim listings
+\newdimen\dimen_one % temporary dimension
 \newdimen\abs_inset % left and right indentation of abstract
-\newdimen\old_parindent % temporary storage of parindent
-\newdimen\ht_left % remaining height of figure
 \newdimen\item_indent % amount of item indentation
-\newskip\tocnum_skip % space for page numbers in ToC
 \newskip\belowabs_skip % below abstract
 \newskip\belowkw_skip % below keywords
 \newskip\aboveauthors_skip % between the title and authors
@@ -30,30 +27,21 @@
 \newskip\list_skip % above and below lists
 \newskip\cap_skip % above/below caption
 \newif\ifproof_mode % proof mode switch
-\newif\iffirst_pass % indicates first pass of TeX for cross-refs
-\newif\ifin_art % indicates open article
-\newif\iffirst_author % indicates first author
 \newif\ifin_sec % indicates open section
 \newif\ifin_subsec % indicates open subsection
 \newif\ifin_sssec % indicates open subsubsection
-\newif\iftitle_page % indicates chapter title page
-\newif\ifpart_page % indicates part division page
+\newif\iftitle_page % indicates report title page
 \newif\ifinfo_up % controls whether headline is set
 \newif\ifinfo_down % controls whether footline is set
 \newif\iffirst_item % first item of the list
 \newif\ifcompact_list % switch for modified handling of short items
-\newif\ifsilent_entry % indicates silent index entry
-\newif\ifmake_index % controls output of index file
-\newif\ifmake_toc % controls output of table-of-contents file
-\newbox\title_box % box for article title
+\newbox\title_box % box for report title
 \newbox\auth_box % box for authors
+\newbox\para_box % box for entire paragraphs (used in line-numbering mode)
 \newbox\list_label % contains label of list items
 \newbox\figure % box for figures
-\newbox\part_page % for non-standard page layouts
 \newbox\vlinebox % vertical line accross the height of a line
-\newbox\proc_box % citation of the proceedings
 \newinsert\margin_ins % marginal insertions (index entries)
-\newwrite\endp % end pages of articles
 \newwrite\inx % index entries
 \newwrite\toc % table of contents
 \newwrite\xrefs % forward cross-references
@@ -62,12 +50,12 @@
 \newtoks\font_style % current font style
 \newtoks\leftRunHead % contains left running head
 \newtoks\rightRunHead % contains right running head
-\newtoks\titl@ % article title
+\newtoks\titl@ % report title
 \newtoks\@uthors % comma-separated list of authors
 
 % Basic dimensions
-\hsize=130mm \hoffset=12mm
-\vsize=528pt \voffset=26,5mm
+\hsize=159mm
+\vsize=690pt
 \parindent=6mm
 
 
@@ -89,206 +77,214 @@
     \expandafter\pris\text}
 
 % Font macros
-\newtoks\font_style         % current font style
-\font\tenrm=csr10          % 10-point fonts
-\font\tenit=csti10
-\font\teni=cmmi10
-\font\tenbf=csbx10
-\font\tenex=cmex10
-\font\tentt=cstt10
-\font\tensl=cssl10
-\font\tensc=cscsc10
-\font\tenss=csss10
-\font\tensy=cmsy10
-\font\teneu=eurm10
+\def\text_fam{Baskerville 10 Pro}
+\def\mono_fam{Vida Mono 32 Pro}
+\def\text_opts{mapping=tex-text}
 
-\font\ninerm=csr9          % 9-point fonts
-\font\nineit=csti9
-\font\ninei=cmmi9
-\font\ninebf=csbx9
-\font\ninett=cstt9
-\font\ninesl=cssl9
-\font\ninesc=cscsc9
-\font\niness=csss9
-\font\ninesy=cmsy9
+\font\x_rm="\text_fam:\text_opts"		% 10-point fonts
+\font\x_it="\text_fam/I:\text_opts"
+\font\x_bf="\text_fam/B:\text_opts"
+\font\x_ib="\text_fam/IB:\text_opts"
+\font\x_sc="\text_fam:+smcp,\text_opts"
+\font\x_i=eurm10
+\font\x_eubf=eurb10
+\font\x_euex=euex10
+\font\x_tt="\mono_fam"
+\font\x_tti="\mono_fam/I"
+\font\x_ttb="\mono_fam/B"
+\font\x_ttib="\mono_fam/IB"
+\font\x_sy=cmsy10
 
-\font\sevenrm=csr7          % 7-point fonts
-\font\seveni=cmmi7
-\font\sevenbf=csbx7
-\font\sevensy=cmsy7
+\font\ix_rm="\text_fam:\text_opts" at 9pt	% 9-point fonts
+\font\ix_it="\text_fam/I:\text_opts" at 9pt
+\font\ix_bf="\text_fam/B:\text_opts" at 9pt
+\font\ix_ib="\text_fam/IB:\text_opts" at 9pt
+\font\ix_sc="\text_fam:+smcp,\text_opts" at 9pt
+\font\ix_i=eurm9
+\font\ix_eubf=eurb9
+\font\ix_euex=euex9
+\font\ix_tt="\mono_fam" at 9pt
+\font\ix_tti="\mono_fam/I" at 9pt
+\font\ix_ttb="\mono_fam/B" at 9pt
+\font\ix_ttib="\mono_fam/IB" at 9pt
+\font\ix_sy=cmsy9
 
-\font\sixrm=csr6          % 6-point fonts
-\font\sixi=cmmi6
-\font\sixbf=csbx6
-\font\sixsy=cmsy6
+\font\vii_rm="\text_fam:\text_opts" at 7pt	% 7-point fonts
+\font\vii_it="\text_fam/I:\text_opts" at 7pt
+\font\vii_bf="\text_fam/B:\text_opts" at 7pt
+\font\vii_tt="\mono_fam" at 7pt
+\font\vii_i=eurm7
+\font\vii_eubf=eurb7
+\font\vii_euex=euex7
+\font\vii_sy=cmsy7
 
-\font\fiverm=csr5          % 5-point fonts
-\font\fivei=cmmi5
-\font\fivebf=csbx5
-\font\fivesy=cmsy5
+\font\vi_rm="\text_fam:\text_opts" at 6pt	% 6-point fonts
+\font\vi_it="\text_fam/I:\text_opts" at 6pt
+\font\vi_bf="\text_fam/B:\text_opts" at 6pt
+\font\vi_tt="\mono_fam" at 6pt
+\font\vi_i=eurm6
+\font\vi_eubf=eurb6
+\font\vi_sy=cmsy6
 
-\font\twelverm=csr12       % 12-point fonts
-\font\twelveit=csti12
-\font\twelveit=cmmi12
-\font\twelvebf=csbx12
-\font\twelvett=cstt12
-\font\twelvesl=cssl12
-\font\twelvesc=cscsc12
-\font\twelvess=csss12
+\font\v_rm="\text_fam:\text_opts" at 5pt	% 5-point fonts
+\font\v_it="\text_fam/I:\text_opts" at 5pt
+\font\v_bf="\text_fam/B:\text_opts" at 5pt
+\font\v_tt="\mono_fam" at 5pt
+\font\v_i=eurm5
+\font\v_eubf=eurb5
+\font\v_sy=cmsy5
 
-\font\fourteenrm=csr10 scaled \magstep2        % 14-point fonts
-\font\fourteenit=csti10 scaled \magstep2
-\font\fourteenbf=csbx10 scaled \magstep2
-\font\fourteentt=cstt10 scaled \magstep2
-\font\fourteensl=cssl10 scaled \magstep2
-\font\fourteensc=cscsc10 scaled \magstep2
-\font\fourteenss=csss10 scaled \magstep2
+\font\xii_rm="\text_fam:\text_opts" at 12pt	% 12-point fonts
+\font\xii_it="\text_fam/I:\text_opts" at 12pt
+\font\xii_bf="\text_fam/B:\text_opts" at 12pt
+\font\xii_ib="\text_fam/IB:\text_opts" at 12pt
+\font\xii_sc="\text_fam:+smcp,\text_opts" at 12pt
+\font\xii_i=eurm10 at 12pt
+\font\xii_eubf=eurb10 at 12pt
+\font\xii_euex=euex10 at 12pt 
+\font\xii_tt="\mono_fam" at 12pt
+\font\xii_tti="\mono_fam/I" at 12pt
+\font\xii_ttb="\mono_fam/B" at 12pt
+\font\xii_ttib="\mono_fam/IB" at 12pt
+\font\xii_sy=cmsy10 at 12pt
 
-\font\seventeenrm=csr17    % 17-point fonts
-\font\seventeenit=csti17
-\font\seventeenbf=csbx10 at 17pt
-\font\seventeentt=cstt10 at 17pt
-\font\seventeensl=cssl17
-\font\seventeensc=cscsc17
-\font\seventeenss=csss17
+\font\xiv_rm="\text_fam:\text_opts" at 14pt	% 14-point fonts
+\font\xiv_it="\text_fam/I:\text_opts" at 14pt
+\font\xiv_bf="\text_fam/B:\text_opts" at 14pt
+\font\xiv_ib="\text_fam/IB:\text_opts" at 14pt
+\font\xiv_sc="\text_fam:+smcp,\text_opts" at 14pt
+\font\xiv_i=eurm10 at 14pt
+\font\xiv_eubf=eurb10 at 14pt
+\font\xiv_euex=euex10 at 14pt 
+\font\xiv_tt="\mono_fam" at 14pt
+\font\xiv_tti="\mono_fam/I" at 14pt
+\font\xiv_ttb="\mono_fam/B" at 14pt
+\font\xiv_ttib="\mono_fam/IB" at 14pt
+\font\xiv_sy=cmsy10 at 14pt
 
-\font\twentyonerm=csr10 at 21pt    % 21-point fonts
-\font\twentyoneit=csti10 at 21pt
-\font\twentyonebf=csbx10 at 21pt
-\font\twentyonett=cstt10 at 21pt
-\font\twentyonesl=cssl10 at 21pt
-\font\twentyonesc=cscsc10 at 21pt
-\font\twentyoness=csss10 at 21pt
+\font\xvii_rm="\text_fam:\text_opts" at 17pt	% 17-point fonts
+\font\xvii_it="\text_fam/I:\text_opts" at 17pt
+\font\xvii_bf="\text_fam/B:\text_opts" at 17pt
+\font\xvii_ib="\text_fam/IB:\text_opts" at 17pt
+\font\xvii_sc="\text_fam:+smcp,\text_opts" at 17pt
+\font\xvii_i=eurm10 at 17pt
+\font\xvii_eubf=eurb10 at 17pt
+\font\xvii_euex=euex10 at 17pt 
+\font\xvii_tt="\mono_fam" at 17pt
+\font\xvii_tti="\mono_fam/I" at 17pt
+\font\xvii_ttb="\mono_fam/B" at 17pt
+\font\xvii_ttib="\mono_fam/IB" at 17pt
+\font\xvii_sy=cmsy10 at 17pt
 
-\font\twentyfiverm=csr10 at 25pt    % 25-point fonts
-\font\twentyfiveit=csti10 at 25pt
-\font\twentyfivebf=csbx10 at 25pt
-\font\twentyfivett=cstt10 at 25pt
-\font\twentyfivesl=cssl10 at 25pt
-\font\twentyfivesc=cscsc10 at 25pt
-\font\twentyfivess=csss10 at 25pt
-
-\font\palec=csinch
-\font\patitul=csssdc10 at 20pt
+\font\xxi_rm="\text_fam:\text_opts" at 21pt	% 21-point fonts
+\font\xxi_it="\text_fam/I:\text_opts" at 21pt
+\font\xxi_bf="\text_fam/B:\text_opts" at 21pt
+\font\xxi_ib="\text_fam/IB:\text_opts" at 21pt
+\font\xxi_sc="\text_fam:+smcp,\text_opts" at 21pt
+\font\xxi_i=eurm10 at 21pt
+\font\xxi_eubf=eurb10 at 21pt
+\font\xxi_euex=euex10 at 21pt 
+\font\xxi_tt="\mono_fam" at 21pt
+\font\xxi_tti="\mono_fam/I" at 21pt
+\font\xxi_ttb="\mono_fam/B" at 21pt
+\font\xxi_ttib="\mono_fam/IB" at 21pt
+\font\xxi_sy=cmsy10 at 21pt
 
 \def\set_families#1#2#3{%
-  \textfont0=\macro{#1rm}\scriptfont0=\macro{#2rm}%
-    \scriptscriptfont0=\macro{#3rm}%
-  \textfont1=\macro{#1i}\scriptfont1=\macro{#2i}%
-    \scriptscriptfont1=\macro{#3i}%
-  \textfont2=\macro{#1sy}\scriptfont2=\macro{#2sy}%
-    \scriptscriptfont2=\macro{#3sy}%
-  \textfont3=\tenex\scriptfont3=\tenex
-    \scriptscriptfont3=\tenex
-  \textfont\bffam=\macro{#1bf}\scriptfont\bffam=\macro{#2bf}%
-  \scriptscriptfont\bffam=\macro{#3bf}%
-  \textfont\itfam=\macro{#1it}%
-  \textfont\ttfam=\macro{#1tt}%
-  \textfont\slfam=\macro{#1sl}}
+  \textfont0=\macro{#1_rm}\scriptfont0=\macro{#2_rm}%
+    \scriptscriptfont0=\macro{#3_rm}%
+  \textfont1=\macro{#1_i}\scriptfont1=\macro{#2_i}%
+    \scriptscriptfont1=\macro{#3_i}%
+  \textfont2=\macro{#1_sy}\scriptfont2=\macro{#2_sy}%
+    \scriptscriptfont2=\macro{#3_sy}%
+  \textfont3=\macro{#1_euex}\scriptfont3=\macro{#1_euex}
+    \scriptscriptfont3=\macro{#1_euex}
+  \textfont\bffam=\macro{#1_bf}%
+  \textfont\itfam=\macro{#1_it}%
+  \textfont\ttfam=\macro{#1_tt}}
 
 \def\set_styles#1{%
-  \def\rm{\macro{#1rm}\fam0 \font_style={rm}}%
-  \def\it{\macro{#1it}\fam\itfam \font_style={it}}%
-  \def\bf{\macro{#1bf}\fam\bffam \font_style={bf}}%
-  \def\sl{\macro{#1sl}\fam\slfam \font_style={sl}}%
-  \def\sc{\macro{#1sc}\font_style={sc}}%
-  \def\ssf{\macro{#1ss}\font_style={ss}}%
-  \def\tt{\macro{#1tt}\fam\ttfam \font_style={tt}}%
-%  \def\sltt{\macro{#1sltt}\font_style={sltt}}%
-  \def\slbf{\macro{#1slbf}\font_style={slbf}}%
+  \def\rm{\macro{#1_rm}\fam0 \font_style={rm}}%
+  \def\it{\macro{#1_it}\fam\itfam \font_style={it}}%
+  \def\bf{\macro{#1_bf}\fam\bffam \font_style={bf}}%
+  \def\ib{\macro{#1_ib}\font_style={ib}}%
+  \def\sc{\macro{#1_sc}\font_style={sc}}%
+  \def\tt{\macro{#1_tt}\fam\ttfam \font_style={tt}}%
+  \def\tti{\macro{#1_tti}\font_style={tti}}%
+  \def\ttib{\macro{#1_ttib}\font_style={ttib}}%
   }
+
+\def\sl{\it}
+
 \def\set_line_sizes#1#2#3{\normalbaselineskip=#1%
   \normallineskip=#2\normallineskiplimit=#3\normalbaselines
-  \setbox\strutbox=\hbox{\vrule height .75\baselineskip
-    depth .25\baselineskip width 0pt}%
-  \setbox\vlinebox=\hbox{\vrule height .75\baselineskip
-    depth .25\baselineskip}%
-  \smallskipamount=.25\baselineskip plus .08\baselineskip
-      minus .08\baselineskip
-  \medskipamount=.5\baselineskip plus .17\baselineskip
-      minus .17\baselineskip
-  \bigskipamount=1\baselineskip plus .33\baselineskip
-      minus .33\baselineskip}
+  \dimen_one=\baselineskip
+  \divide\dimen_one by 13
+  \setbox\strutbox=\hbox{\vrule height 10\dimen_one
+    depth 3\dimen_one width 0pt}%
+  \setbox\vlinebox=\hbox{\vrule height 10\dimen_one
+    depth 3\dimen_one}%
+  \smallskipamount=3\dimen_one plus\dimen_one minus\dimen_one
+  \medskipamount=6\dimen_one plus2\dimen_one minus2\dimen_one
+  \bigskipamount=12\dimen_one plus4\dimen_one minus4\dimen_one}
 
 \def\strut{\copy\strutbox}
 \def\vline{\copy\vlinebox}
 
-\def\normalSize{\set_styles{ten}%
-  \set_families{ten}{seven}{five}%
+\def\tenPoint{\set_styles{x}%
+  \set_families{x}{vii}{v}%
   \set_line_sizes{13pt}{0pt}{0pt}%
   \macro{\the\font_style}}
 
-\def\petit{\set_styles{nine}%
-  \set_families{nine}{six}{five}%
-  \set_line_sizes{11pt}{0pt}{0pt}%
-  \macro{\the\font_style}}
-
-\def\twelvePoint{\set_styles{twelve}%
+\def\twelvePoint{\set_styles{xii}%
+  \set_families{xii}{ix}{vi}%
   \set_line_sizes{15pt}{0pt}{0pt}%
   \macro{\the\font_style}}
 
-\def\fourteenPoint{\set_styles{fourteen}%
+\def\fourteenPoint{\set_styles{xiv}%
+  \set_families{xiv}{x}{vii}%
   \set_line_sizes{18pt}{0pt}{0pt}%
   \macro{\the\font_style}}
 
-\def\seventeenPoint{\set_styles{seventeen}%
+\def\seventeenPoint{\set_styles{xvii}%
+  \set_families{xvii}{xii}{ix}%
   \set_line_sizes{21pt}{0pt}{0pt}%
   \macro{\the\font_style}}
 
-\def\twentyonePoint{\set_styles{twentyone}%
-  \set_line_sizes{24pt}{0pt}{0pt}%
-  \macro{\the\font_style}}
-
-\def\twentyfivePoint{\set_styles{twentyfive}%
-  \set_line_sizes{30pt}{0pt}{0pt}%
-  \macro{\the\font_style}}
-
-\def\partFont{\twentyonePoint\bf}
-\def\titleFont{\fourteenPoint\bf}
-\def\sectionFont{\twelvePoint\bf}
+\let\normalSize=\twelvePoint
+\let\petit=\tenPoint
+\def\titleFont{\seventeenPoint\bf}
+\def\sectionFont{\fourteenPoint\bf}
 \def\subsectionFont{\normalSize\bf}
 \def\sssectionFont{\normalSize\bf}
 
-% EncTeX mapping of special characters
-\def\tt_fs{tt}
-\def\hat_{\char`\^}
-\def\underline_{{\edef\pris{\the\font_style}\ifx\pris\tt_fs
-        \char`\_ \else \_\fi}}
-\def\tilde_{\char`\~}
-\def\back_slash{{\edef\pris{\the\font_style}\ifx\pris\tt_fs
-        \char`\\ \else \showthe\toks_one $\backslash$\fi}}
-\def\left_brace{{\edef\pris{\the\font_style}\ifx\pris\tt_fs
-        \char`\{ \else $\{$\fi}}
-\def\right_brace{{\edef\pris{\the\font_style}\ifx\pris\tt_fs
-        \char`\} \else $\}$\fi}}
-\mubyte \hat_ ^^ef^^bc^^be\endmubyte
-\mubyte \underline_ ^^ef^^bc^^bf\endmubyte
-\mubyte \# ^^ef^^bc^^83\endmubyte
-\mubyte \$ ^^ef^^bc^^84\endmubyte
-\mubyte \% ^^ef^^bc^^85\endmubyte
-\mubyte \& ^^ef^^bc^^86\endmubyte
-\mubyte \back_slash ^^ef^^bc^^bc\endmubyte
-\mubyte \left_brace ^^ef^^bd^^9b\endmubyte
-\mubyte \right_brace ^^ef^^bd^^9d\endmubyte
-\mubyte \tilde_ ^^ef^^bd^^9e\endmubyte
+% mapping of special characters (via XeTeX)
 
+\catcode`＃=\active
+\catcode`＄=\active
+\catcode`％=\active
+\catcode`＆=\active
+\catcode`＼=\active
+\catcode`＾=\active
+\catcode`＿=\active
+\catcode`｛=\active
+\catcode`｝=\active
+\catcode`～=\active
+
+\chardef＃=`\#
+\chardef＄=`\$
+\chardef％=`\%
+\chardef＆=`\&
+\chardef＼=`\\
+\chardef＾=`\^
+\chardef＿=`\_
+\chardef｛=`\{
+\chardef｝=`\}
+\chardef～=`\~
 
 % Processing modes
 \def\proofMode{\proof_modetrue}
-\def\finalMode{\handle_option{final_mode}}
-\def\final_mode[#1]{\proof_modefalse
-    \def\opt_val{#1}\def\excl_char{!}
-    \ifx\opt_val\excl_char \overfullrule=0pt \first_passfalse
-        \input xref \immediate\openout\comp=xref-comp
-	\input endpages \else
-	\first_passtrue
-	\immediate\openout\endp=endpages
-	\immediate\openout\xrefs=xref\fi}
-\def\cleanPage{\footline={}%
-\def\makeheadline{\vbox to 0pt{\skip0=\topskip
-\advance\skip0 by -2.75\baselineskip \vskip\skip0
-  \hbox to \hsize{\hfill}\vss}%
-    \nointerlineskip}}
+\def\finalMode{\proof_modefalse}
 
 % \output routines
 \newinsert\margin_ins % marginal insertions (used for index entries)
@@ -305,9 +301,8 @@
     \unvbox\footins\fi
   \ifr@ggedbottom \kern-\dimen@ \vfil \fi}
 \def\one_page_out{%
-    \ifpart_page \info_upfalse \info_downfalse \global\part_pagefalse \else
     \iftitle_page \info_upfalse \info_downtrue \global\title_pagefalse
-    \else \info_uptrue \info_downfalse\fi\fi
+    \else \info_uptrue \info_downfalse\fi
     \plainoutput}
 \output={\one_page_out}
 
@@ -316,56 +311,30 @@
 \advance\skip0 by -2.75\baselineskip \vskip\skip0
   \hbox to \hsize{\normalSize\strut
     \ifodd\pageno
-	\ifinfo_up{\tenrm\hfil\the\rightRunHead}\else\hfil\fi
-    \else\ifinfo_up{\tenrm\the\leftRunHead\hfil}\fi\fi}\vss}%
+	\ifinfo_up{\x_rm\hfil\the\rightRunHead}\else\hfil\fi
+    \else\ifinfo_up{\x_rm\the\leftRunHead\hfil}\fi\fi}\vss}%
     \nointerlineskip}
 \def\makefootline{\baselineskip=2\normalbaselineskip
 \hbox to \hsize{\the\footline}}
 \footline={\ifinfo_down
     \ifnum\pageno<0 \hfil\folio\hfil \else
-        \box\proc_box\fi\fi}
+        \ifproof_mode DRAFT \number\day.\number\month.\number\year\else
+            © CESNET, 2007\fi\hfil\fi\fi}
 
 % Front matter
 
-\def\proceedings{\let\start_page=\empty}
-\def\endProceedings{\write_endpage}
-
-\def\citation#1{\def\cite_proc{#1}}
-\def\copyrightNotice#1{\def\copyright_notice{#1}}
-
-\aboveauthors_skip=2\baselineskip plus 0.5\baselineskip
-\belowauthors_skip=2\baselineskip plus 0.5\baselineskip
-\belowabs_skip=\baselineskip minus3pt
-\belowkw_skip=2\baselineskip plus\baselineskip minus6pt
+\aboveauthors_skip=30pt plus 8pt
+\belowauthors_skip=30pt plus 8pt
+\belowabs_skip=12pt minus6pt
+\belowkw_skip=30pt plus 15pt minus6pt
 \abs_inset=3em
 
-\def\write_endpage{\ifx\start_page\empty\else
-    {\decr\pageno
-      \immediate\write\endp{%
-        \string\defMacro{to_\start_page}{\number\pageno}}}\fi}
-
-\def\article{\ifin_art
-        \errmessage{Previous article not finished yet!}\fi
-    \par\vfill\eject
+\def\report{%
     \foot_count=0 \auth_count=0
     \let\short_title=\empty
-    \write_endpage
-    \ifodd\pageno\else
-        \ifproof_mode
-            \advancepageno
-        \else
-            {\cleanPage\null\vfill\eject}\fi
-    \fi
-    \edef\start_page{\romannumeral\pageno}
-    \setbox\proc_box=\vbox{
-      \ifproof_mode\hbox{\sevenrm \number\day.\number}\else
-        \vtop{\baselineskip=9pt \sevenrm
-          \hbox{\cite_proc, p.~\number\pageno--\iffirst_pass??\else
-            \macro{to_\start_page}\fi}
-    \hbox{{\normalSize\copyright}~\copyright_notice}}\fi}%
-    \first_authortrue \in_arttrue \title_pagetrue}
+    \title_pagetrue}
 
-\def\endArticle{\vfill\supereject\in_artfalse}
+\def\endReport{\vfill\supereject\end}
 
 \def\title#1{\titl@={#1}%
     \setbox\title_box=\vbox{%
@@ -381,12 +350,10 @@
     \incr\auth_count}
 
 \def\makeTitle{\edef\the_title{\the\titl@}
-    \ifmake_toc\expandafter\write_toc_article\expandafter{\the_title}%
-        {\the\@uthors}{\noexpand\folio}\fi
-    \leftRunHead={{\teneu\folio}\kern2em\ifnum\auth_count>3
+    \leftRunHead={{\x_i\folio}\kern2em\ifnum\auth_count>3
         \first_author~et~al.\else \the\@uthors\fi}%
     \rightRunHead={\ifx\short_title\empty
-        \the\titl@\else\short_title\fi\kern2em{\teneu\folio}}%
+        \the\titl@\else\short_title\fi\kern2em{\x_i\folio}}%
     \box\title_box
     \vskip\aboveauthors_skip
     \vbox{\leftskip=3em plus 1fill \rightskip=3em plus 1fill
@@ -394,12 +361,13 @@
     \normalSize\noindent\sc\the\@uthors}
     \vskip\belowauthors_skip}
 
-\def\abstract{\vbox\bgroup
+\def\abstract{\bgroup\petit
+    \centerline{\bf Abstract}
     \advance\leftskip by \abs_inset
-    \advance\rightskip by \abs_inset
-    \petit\noindent\let\par=\empty{\bf Abstract}\kern1em \ignorespaces}
+    \advance\hsize by -\abs_inset
+    \beginTextNum}
 
-\def\endAbstract{\egroup\vskip\belowabs_skip}
+\def\endAbstract{\endTextNum\egroup\vskip\belowabs_skip}
 
 \def\keywords#1{\vbox{
     \advance\leftskip by \abs_inset
@@ -409,30 +377,12 @@
     \vskip\belowkw_skip}
 
 % Sectioning macros
-\part_count=0
-\abovesec_skip=1.5\baselineskip plus 0.3\baselineskip %new
-\belowsec_skip=0.7\baselineskip plus 0.05\baselineskip
-\abovesubsec_skip=1.2\baselineskip plus 0.2\baselineskip
-\belowsubsec_skip=0.5\baselineskip plus 0.05\baselineskip
-\abovesss_skip=1.2\baselineskip plus 0.2\baselineskip
-\belowsss_skip=0.5\baselineskip plus 0.05\baselineskip
-
-\def\part#1{\par\vfill\eject
-    \write_endpage\let\start_page=\empty
-    \incr\part_count
-    \ifodd\pageno\else
-        \ifproof_mode
-            \advancepageno
-        \else
-            {\cleanPage\null\vfill\eject}\fi
-    \fi
-    \edef\part_label{\uppercase\expandafter{\romannumeral\part_count}}
-    \ifmake_toc\write_toc_part{\part_label}{#1}{\noexpand\folio}\fi
-    \part_pagetrue\null\vfill
-    \centerline{\seventeenPoint\bf Part~\part_label}
-    \vskip15mm
-    \vbox{\leftskip=3em plus 1fill \rightskip=3em plus 1fill
-    \parfillskip=0pt \partFont #1}\vfill\eject}
+\abovesec_skip=23pt plus 7pt
+\belowsec_skip=12pt plus 1pt
+\abovesubsec_skip=18pt plus 3pt
+\belowsubsec_skip=8pt plus 1pt
+\abovesss_skip=18pt plus 3pt
+\belowsss_skip=8pt plus 1pt
 
 \def\set_heading_box#1#2#3#4#5{\setbox0=\hbox{#2#3}%
     \setbox0=\vbox{#2%\hrule height0pt
@@ -444,15 +394,7 @@
         \noindent#3#4\par\nobreak\vskip#5}}
 
 \def\set_heading{\unvbox0
-    \vskip-\parskip\ignore_par\ignorespaces}
-
-\def\ignore_par{%
-    \ifx\par\endgraf\old_parindent=\parindent\parindent=0pt
-        \def\par{\ifvmode\else\endgraf\let\par=\endgraf
-            \parindent=\old_parindent\fi}\fi}
-
-\def\reset_par{\ifx\par\endgraf\else
-        \parindent=\old_parindent\let\par=\endgraf\fi}
+    \vskip-\parskip\ignorespaces}
 
 \def\check_leftspace{\dimen0=\pagetotal
     \advance\dimen0 by -\pageshrink
@@ -465,41 +407,9 @@
              \ifdim\dimen0>\pagegoal \vfill\eject\fi
              \else\eject\fi\fi}
 
-\def\looseChapter#1{\par\eject\ifodd\pageno\else\advancepageno\fi
-    \null\vskip1in
-    \title_pagetrue
-    \leftRunHead={\folio\kern2em#1}
-    \rightRunHead={#1\kern2em\folio}
-    \leftline{\seventeenPoint\bf #1}
-    \vskip1cm
-    \ignore_par\ignorespaces}    
-
-\def\endLooseChapter{\vfil\supereject}
-
-\def\ToC{\par\eject\ifodd\pageno\else\advancepageno\fi
-    \def\t@c{Table of Contents}
-    \title_pagetrue
-    \leftRunHead={\folio\kern2em\t@c}
-    \rightRunHead={\t@c\kern2em\folio}
-    \leftline{\seventeenPoint\bf\t@c}
-    \vskip1cm
-    \ignore_par\ignorespaces}    
-
-\def\endToC{\vfil\eject}
-
 \def\section#1#2{\ifvmode\else\par\fi
-    \ifin_art\else
-        \errmessage{Article not started yet!}\fi
     \set_heading_box\abovesec_skip\sectionFont
         {#1\kern1em}{#2}\belowsec_skip
-    \check_leftspace
-    \set_heading}
-
-\def\looseSection#1{\ifvmode\else\par\fi
-    \ifin_art\else
-        \errmessage{Article not started yet!}\fi
-    \set_heading_box\abovesec_skip\sectionFont
-        {}{#1}\belowsec_skip
     \check_leftspace
     \set_heading}
 
@@ -521,89 +431,30 @@
     \check_leftspace
     \set_heading}
 
-% Table of contents macros (0=part, 1=article)
-
-\tocnum_skip=1cm plus1fil minus.5cm
-
-\def\tocPart#1#2#3{\line{\bf
-    Part~#1: #2 \hrulefill\hbox to\tocnum_skip{\hfil\teneu#3}}\medskip}
-\def\tocArticle#1#2#3{\vbox{\hyphenpenalty=10000
-    \parfillskip=0pt \advance\rightskip by\tocnum_skip
-    \noindent\sl#1\dotfill\rlap{\hbox to\tocnum_skip{\hfil\teneu#3}}}
-    {\advance\rightskip by\tocnum_skip\noindent #2\par}
-    \medskip}
-\def\makeToc{\make_toctrue\immediate\openout\toc=toc-new}
-\def\write_toc_part#1#2#3{\suppress_expansion{#2}%
-    \edef\pris{\write\toc{\string\tocPart{#1}{\token_string}{#3}}}%
-    \pris}
-\def\write_toc_article#1#2#3{\suppress_expansion{#1}%
-    \edef\pris{\write\toc{%
-        \string\tocArticle{\token_string}{#2}{#3}}}%
-    \pris}
-\def\suppress_expansion#1{{%
-    \aftergroup\def\aftergroup\token_string\aftergroup{%
-    \assign_next#1\end_tokens}}}
-\def\suppress_auth_exp#1{{%
-    \aftergroup\def\aftergroup\auth_string\aftergroup{%
-    \assign_next#1\end_tokens}}}
-\def\assign_next{\futurelet\pris\analyze_next}
-\def\analyze_next{\ifx\pris\end_tokens
-    \else\ifcat\noexpand\pris\space
-      \aftergroup\space\let\pris=\kill_token
-    \else\ifcat\noexpand\pris\bgroup
-      \aftergroup{\let\pris=\kill_token
-    \else\ifcat\noexpand\pris\egroup
-      \aftergroup}\let\pris=\kill_token
-    \else\let\pris=\copy_token\fi\fi\fi\fi \pris}
-\def\kill_token{\afterassignment\assign_next\let\pris= }
-\def\copy_token#1{%
-    \ifcat\noexpand#1\relax\aftergroup\noexpand
-      \aftergroup\noexpand\aftergroup\noexpand
-    \else\ifcat\noexpand#1\noexpand~\aftergroup\noexpand
-      \aftergroup\noexpand\aftergroup\noexpand\fi\fi
-    \aftergroup#1\assign_next}
-\def\end_tokens\end_tokens{}
-
-\def\tocEntry#1#2#3#4{%
-    \ifcase#1\vskip1.5ex plus2pt minus1pt \ctoc_line{1.5em}{}{#3}{#4}%
-    \or\vskip1.5ex plus 0.3ex\ctoc_line{1.5em}{#2}{#3}{#4}
-    \or\stoc_line{1.5em}{2.5em}{#2}{#3}{#4}%
-    \or\stoc_line{4em}{3.5em}{#2}{#3}{#4}% 
-    \or\stoc_line{7.5em}{1em}{#2}{#3}{#4}% 
-    \else\message{Unknown type of toc-entry}%
-    \fi
-    \vskip0pt plus1pt
-    \ignorespaces}
-\def\ctoc_line#1#2#3#4{\line{\bf\hbox to#1{#2\hfil}#3\hfil#4}}
-\def\stoc_line#1#2#3#4#5{\line{\hskip#1\relax
-    \hbox to#2{#3\hfil}#4\leaders\hbox to 1em{\hss.\hss}\hfil#5}}
-
 % Verbatim mode - terminated by U+00A4 (CURRENCY SIGN)
 
-\mubyte \endVerbatim ^^c2^^a4\endmubyte % for EncTeX
 
 \def\uncatcode_specials{\def\do##1{\catcode`##1=12 }\dospecials}
 {\obeyspaces\global\let =\ }
 
-\def\numberedVerbatim{\reset_par\par\begingroup\tt
-  \lineno_count=0
+\def\numberedVerbatim{\par\begingroup\tt
+  \verb_lno=0
   \obeylines\uncatcode_specials\obeyspaces
-  \everypar{\advance\lineno by1 \llap{\sevenrm\the\lineno\ \ }}}
+  \everypar{\advance\verb_lno by1 \llap{\sevenrm\the\verb_lno\ \ }}}
 
-\def\verbatim{\reset_par\par\medskip\begingroup\tt\parindent=0pt
+\def\verbatim{\par\medskip\begingroup\tt\parindent=0pt
   \obeylines\uncatcode_specials\obeyspaces}
 
 \def\endVerbatim{\endgroup\medbreak}
 
-\def\blockQuote{\reset_par\par\begingroup\nobreak\medskip
+\catcode`\¤=\active \let¤=\endVerbatim
+
+\def\blockQuote{\par\begingroup\nobreak\medskip
     \hrule\kern1pt\nobreak}
 
 \def\endBlockQuote{\nobreak\kern1pt\hrule\endgroup\medbreak}
 
 % Lists
-
-\mubyte \itemBullet ^^e2^^80^^a2\endmubyte % for EncTeX
-\def\itemBullet{$\bullet$}
 
 \item_indent=\ifdim\parindent<5mm 5mm\else\parindent\fi
 \list_skip=3pt plus1pt minus2pt
@@ -611,14 +462,16 @@
 
 \def\compactList{\compact_listtrue}
 
-\def\begin_list{\reset_par\par\vskip\list_skip\bgroup
+\def\begin_list{\par\goodbreak\vskip\list_skip\bgroup
     \advance\leftskip by \item_indent \first_itemtrue}
 
-\def\endList{\par\egroup\vskip\list_skip}
+\def\endList{\endTextNum\egroup\vskip\list_skip}
 
-\def\list_item{\goodbreak
-    \ifcompact_list\iffirst_item \first_itemfalse
-             \else\vskip-\parskip\fi\fi
+\def\list_item{\iffirst_item \par\first_itemfalse
+  \else \endTextNum\goodbreak
+    \ifcompact_list\vskip-\parskip\fi
+  \fi
+    \beginTextNum
     \noindent
     \llap{\hbox to \item_indent{\hss\copy\list_label\kern2mm}}%
     \ignorespaces}
@@ -658,7 +511,7 @@
 \def\alpha_item{\ASCII_item{64}}
 \def\ALPHA_list{\begin_list\let\item=\ALPHA_item}
 
-\def\definitionList{\reset_par\par\vskip\list_skip\bgroup
+\def\definitionList{\par\vskip\list_skip\bgroup
     \parindent=0pt \parskip=2pt plus1pt \first_itemtrue
     \advance\leftskip by \item_indent}
 
@@ -674,23 +527,21 @@
 % Footnotes
 \skip\footins=14.5pt plus 2pt minus 4pt % added when footnote is present
 \dimen\footins=30pc % maximum footnotes per page
-\def\footNote{\reset_par
-    \global\incr\foot_count
+\def\footNote{\global\incr\foot_count
     \footnote{${}^{\number\foot_count}$}}
 
 % Figures and tables
 
 \cap_skip=12pt plus1pt minus2pt
 
-\def\figure#1{\reset_par\par\midinsert\vskip5mm plus 6pt minus3pt
+\def\figure#1{\par\midinsert\vskip5mm plus 6pt minus3pt
     \def\cap_label{Figure~#1}}
 \def\endFigure{\vskip0pt plus 6pt minus3pt\endinsert}
 
 \def\image{\handle_option{image_}}
 \def\image_[#1]#2{\def\pris{#1}%
-    \centerline{%
-    \ifx\pris\empty \epsffile{#2}\else
-        \vbox{\epsffile{#2}\hbox{\hfil#1\hfil}}\fi}}
+    \centerline{\XeTeXpicfile "#2"\ifx\pris\empty\else
+        width #1\hsize\fi}}
 
 \def\caption{\medskip\vbox\bgroup\raggedright
     \advance\leftskip by 2\parindent
@@ -702,39 +553,29 @@
 
 \def\centerCaption#1{\medskip\centerline{{\bf\cap_label.}~#1}\smallskip}
 
-\def\table#1{\reset_par\par\midinsert\vskip5mm plus 6pt minus3pt
+\def\table#1{\par\midinsert\vskip5mm plus 6pt minus3pt
     \def\cap_label{Table~#1}}
 \def\endTable{\medskip\vskip0pt plus 6pt minus3pt\endinsert}
 
-% Pagewise cross-references
-\def\wanted{?_?}
-\def\assign_ref#1{\edef\pris{\noexpand\let\noexpand\ref_def
-    \expandafter\noexpand\csname#1\endcsname}\pris}
-\def\ref_#1{\assign_ref{#1}%
-    \ifx\ref_def\relax
-        \iffirst_pass ??\expandafter\xdef_macro{#1}{\wanted}
-        \else {\bf ??}\message{Missing definition of reference "#1"}\fi
-    \else \ifx\ref_def\wanted ?\else \ref_def\fi\fi}
-\def\make_ref#1#2{\assign_ref{#1}%
-    \ifx\ref_def\relax
-        \xdef_macro{#1}{#2}%
-    \else \ifx\ref_def\wanted
-            \xdef_macro{#1}{#2}%
-            \ifproof_mode \else
-              \edef\pris{\write\xrefs{\string\defMacro{#1}{#2}}}\pris
-            \fi
-        \else \iffirst_pass \message{Multiple definition of
-                reference "#1".}
-              \else \edef\pris{\write\comp{\ref_def=?=#2}}\pris\fi
-        \fi\fi}
-
-\def\pageRef#1{\iffirst_pass ?\else\ref_{page_#1}\fi}
-\def\makePageRef#1{\iffirst_pass
-    \expandafter\let\csname page_#1\endcsname=\wanted\fi
-    \make_ref{page_#1}{\noexpand\folio}}
-
-%\def\silentIndex
-%\def\index
+% Line numbering
+\text_lno=0
+\def\beginTextNum{\par\begingroup
+  \def\par{\ifhmode\complete_par\fi}%
+  \setbox\para_box=\vbox\bgroup}
+\def\endTextNum{\par\egroup\endgroup}
+\def\complete_par{\endgraf \global\advance\text_lno by \prevgraf
+  \count_one=\text_lno \setbox0=\hbox{}
+  \loop \unskip \unpenalty \setbox2=\lastbox
+    \ifhbox2 \global\setbox0=
+        \hbox{\hbox to-\leftskip{\hskip-\leftskip\hss
+                                 $\scriptstyle\number\count_one.$%
+                                 \hskip.7em}%
+              \box2\penalty0\unhbox0}
+%      \showbox0
+      \decr\count_one
+  \repeat
+  \egroup \noindent\unhbox0\unpenalty \endgraf
+  \setbox\para_box=\vbox\bgroup}
 
 % Final touches
 \catcode`\_=8 % make _ again subscript symbol
@@ -742,5 +583,4 @@
 
 \normalSize\rm
 \widowpenalty=300
-\mubytein=1 \mubyteout=1
 \proofMode

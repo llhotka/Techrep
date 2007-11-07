@@ -1,0 +1,1047 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<grammar ns="http://cesnet.cz/ns/techrep/base/2.0"
+	 xmlns="http://relaxng.org/ns/structure/1.0"
+	 xmlns:a="http://cesnet.cz/ns/rngrest-annotations/1.0"
+	 datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+
+  <a:rest>
+RELAX NG Schema for Techrep version 2.0
+=======================================
+
+This is the `RELAX NG`_ schema for version 2.0 of Techrep, which is
+the common format for CESNET technical reports and other documents.
+
+The schema is annotated using the RNGreST method&#xA0;[Lho06]. The
+annotations are mainly used for documenting the design decisions for
+the particular data model, differences from version&#xA0;1 and other
+technical issues. For user-level instructions, see the technical
+report&#xA0;[Lho07].
+
+One of the most significant changes is the introduction of XML
+namespace http://cesnet.cz/ns/techrep/base/2.0. This will enable
+future extensions of the schema with well-established XML languages
+such as MathML_.
+
+The schema is very modular so that minor changes can be done
+incrementally using the extension mechanisms of RELAX NG.
+
+.. [Lho06] Lhotka L.: *Annotating XML Schemas with
+   reStructuredText*. Technical report `3/2006`_, Praha: CESNET, 2006.
+
+.. [Lho07] Lhotka L.: *New Version of the XML Schema for Technical
+   Reports.* Technical report `X/2007`_, Praha: CESNET, 2007.
+
+.. _RELAX NG: http://relaxng.org
+
+.. _3/2006: http://www.cesnet.cz/doc/techzpravy/2006/rngrest/
+
+.. _X/2007: http://www.cesnet.cz/doc/techzpravy/2007/techrep/
+
+.. _MathML: http://www.w3.org/Math/
+  </a:rest>
+
+  <start>
+    <a:rest>
+The root element is `report`. We changed all Czech terms appearing in
+version&#xA0;1 to their English equivalents.
+    </a:rest>
+    <element name="report">
+      <ref name="report-content"/>
+    </element>
+  </start>
+
+  <!-- Common patterns -->
+
+  <define name="switch-content">
+    <a:rest>
+This is a boolean switch.
+    </a:rest>
+    <choice>
+      <value>true</value>
+      <value>false</value>
+    </choice>
+  </define>
+  
+  <define name="common-attributes">
+    <a:rest>
+Three attributes &#x2013; `xml:id`, `xml:lang` and `role` &#x2013; may
+be optionally attached to all block elements and some inlines, too.
+    </a:rest>
+    <optional>
+      <ref name="id-attribute"/>
+    </optional>
+    <optional>
+      <ref name="lang-attribute"/>
+    </optional>
+    <optional>
+      <ref name="role-attribute"/>
+    </optional>
+  </define>
+
+  <define name="id-attribute">
+    <a:rest>
+This attribute allows the parent element to become a target for
+cross-references as suggested by the `W3C xml:id`__
+recommendation. This attribute replaces the `id` attribute that was
+used for the same purpose in version&#xA0;1.
+
+__ http://www.w3.org/TR/xml-id/
+    </a:rest>
+    <attribute name="xml:id">
+      <data type="ID"/>
+    </attribute>
+  </define>
+
+  <define name="lang-attribute">
+    <a:rest>
+This attribute identifies the language of the parent element and all its
+children following the current `W3C XML`__ recommendation. This
+attribute replaces the `jazyk` attribute from version&#xA0;1.
+
+Only English (``en``) and Czech (``cs``) languages are currently
+supported, English being the default one.
+
+__ http://www.w3.org/TR/2006/REC-xml-20060816/
+    </a:rest>
+    <attribute name="xml:lang">
+      <choice>
+	<value>en</value>
+	<value>cs</value>
+      </choice>
+    </attribute>
+  </define>
+
+  <define name="role-attribute">
+    <a:rest>
+This attribute allows for extending the language (e.g., if used with
+the `phrase`_ element) or specifying more detailed semantics for
+existing elements.
+
+.. _phrase: `phrase-element`_
+    </a:rest>
+    <attribute name="role">
+      <data type="token"/>
+    </attribute>
+  </define>
+
+  <define name="report-content">
+    <a:rest>
+This pattern defines the overall structure of a Techrep
+document. Unlike version&#xA0;1, the body of the report is wrapped
+in the `body` element to separate it from the front matter.
+
+The optional `short` attribute of the `title` element gives a short
+version of the title that can be used in page headings etc.
+    </a:rest>
+    <ref name="common-attributes"/>
+    <optional>
+      <attribute name="number"/>
+    </optional>
+    <element name="title">
+      <optional>
+	<attribute name="short"/>
+      </optional>
+      <ref name="inline-content"/>
+    </element>
+    <oneOrMore>
+      <element name="author">
+	<ref name="author-content"/>
+      </element>
+    </oneOrMore>
+    <optional>
+      <element name="date">
+	<ref name="date-content"/>
+      </element>
+    </optional>
+    <element name="keywords">
+      <ref name="keywords-content"/>
+    </element>
+    <element name="abstract">
+      <ref name="abstract-content"/>
+    </element>
+    <element name="body">
+      <ref name="body-content"/>
+    </element>
+  </define>
+
+  <define name="date-content">
+    <a:rest>
+We don't currently impose any restrictions to the date format. This
+can be done later if necessary.       
+    </a:rest>
+    <text/>
+  </define>
+
+  <define name="author-content">
+    <a:rest>
+The data about author(s) are slightly more structured than in
+version&#xA0;1.      
+    </a:rest>
+    <ref name="common-attributes"/>
+    <element name="name">
+      <text/>
+    </element>
+    <interleave>
+      <optional>
+	<element name="affiliation">
+	  <text/>
+	</element>
+      </optional>
+      <optional>
+	<element name="email">
+	  <ref name="email-content"/>
+	</element>
+      </optional>
+    </interleave>
+  </define>
+
+  <define name="email-content">
+    <a:rest>
+Email address is not restricted, this can possibly be done later.       
+    </a:rest>
+    <text/>
+  </define>
+
+  <define name="keywords-content">
+    <a:rest>
+Keywords are free text. Perhaps is should be made more structured.      
+    </a:rest>
+    <text/>
+  </define>
+
+  <define name="abstract-content">
+    <a:rest>
+Abstract may contain just one paragraph or one or more block
+elements.
+    </a:rest>
+    <ref name="common-attributes"/>
+    <ref name="hybrid-content"/>
+  </define>
+
+  <define name="hybrid-content">
+    <a:rest>
+This is a hybrid model for various text structures such as abstract,
+table cells and list items. It may be formed either by the *inline
+content* of a single paragraph (no tables, figures and lists) or any
+number of block elements.
+    </a:rest>
+    <choice>
+      <ref name="inline-content"/>
+      <zeroOrMore>
+	<ref name="block-choice"/>
+      </zeroOrMore>
+    </choice>
+  </define>
+
+  <define name="inline-content">
+    <a:rest>
+Mixed content of paragraph-like structures.       
+    </a:rest>
+    <mixed>
+      <zeroOrMore>
+	  <ref name="inline-choice"/>
+      </zeroOrMore>
+    </mixed>  
+  </define>
+
+  <define name="inline-choice">
+    <a:rest>
+This is the selection of inline elements without tables, figures and
+lists.      
+    </a:rest>
+    <choice>
+      <ref name="tt-element"/>
+      <ref name="sup-element"/>
+      <ref name="sub-element"/>
+      <ref name="em-element"/>
+      <ref name="strong-element"/>
+      <ref name="phrase-element"/>
+      <ref name="command-element"/>
+      <ref name="input-element"/>
+      <ref name="uri-element"/>
+      <ref name="file-element"/>
+      <ref name="footnote-element"/>
+      <ref name="q-element"/>
+      <ref name="a-element"/>
+      <ref name="xref-element"/>
+      <ref name="cite-element"/>
+      <ref name="index-element"/>
+      <ref name="br-element"/>
+    </choice>
+  </define>
+
+  <define name="block-choice">
+    <a:rest>
+This is the selection of block elements.      
+    </a:rest>
+    <choice>
+      <ref name="p-element"/>
+      <ref name="pre-element"/>
+      <ref name="blockquote-element"/>
+      <ref name="ol-element"/>
+      <ref name="ul-element"/>
+      <ref name="dl-element"/>
+      <ref name="figure-element"/>
+      <ref name="table-element"/>
+    </choice>
+  </define>
+  
+  <define name="body-content">
+    <a:rest>
+This pattern defines the top level structure of the document body:
+optional text before the first section, any number of sections, a
+single biblist (list of references) and any number of appendices.
+
+`biblist` can appear either before or after appendices. The former
+option is better but since techrep v1 required the list of references
+to be at the very end, we allow the latter option, too.
+    </a:rest>
+    <zeroOrMore>
+      <ref name="block-choice"/>
+    </zeroOrMore>
+    <zeroOrMore>
+      <element name="h1">
+	<ref name="heading-content"/>
+      </element>
+      <ref name="sect1-content"/>
+    </zeroOrMore>
+    <interleave>
+      <optional>
+	<element name="biblist">
+	  <ref name="biblist-content"/>
+	</element>
+      </optional>
+      <zeroOrMore>
+	<element name="appendix">
+	  <ref name="heading-content"/>
+	</element>
+	<ref name="sect1-content"/>
+      </zeroOrMore>
+    </interleave>
+  </define>
+
+  <define name="heading-content">
+    <a:rest>
+This pattern specifies the content of section and appendix headings.
+    </a:rest>
+    <ref name="common-attributes"/>
+    <ref name="inline-content"/>
+  </define>
+
+  <define name="sect1-content">
+    <a:rest>
+Content of top-level sections and appendices.      
+    </a:rest>
+    <oneOrMore>
+      <choice>
+	<ref name="block-choice"/>
+	<group>
+	  <element name="h2">
+	    <ref name="heading-content"/>
+	  </element>
+	  <ref name="sect2-content"/>
+	</group>
+      </choice>
+    </oneOrMore>
+  </define>
+
+  <define name="sect2-content">
+    <a:rest>
+Content of subsections.
+    </a:rest>
+    <oneOrMore>
+      <choice>
+	<ref name="block-choice"/>
+	<group>
+	  <element name="h3">
+	    <ref name="heading-content"/>
+	  </element>
+	  <ref name="block-choice"/>
+	</group>
+      </choice>
+    </oneOrMore>
+  </define>
+
+  <define name="biblist-content">
+    <a:rest>
+The `biblist` element contains one or more bibliography items. In the
+document structure, `biblist` plays the same role as sections or
+appendices.      
+    </a:rest>
+    <ref name="common-attributes"/>
+    <oneOrMore>
+      <element name="bibitem">
+	<ref name="bibitem-content"/>
+      </element>
+    </oneOrMore>
+  </define>
+
+  <define name="bibitem-content">
+    <a:rest>
+This pattern defines the content of bibliography items. It should
+probably be more structured. The `xml:id` attribute is mandatory for
+this element.
+    </a:rest>
+    <ref name="id-attribute"/>
+    <optional>
+      <ref name="lang-attribute"/>
+    </optional>
+    <optional>
+      <ref name="role-attribute"/>
+    </optional>
+    <ref name="inline-content"/>
+  </define>
+
+  <!-- Inline elements -->
+
+  <define name="tt-element">
+    <a:rest>
+Markup for text in fixed-width (typewriter) font.      
+    </a:rest>
+    <element name="tt">
+      <ref name="inline-content"/>
+    </element>
+  </define>
+
+  <define name="sup-element">
+    <a:rest>
+Markup for superscripts.      
+    </a:rest>
+    <element name="sup">
+      <ref name="inline-content"/>
+    </element>
+  </define>
+
+  <define name="sub-element">
+    <a:rest>
+Markup for subscripts.      
+    </a:rest>
+    <element name="sub">
+      <ref name="inline-content"/>
+    </element>
+  </define>
+
+  <define name="em-element">
+    <a:rest>
+Generic markup for emphasized text. Standard rendering is italics.
+    </a:rest>
+    <element name="em">
+      <ref name="inline-content"/>
+    </element>
+  </define>
+
+  <define name="strong-element">
+    <a:rest>
+Generic markup for strongly emphasized text. Standard rendering is
+boldface.
+    </a:rest>
+    <element name="strong">
+      <ref name="inline-content"/>
+    </element>
+  </define>
+
+  <define name="phrase-element">
+    <a:rest>
+This element is intended for special parts of the text for which no
+explicit markup is available. Usually the `role` attribute should be
+use to specify the meaning. This is a lightweight method for ad hoc
+schema extensions. By default, the `phrase` element is rendered in
+italics.
+    </a:rest>
+    <ref name="common-attributes"/>
+    <element name="phrase">
+      <ref name="inline-content"/>
+    </element>
+  </define>
+
+  <define name="command-element">
+    <a:rest>
+Markup for names of operating system commands and other
+programs. Standard rendering is boldface.
+    </a:rest>
+    <element name="command">
+      <ref name="inline-content"/>
+    </element>
+  </define>
+
+  <define name="input-element">
+    <a:rest>
+Markup for data entered by user. It is normally rendered using a
+fixed-width font.
+    </a:rest>
+    <element name="input">
+      <ref name="inline-content"/>
+    </element>
+  </define>
+
+  <define name="uri-element">
+    <a:rest>
+Markup for `Uniform Resource Identifiers`__ and similar objects
+(hostnames etc.).
+
+.. __: http://en.wikipedia.org/wiki/Uniform_Resource_Identifier
+    </a:rest>
+    <element name="uri">
+      <ref name="inline-content"/>
+    </element>
+  </define>
+
+  <define name="file-element">
+    <a:rest>
+Markup for file names.      
+    </a:rest>
+    <element name="file">
+      <ref name="inline-content"/>
+    </element>
+  </define>
+
+  <define name="footnote-element">
+    <a:rest>
+Footnotes are restricted to simple inline content, i.e., a single
+paragraph without figures, tables and lists.      
+    </a:rest>
+    <element name="footnote">
+      <ref name="inline-content"/>
+    </element>
+  </define>
+
+  <define name="q-element">
+    <a:rest>
+Markup for quoted text. It is normally rendered with double quotes
+using the typographical conventions of the active language as
+specified by the `xml:lang` attribute on this element or one of its
+ancestors.
+    </a:rest>
+    <element name="q">
+      <ref name="inline-content"/>
+    </element>
+  </define>
+
+  <define name="a-element">
+    <a:rest>
+This element is used for hyperlinks to external resources. Unlike
+version&#xA0;1, it cannot be used for cross-referencing entities
+within the same document &#x2013; use the `xref`_ element for the
+latter purpose.
+
+.. _xref: `xref-element`_
+    </a:rest>
+    <element name="a">
+      <ref name="common-attributes"/>
+      <attribute name="href">
+	<data type="anyURI"/>
+      </attribute>
+      <mixed>
+	<zeroOrMore>
+	  <ref name="a-choice"/>
+	</zeroOrMore>
+      </mixed>
+    </element>
+  </define>
+
+  <define name="a-choice">
+    <a:rest>
+An `a` element may contain all inline elements except `a` and `cite`.
+    </a:rest>
+    <choice>
+      <ref name="tt-element"/>
+      <ref name="sup-element"/>
+      <ref name="sub-element"/>
+      <ref name="em-element"/>
+      <ref name="strong-element"/>
+      <ref name="phrase-element"/>
+      <ref name="command-element"/>
+      <ref name="input-element"/>
+      <ref name="uri-element"/>
+      <ref name="file-element"/>
+      <ref name="footnote-element"/>
+      <ref name="q-element"/>
+      <ref name="index-element"/>
+    </choice>
+  </define>
+
+  <define name="xref-element">
+    <a:rest>
+This element is used for cross-references within the same
+document. The value of the `linkend` attribute must appear as the
+value of the `xml:id`_ attribute attached to another element.
+
+The content of this element, if non-empty, is the referencing text
+(e.g., will become a hot-link or get a footnote). If this element is
+empty, the label and identifier of the referenced object will be
+automatically generated in the main text, for example ``Section 1.2``.
+
+If the attribute `raw` is set to ``true``, the autogenerated label
+will be suppressed and only the identifier will be generated. The
+default value of the raw attribute is ``false``.
+
+.. _`xml:id`: `id-attribute`_
+    </a:rest>
+    <element name="xref">
+      <optional>
+	<attribute name="raw">
+	  <ref name="switch-content"/>
+	</attribute>
+      </optional>
+      <ref name="common-attributes"/>
+      <attribute name="linkend">
+	<data type="IDREF"/>
+      </attribute>
+      <ref name="inline-content"/>
+    </element>
+  </define>
+
+  <define name="cite-element">
+    <a:rest>
+This element is used for bibliography references. The value of the
+`bibref` attribute must be the same as the `xml:id` attribute of the
+`bibitem` we are referring to.
+    </a:rest>
+    <element name="cite">
+      <ref name="common-attributes"/>
+      <attribute name="bibref">
+	<data type="anyURI"/>
+      </attribute>
+    </element>
+  </define>
+
+  <define name="index-element">
+    <a:rest>
+This element marks its content as an index entry. The following
+attributes modify the appearance of the index entry and the phrase in
+the main text it refers to:
+
+`silent`
+    The value of ``true`` indicates a "silent" index entry. It will
+    generate an entry in the index but the phrase won't appear in the
+    main text. The default is ``false``.
+
+`under`
+    Generates a second-level index entry. The content of the parent
+    `index` element will become a subentry of the main index entry
+    that is given as the value of this attribute.
+
+`role`
+    This attribute allows for different renderings of index
+    entries. The following values are defined:
+
+    * ``no`` &#x2013; no special rendering (default)
+
+    * ``it`` &#x2013; the index entry will set in italics
+
+    * ``tt`` &#x2013; the index entry will set in monospaced font
+
+    * ``bn`` &#x2013; the *number* of the index entry will be set in boldface
+
+    * ``un`` &#x2013; the *number* of the index entry will be
+      underlined
+
+    * ``xe`` &#x2013; the index entry is an XML element. It will be
+      rendered with the the &lt; and &gt; delimiters but these will be
+      ignored when sorting the entries.
+    </a:rest>
+    <element name="index">
+      <optional>
+	<attribute name="silent">
+	  <ref name="switch-content"/>
+	</attribute>
+      </optional>
+      <optional>
+	<attribute name="under"/>
+      </optional>
+      <optional>
+	<attribute name="role">
+	  <choice>
+	    <value>no</value>
+	    <value>it</value>
+	    <value>tt</value>
+	    <value>bn</value>
+	    <value>un</value>
+	    <value>xe</value>
+	  </choice>
+	</attribute>
+      </optional>
+      <ref name="inline-content"/>
+    </element>
+  </define>
+
+  <define name="br-element">
+    <a:rest>
+This element forces a line break within a paragraph.
+    </a:rest>
+    <element name="br">
+      <empty/>
+    </element>
+  </define>
+
+  <!-- Block elements -->
+
+  <define name="pre-element">
+    <a:rest>
+This element is for verbatim text such as program listings. If the
+`numbered` attribute is ``true``, the lines will be numbered. The
+default value is ``false``. 
+    </a:rest>
+    <element name="pre">
+      <ref name="common-attributes"/>
+      <optional>
+	<attribute name="numbered">
+	  <ref name="switch-content"/>
+	</attribute>
+      </optional>
+      <text/>
+    </element>
+  </define>
+
+  <define name="blockquote-element">
+    <a:rest>
+Markup for quotations set off from the main text.      
+    </a:rest>
+    <element name="blockquote">
+      <zeroOrMore>
+	<ref name="block-choice"/>
+      </zeroOrMore>
+    </element>
+  </define>
+
+  <define name="p-element">
+    <a:rest>
+This is a single paragraph. Note that it can be empty.      
+    </a:rest>
+    <element name="p">
+      <ref name="common-attributes"/>
+      <mixed>
+	<zeroOrMore>
+	  <ref name="p-choice"/>
+	</zeroOrMore>
+      </mixed>
+    </element>
+    </define>
+
+  <define name="p-choice">
+    <a:rest>
+These elements can be contained in a paragraph. Apart from standard
+inline elements we also allow lists, tables and figures. Strictly
+speaking, this should be avoided, but people keep ignoring to close
+the paragraph first so let's not insist on this.      
+    </a:rest>
+    <choice>
+      <ref name="tt-element"/>
+      <ref name="sup-element"/>
+      <ref name="sub-element"/>
+      <ref name="em-element"/>
+      <ref name="strong-element"/>
+      <ref name="phrase-element"/>
+      <ref name="command-element"/>
+      <ref name="input-element"/>
+      <ref name="uri-element"/>
+      <ref name="file-element"/>
+      <ref name="footnote-element"/>
+      <ref name="q-element"/>
+      <ref name="a-element"/>
+      <ref name="xref-element"/>
+      <ref name="cite-element"/>
+      <ref name="ol-element"/>
+      <ref name="ul-element"/>
+      <ref name="dl-element"/>
+      <ref name="figure-element"/>
+      <ref name="table-element"/>
+      <ref name="index-element"/>
+    </choice>
+  </define>
+
+  <define name="figure-element">
+    <a:rest>
+This element represents a figure and contains a `caption` and one or
+more `image` elements. Unlike version&#xA0;1, the caption is optional.
+    </a:rest>
+    <element name="figure">
+      <ref name="common-attributes"/>
+      <interleave>
+	<oneOrMore>
+	  <ref name="image-element"/>
+	</oneOrMore>
+	<optional>
+	  <ref name="caption-element"/>
+	</optional>
+      </interleave>
+    </element>
+  </define>
+
+  <define name="image-element">
+    <a:rest>
+The `image` element specifies one or more URLs of source graphic
+files. The optional attribute `format` specifies the graphic format of
+each file. If it is not given, the format is determined by other
+means, for example from the file extension.
+
+The optional `label` subelement gives the (short) text that will be
+typeset next to the image. It is mainly useful with multiple images in
+one figure, where one can use the ``a``, ``b``, ... distinguishers. 
+    </a:rest>
+    <element name="image">
+      <optional>
+	<element name="label">
+	  <ref name="inline-content"/>
+	</element>
+      </optional>
+      <oneOrMore>
+	<element name="source">
+	  <optional>
+	    <attribute name="format">
+	      <ref name="format-choice"/>
+	    </attribute>
+	  </optional>
+	  <data type="anyURI"/>
+	</element>
+      </oneOrMore>
+    </element>
+  </define>
+
+  <define name="format-choice">
+    <a:rest>
+This is the selection of recognised graphic formats.      
+    </a:rest>
+    <choice>
+      <value>EPS</value>
+      <value>GIF</value>
+      <value>JPEG</value>
+      <value>PDF</value>
+      <value>PNG</value>
+      <value>SVG</value>
+    </choice>
+  </define>
+
+  <define name="table-element">
+    <a:rest>
+This element represents a rectangular table. It contains a number of
+table rows and an optional caption, which may precede or follow the
+rows. (Actually, it could also appear in between two rows but this can
+hardly be useful.)
+    </a:rest>
+    <element name="table">
+      <ref name="common-attributes"/>
+      <attribute name="colspec">
+	<data type="token">
+	  <param name="pattern">[lcr]+</param>
+	</data>
+      </attribute>
+      <interleave>
+	<optional>
+	<ref name="caption-element"/>
+	</optional>
+	<oneOrMore>
+	  <ref name="tr-element"/>
+	</oneOrMore>
+      </interleave>
+    </element>
+  </define>
+
+  <define name="caption-element">
+    <a:rest>
+This is the figure or table caption.
+    </a:rest>
+    <element name="caption">
+      <ref name="hybrid-content"/>
+    </element>
+  </define>
+
+  <define name="tr-element">
+    <a:rest>
+This is a single table row containing header (`th`) or data (`td`) cells.      
+    </a:rest>
+    <element name="tr">
+      <ref name="common-attributes"/>
+      <ref name="bgcolor-attribute"/>
+      <oneOrMore>
+	<choice>
+	  <ref name="td-element"/>
+	  <ref name="th-element"/>
+	</choice>
+      </oneOrMore>
+    </element>
+  </define>
+
+  <define name="bgcolor-attribute">
+    <a:rest>
+Background colour of a table cell specified as a hexadecimal RGB
+value. The default value is ``#000000`` (white).
+    </a:rest>
+    <optional>
+      <attribute name="bgcolor">
+	<data type="token">
+	  <param name="pattern">#[0-9a-fA-F]{6}</param>
+	</data>
+      </attribute>
+    </optional>
+  </define>
+
+  <define name="td-element">
+    <a:rest>
+Table cell with data.      
+    </a:rest>
+    <element name="td">
+      <ref name="table-cell-content"/>
+    </element>
+  </define>
+
+  <define name="th-element">
+    <a:rest>
+Header table cell.      
+    </a:rest>
+    <element name="th">
+      <ref name="table-cell-content"/>
+    </element>
+  </define>
+
+  <define name="table-cell-content">
+    <a:rest>
+This is the content of a table cell. The `bgcolor` attribute may be
+used to override the background color set for the entire
+row. Similarly, the optional `align` attribute may override the column
+alignment. Finally, the `colspan` attribute gives the number of
+table columns to be spanned by the cell. The default is&#xA0;1.
+    </a:rest>
+    <ref name="common-attributes"/>
+    <ref name="bgcolor-attribute"/>
+    <optional>
+      <attribute name="align">
+	<choice>
+	  <value>left</value>
+	  <value>center</value>
+	  <value>right</value>
+	</choice>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="colspan">
+	<data type="positiveInteger"/>
+      </attribute>
+    </optional>
+    <ref name="hybrid-content"/>
+  </define>
+
+  <define name="ol-element">
+    <a:rest>
+This is an ordered list. Two optional `continue` attribute contains a
+reference to a previous `ol` list (via the `xml:id` attribute). The
+numbering of the present list will continue where the referenced list
+left off.
+
+In addition, the `labels` attribute may be used to specify the type of
+labels (see `labels-choice`_). The default is ``arabic``.
+    </a:rest>
+    <element name="ol">
+      <optional>
+	<attribute name="continue">
+	  <data type="IDREF"/>
+	</attribute>
+      </optional>
+      <optional>
+	<attribute name="labels">
+	  <ref name="labels-choice"/>
+	</attribute>
+      </optional>
+      <ref name="list-content"/>
+    </element>
+  </define>
+
+  <define name="labels-choice">
+    <a:rest>
+The following values can be used to specify the type of labels for
+ordered list items:
+
+* ``arabic`` &#x2013; arabic numerals (default)
+
+* ``roman`` &#x2013; lowercase roman numerals (i,ii, ...)
+ 
+* ``ROMAN`` &#x2013; uppercase roman numerals (I,II, ...)
+ 
+* ``alpha`` &#x2013; lowercase characters (a,b, ...)
+ 
+* ``ALPHA`` &#x2013; uppercase characters (A,B, ...)
+    </a:rest>
+    <choice>
+      <value>arabic</value>
+      <value>roman</value>
+      <value>ROMAN</value>
+      <value>alpha</value>
+      <value>ALPHA</value>
+    </choice>
+  </define>
+
+  <define name="ul-element">
+    <a:rest>
+This is an unordered list. The labels (bullets, dashes etc.) are
+determined from the level of embedding.
+    </a:rest>
+    <element name="ul">
+      <ref name="list-content"/>
+    </element>
+  </define>
+
+  <define name="list-content">
+    <a:rest>
+The common content of ordered and unordered lists. The optional
+attribute `compact` may be used to reduce the vertical spacing between
+list items. This is typically useful if all items are one-liners.
+    </a:rest>
+    <ref name="common-attributes"/>
+    <optional>
+      <attribute name="compact">
+	<ref name="switch-content"/>
+      </attribute>
+    </optional>
+    <oneOrMore>
+      <ref name="li-element"/>
+    </oneOrMore>
+  </define>
+
+  <define name="li-element">
+    <a:rest>
+This element represents a single item of an (un)ordered list.
+    </a:rest>
+    <element name="li">
+      <ref name="common-attributes"/>
+      <ref name="hybrid-content"/>
+    </element>
+  </define>
+
+  <define name="dl-element">
+    <a:rest>
+This is the definition list where each item consist of a group of one
+or more `dt` elements (terms) and exactly one `dd` element
+(description). This is modelled after HTML.
+    </a:rest>
+    <element name="dl">
+      <ref name="common-attributes"/>
+      <oneOrMore>
+	<oneOrMore>
+	  <ref name="dt-element"/>
+	</oneOrMore>
+	<ref name="dd-element"/>
+      </oneOrMore>
+    </element>
+  </define>
+
+  <define name="dt-element">
+    <a:rest>
+The definition term is simple inline content.      
+    </a:rest>
+    <element name="dt">
+      <ref name="inline-content"/>
+    </element>
+  </define>
+
+  <define name="dd-element">
+    <a:rest>
+The description has the same content model as items in (un)ordered lists.      
+    </a:rest>
+    <element name="dd">
+      <ref name="common-attributes"/>
+      <ref name="hybrid-content"/>
+    </element>
+  </define>
+
+</grammar>

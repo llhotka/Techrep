@@ -11,8 +11,8 @@ all: testrep.ps
 %.tex: %.ctr
 	xsltproc -o $@ $(TR2TEX) $<
 
-%.dvi: %.tex
-	tr2tex $<
+%.pdf: %.tex
+	xetex $<
 
 %.ps: %.dvi
 	dvips $<
