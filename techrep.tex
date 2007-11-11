@@ -1,4 +1,7 @@
 % -*- mode: fundamental; -*-
+
+% © CESNET, 2007
+
 \catcode`_=11 % to hide private macros
 \catcode`@=11 % to borrow plain TeX macros
 
@@ -35,10 +38,10 @@
 \newif\ifinfo_down % controls whether footline is set
 \newif\iffirst_item % first item of the list
 \newif\ifcompact_list % switch for modified handling of short items
+\newbox\box_one % temporary box
 \newbox\title_box % box for report title
 \newbox\auth_box % box for authors
 \newbox\para_box % box for entire paragraphs (used in line-numbering mode)
-\newbox\list_label % contains label of list items
 \newbox\figure % box for figures
 \newbox\vlinebox % vertical line accross the height of a line
 \newinsert\margin_ins % marginal insertions (index entries)
@@ -79,6 +82,7 @@
 % Font macros
 \def\text_fam{Baskerville 10 Pro}
 \def\mono_fam{Vida Mono 32 Pro}
+%\def\mono_fam{Etelka Monospace Pro}
 \def\text_opts{mapping=tex-text}
 
 \font\x_rm="\text_fam:\text_opts"		% 10-point fonts
@@ -89,10 +93,10 @@
 \font\x_i=eurm10
 \font\x_eubf=eurb10
 \font\x_euex=euex10
-\font\x_tt="\mono_fam"
-\font\x_tti="\mono_fam/I"
-\font\x_ttb="\mono_fam/B"
-\font\x_ttib="\mono_fam/IB"
+\font\x_tt="\mono_fam" at 9pt
+\font\x_tti="\mono_fam/I" at 9pt
+\font\x_ttb="\mono_fam/B" at 9pt
+\font\x_ttib="\mono_fam/IB" at 9pt
 \font\x_sy=cmsy10
 
 \font\ix_rm="\text_fam:\text_opts" at 9pt	% 9-point fonts
@@ -103,10 +107,10 @@
 \font\ix_i=eurm9
 \font\ix_eubf=eurb9
 \font\ix_euex=euex9
-\font\ix_tt="\mono_fam" at 9pt
-\font\ix_tti="\mono_fam/I" at 9pt
-\font\ix_ttb="\mono_fam/B" at 9pt
-\font\ix_ttib="\mono_fam/IB" at 9pt
+\font\ix_tt="\mono_fam" at 8pt
+\font\ix_tti="\mono_fam/I" at 8pt
+\font\ix_ttb="\mono_fam/B" at 8pt
+\font\ix_ttib="\mono_fam/IB" at 8pt
 \font\ix_sy=cmsy9
 
 \font\vii_rm="\text_fam:\text_opts" at 7pt	% 7-point fonts
@@ -142,10 +146,10 @@
 \font\xii_i=eurm10 at 12pt
 \font\xii_eubf=eurb10 at 12pt
 \font\xii_euex=euex10 at 12pt 
-\font\xii_tt="\mono_fam" at 12pt
-\font\xii_tti="\mono_fam/I" at 12pt
-\font\xii_ttb="\mono_fam/B" at 12pt
-\font\xii_ttib="\mono_fam/IB" at 12pt
+\font\xii_tt="\mono_fam" at 11pt
+\font\xii_tti="\mono_fam/I" at 11pt
+\font\xii_ttb="\mono_fam/B" at 11pt
+\font\xii_ttib="\mono_fam/IB" at 11pt
 \font\xii_sy=cmsy10 at 12pt
 
 \font\xiv_rm="\text_fam:\text_opts" at 14pt	% 14-point fonts
@@ -156,10 +160,10 @@
 \font\xiv_i=eurm10 at 14pt
 \font\xiv_eubf=eurb10 at 14pt
 \font\xiv_euex=euex10 at 14pt 
-\font\xiv_tt="\mono_fam" at 14pt
-\font\xiv_tti="\mono_fam/I" at 14pt
-\font\xiv_ttb="\mono_fam/B" at 14pt
-\font\xiv_ttib="\mono_fam/IB" at 14pt
+\font\xiv_tt="\mono_fam" at 13pt
+\font\xiv_tti="\mono_fam/I" at 13pt
+\font\xiv_ttb="\mono_fam/B" at 13pt
+\font\xiv_ttib="\mono_fam/IB" at 13pt
 \font\xiv_sy=cmsy10 at 14pt
 
 \font\xvii_rm="\text_fam:\text_opts" at 17pt	% 17-point fonts
@@ -170,10 +174,10 @@
 \font\xvii_i=eurm10 at 17pt
 \font\xvii_eubf=eurb10 at 17pt
 \font\xvii_euex=euex10 at 17pt 
-\font\xvii_tt="\mono_fam" at 17pt
-\font\xvii_tti="\mono_fam/I" at 17pt
-\font\xvii_ttb="\mono_fam/B" at 17pt
-\font\xvii_ttib="\mono_fam/IB" at 17pt
+\font\xvii_tt="\mono_fam" at 16pt
+\font\xvii_tti="\mono_fam/I" at 16pt
+\font\xvii_ttb="\mono_fam/B" at 16pt
+\font\xvii_ttib="\mono_fam/IB" at 16pt
 \font\xvii_sy=cmsy10 at 17pt
 
 \font\xxi_rm="\text_fam:\text_opts" at 21pt	% 21-point fonts
@@ -184,10 +188,10 @@
 \font\xxi_i=eurm10 at 21pt
 \font\xxi_eubf=eurb10 at 21pt
 \font\xxi_euex=euex10 at 21pt 
-\font\xxi_tt="\mono_fam" at 21pt
-\font\xxi_tti="\mono_fam/I" at 21pt
-\font\xxi_ttb="\mono_fam/B" at 21pt
-\font\xxi_ttib="\mono_fam/IB" at 21pt
+\font\xxi_tt="\mono_fam" at 20pt
+\font\xxi_tti="\mono_fam/I" at 20pt
+\font\xxi_ttb="\mono_fam/B" at 20pt
+\font\xxi_ttib="\mono_fam/IB" at 20pt
 \font\xxi_sy=cmsy10 at 21pt
 
 \def\set_families#1#2#3{%
@@ -198,7 +202,7 @@
   \textfont2=\macro{#1_sy}\scriptfont2=\macro{#2_sy}%
     \scriptscriptfont2=\macro{#3_sy}%
   \textfont3=\macro{#1_euex}\scriptfont3=\macro{#1_euex}
-    \scriptscriptfont3=\macro{#1_euex}
+    \scriptscriptfont3=\macro{#1_euex}%
   \textfont\bffam=\macro{#1_bf}%
   \textfont\itfam=\macro{#1_it}%
   \textfont\ttfam=\macro{#1_tt}}
@@ -317,9 +321,9 @@
 \def\makefootline{\baselineskip=2\normalbaselineskip
 \hbox to \hsize{\the\footline}}
 \footline={\ifinfo_down
-    \ifnum\pageno<0 \hfil\folio\hfil \else
-        \ifproof_mode DRAFT \number\day.\number\month.\number\year\else
-            © CESNET, 2007\fi\hfil\fi\fi}
+    \ifnum\pageno<0 \hfil\folio\hfil \else {\petit
+        \ifproof_mode PROOF \number\day.\number\month.\number\year\else
+            © CESNET, \number\year\fi}\hfil\fi\fi}
 
 % Front matter
 
@@ -349,11 +353,11 @@
         \@uthors=\expandafter{\the\@uthors, #1}\fi
     \incr\auth_count}
 
-\def\makeTitle{\edef\the_title{\the\titl@}
-    \leftRunHead={{\x_i\folio}\kern2em\ifnum\auth_count>3
-        \first_author~et~al.\else \the\@uthors\fi}%
-    \rightRunHead={\ifx\short_title\empty
-        \the\titl@\else\short_title\fi\kern2em{\x_i\folio}}%
+\def\makeTitle{\edef\the_title{\the\titl@}%
+    \leftRunHead={{\x_i\folio}\kern2em{\x_sc\ifnum\auth_count>3
+        \first_author~et~al.\else \the\@uthors\fi}}%
+    \rightRunHead={{\petit\ifx\short_title\empty
+        \it\the\titl@\else\short_title\fi\kern2em$\x_i\folio$}}%
     \box\title_box
     \vskip\aboveauthors_skip
     \vbox{\leftskip=3em plus 1fill \rightskip=3em plus 1fill
@@ -364,15 +368,14 @@
 \def\abstract{\bgroup\petit
     \centerline{\bf Abstract}
     \advance\leftskip by \abs_inset
-    \advance\hsize by -\abs_inset
-    \beginTextNum}
+    \advance\hsize by -\abs_inset}
 
-\def\endAbstract{\endTextNum\egroup\vskip\belowabs_skip}
+\def\endAbstract{\par\egroup\vskip\belowabs_skip}
 
 \def\keywords#1{\vbox{
     \advance\leftskip by \abs_inset
-    \advance\rightskip by \abs_inset
-    \petit\noindent
+    \advance\hsize by -\abs_inset
+    \petit\beginPar\noindent
     {\sl Keywords:} #1\par}
     \vskip\belowkw_skip}
 
@@ -433,17 +436,26 @@
 
 % Verbatim mode - terminated by U+00A4 (CURRENCY SIGN)
 
-
 \def\uncatcode_specials{\def\do##1{\catcode`##1=12 }\dospecials}
 {\obeyspaces\global\let =\ }
 
 \def\numberedVerbatim{\par\begingroup\tt
   \verb_lno=0
   \obeylines\uncatcode_specials\obeyspaces
-  \everypar{\advance\verb_lno by1 \llap{\sevenrm\the\verb_lno\ \ }}}
+  \everypar={\incr\verb_lno \ifproof_mode \incr\text_lno\fi
+    \llap{\ifproof_mode
+        \hbox{\petit$\number\text_lno.$}\hskip.7em\fi
+      \hbox to\parindent{%
+        \hfil{\ix_i\number\verb_lno\ \ }}}}}
 
 \def\verbatim{\par\medskip\begingroup\tt\parindent=0pt
-  \obeylines\uncatcode_specials\obeyspaces}
+  \obeylines\uncatcode_specials\obeyspaces
+  \ifproof_mode
+    \everypar={\global\incr\text_lno
+      \hbox to-\leftskip{\hskip-\leftskip\hss
+          \hbox{\petit$\number\text_lno.$}%
+          \hskip.7em}}
+  \fi}
 
 \def\endVerbatim{\endgroup\medbreak}
 
@@ -463,53 +475,52 @@
 \def\compactList{\compact_listtrue}
 
 \def\begin_list{\par\goodbreak\vskip\list_skip\bgroup
-    \advance\leftskip by \item_indent \first_itemtrue}
+    \advance\leftskip by \item_indent \first_itemtrue
+    \itemCount=0}
 
-\def\endList{\endTextNum\egroup\vskip\list_skip}
+\def\endList{\par\egroup\vskip\list_skip}
 
 \def\list_item{\iffirst_item \par\first_itemfalse
-  \else \endTextNum\goodbreak
-    \ifcompact_list\vskip-\parskip\fi
+    \else \par\goodbreak \ifcompact_list\vskip-\parskip\fi
   \fi
-    \beginTextNum
-    \noindent
-    \llap{\hbox to \item_indent{\hss\copy\list_label\kern2mm}}%
-    \ignorespaces}
+  \incr\itemCount
+  \beginPar
+  \noindent
+  \llap{\hbox to \item_indent{\hss\list_label\kern2mm}}%
+  \ignorespaces}
 
-\def\ASCII_item#1{\incr\itemCount
-    \count_one=\itemCount \advance\count_one by #1
-    \setbox\list_label=\hbox{\char\number\count_one.}%
-    \list_item}
+\def\ASCII_item#1{%
+  \count_one=\itemCount \advance\count_one by #1
+  \def\list_label{\char\number\count_one.}\list_item}
 
 \def\unorderedList{\handle_option{unorderedList_}}
 \def\unorderedList_[#1]{\begin_list
     \def\pris{#1}%
-    \setbox\list_label=\hbox{\ifx\pris\empty $\bullet$ \else\pris\fi}
+    \edef\list_label{\ifx\pris\empty •\else\pris\fi}
     \let\item=\list_item}
 
 \def\orderedList{\handle_option{orderedList_}}
-\def\orderedList_[#1]{\itemCount=0
+\def\orderedList_[#1]{\begin_list
     \def\pris{#1}\ifx\pris\empty \arabic_list
         \else \macro{#1_list}\fi}
 
-\def\arabic_item{\incr\itemCount
-    \setbox\list_label=\hbox{\number\itemCount.}\list_item}
-\def\arabic_list{\begin_list\let\item=\arabic_item}
+\def\arabic_item{
+  \def\list_label{\number\itemCount.}\list_item}
+\def\arabic_list{\let\item=\arabic_item}
 
-\def\roman_item{\incr\itemCount
-    \setbox\list_label=\hbox{(\romannumeral\itemCount)}\list_item}
-\def\roman_list{\begin_list\let\item=\roman_item}
+\def\roman_item{%
+  \def\list_label{(\romannumeral\itemCount)}\list_item}
+\def\roman_list{\let\item=\roman_item}
 
-\def\ROMAN_item{\incr\itemCount
-    \setbox\list_label=\hbox{(\uppercase{\romannumeral\itemCount})}%
-    \list_item}
-\def\ROMAN_list{\begin_list\let\item=\ROMAN_item}
+\def\ROMAN_item{%
+  \def\list_label{(\uppercase{\romannumeral\itemCount})}\list_item}
+\def\ROMAN_list{\let\item=\ROMAN_item}
 
 \def\alpha_item{\ASCII_item{96}}
-\def\alpha_list{\begin_list\let\item=\alpha_item}
+\def\alpha_list{\let\item=\alpha_item}
 
-\def\alpha_item{\ASCII_item{64}}
-\def\ALPHA_list{\begin_list\let\item=\ALPHA_item}
+\def\ALPHA_item{\ASCII_item{64}}
+\def\ALPHA_list{\let\item=\ALPHA_item}
 
 \def\definitionList{\par\vskip\list_skip\bgroup
     \parindent=0pt \parskip=2pt plus1pt \first_itemtrue
@@ -522,7 +533,7 @@
 
 \let\bibList=\begin_list
 
-\def\bibItem#1{\setbox\list_label=\hbox{[#1]}\list_item}
+\def\bibItem#1{\def\list_label{[#1]}\list_item}
 
 % Footnotes
 \skip\footins=14.5pt plus 2pt minus 4pt % added when footnote is present
@@ -559,23 +570,25 @@
 
 % Line numbering
 \text_lno=0
-\def\beginTextNum{\par\begingroup
-  \def\par{\ifhmode\complete_par\fi}%
-  \setbox\para_box=\vbox\bgroup}
-\def\endTextNum{\par\egroup\endgroup}
-\def\complete_par{\endgraf \global\advance\text_lno by \prevgraf
-  \count_one=\text_lno \setbox0=\hbox{}
-  \loop \unskip \unpenalty \setbox2=\lastbox
-    \ifhbox2 \global\setbox0=
+\def\beginPar{\ifproof_mode \begingroup 
+    \def\par{\ifhmode\complete_par\fi}
+    \setbox\para_box=\vbox\bgroup
+  \fi}
+
+\def\complete_par{\endgraf
+    \global\advance\text_lno by \prevgraf
+    \count_one=\text_lno \setbox\box_one=\hbox{}
+    \loop \unskip \unpenalty \setbox2=\lastbox
+      \ifhbox2 \global\setbox\box_one=
         \hbox{\hbox to-\leftskip{\hskip-\leftskip\hss
-                                 $\scriptstyle\number\count_one.$%
-                                 \hskip.7em}%
-              \box2\penalty0\unhbox0}
-%      \showbox0
-      \decr\count_one
-  \repeat
-  \egroup \noindent\unhbox0\unpenalty \endgraf
-  \setbox\para_box=\vbox\bgroup}
+                 \hbox{\petit$\number\count_one.$}%
+                 \hskip.7em}%
+              \box2\penalty0\unhbox\box_one}
+        \decr\count_one
+    \repeat
+    \egroup
+    \noindent\unhbox\box_one\unpenalty
+    \endgraf \endgroup}
 
 % Final touches
 \catcode`\_=8 % make _ again subscript symbol

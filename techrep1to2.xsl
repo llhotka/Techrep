@@ -2,6 +2,8 @@
 
 <!-- Program name: techrep1to2.xsl
 
+© CESNET, 2007
+
 Translates the original techrep v1 to version 2.
 
 -->
@@ -67,24 +69,63 @@ Translates the original techrep v1 to version 2.
     </xsl:choose>
   </xsl:template>
 
-  <xsl:template match="p|pre|blockquote|ol|ul|dl|figure|table"
-		mode="prec-siblings">
-    <xsl:value-of select="preceding-siblings::*"/>
+  <xsl:template name="handle-hybrid">
+    <!-- Loosely based on recipe 5.3 in XSLT Cookbook -->
+    <xsl:choose>
+      <xsl:when test="p|pre|blockquote|ol|ul|dl|figure|table">
+	<xsl:apply-templates
+	    select="p|pre|blockquote|ol|ul|dl|figure|table"
+	    mode="hybrid"/>
+	<xsl:variable
+	    name="dernier"
+	    select="(p|pre|blockquote|ol|ul|dl|figure|table)[last()]"/>
+	<xsl:variable name="fin"
+		      select="$dernier/following-sibling::node()"/>
+	<xsl:if test="$fin">
+	  <xsl:element name="p">
+	    <xsl:apply-templates select="$fin"/>
+	  </xsl:element>
+	</xsl:if>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:apply-templates/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
   <xsl:template match="p|pre|blockquote|ol|ul|dl|figure|table"
-		mode="foll-siblings">
-    <xsl:value-of select="following-siblings::*"/>
-  </xsl:template>
-
-  <xsl:template name="rectify-hybrid">
-    <xsl:param name="sentinel"/>
-    <xsl:if test="
-      <xsl:element name="p">
-	<xsl:apply-templates select="$nodes"/>
-      </xsl:element>
-      <xsl:apply-templates select="$senti
-    </xsl:if>
+		mode="hybrid">
+    <xsl:variable name="prev"
+		  select="preceding-sibling::*[self::p or
+			  self::pre
+			  or self::blockquote
+			  or self::ol
+			  or self::ul
+			  or self::dl
+			  or self::figure
+			  or self::table][last()]"/>
+    <xsl:choose>
+      <xsl:when test="$prev">
+	<xsl:variable name="inter"
+		      select="count($prev/following-sibling::node())-
+			      count(following-sibling::node())"/>
+	<xsl:if test="$inter &gt; 1">
+	  <xsl:element name="p">
+	    <xsl:apply-templates
+		select="$prev/following-sibling::node()
+			[position() &lt; $inter]"/>
+	  </xsl:element>
+	</xsl:if>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:if test="preceding-sibling::node()">
+	  <xsl:element name="p">
+	    <xsl:apply-templates select="preceding-sibling::node()"/>
+	  </xsl:element>
+	</xsl:if>
+      </xsl:otherwise>
+    </xsl:choose>
+    <xsl:apply-templates select="."/>
   </xsl:template>
 
   <xsl:template match="@id">
@@ -203,7 +244,7 @@ Translates the original techrep v1 to version 2.
   <xsl:template match="dd|li">
     <xsl:element name="{local-name()}">
       <xsl:apply-templates select="@id"/>
-      <xsl:apply-templates/>
+      <xsl:call-template name="handle-hybrid"/>
     </xsl:element>
   </xsl:template>
 
