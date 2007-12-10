@@ -13,6 +13,7 @@
 \newcount\foot_count % counter for footnotes
 \newcount\tab_count % counter for tables
 \newcount\verb_lno % line counter in verbatim listings
+\newcount\ruler_count % counter for proof mode ruler numbers
 \newdimen\dimen_one % temporary dimension
 \newdimen\abs_inset % left and right indentation of abstract
 \newdimen\item_indent % amount of item indentation
@@ -38,6 +39,7 @@
 \newif\iffirst_item % first item of the list
 \newif\ifcompact_list % switch for modified handling of short items
 \newbox\box_one % temporary box
+\newbox\page_box % contains entire page (in output routines)
 \newbox\title_box % box for report title
 \newbox\auth_box % box for authors
 \newbox\para_box % box for entire paragraphs (used in line-numbering mode)
@@ -293,6 +295,7 @@
 \newinsert\margin_ins % marginal insertions (used for index entries)
 \dimen\margin_ins=\maxdimen
 \count\margin_ins=0 \skip\margin_ins=0pt % marginal inserts take up no space
+\ruler_count=0
 
 \def\pagecontents{\ifvoid\margin_ins\else % marginal info is present
     \rightline{\rlap{\kern1pc\vbox to\z@{\box\margin_ins \vss}}}\fi
@@ -306,7 +309,22 @@
 \def\one_page_out{%
     \iftitle_page \info_upfalse \info_downtrue \global\title_pagefalse
     \else \info_uptrue \info_downfalse\fi
-    \plainoutput}
+    \proof_output}
+\def\make_tick{\global\incr\ruler_count
+    \hbox to1cm{\special{color push Blue}%
+      \hfil\ix_rm\number\ruler_count \special{color pop}}}
+\def\ruler_box{\vbox{\dimen_one=0pt
+    \make_tick
+    \loop\ifdim\dimen_one<\ht\page_box
+      \advance\dimen_one by \baselineskip
+      \make_tick\repeat}}
+\def\proof_output{\setbox\page_box=\pagebody
+  \shipout\vbox{\makeheadline
+    \hbox to\hsize{\hss\ruler_box
+      \kern1em \box\page_box}%
+    \makefootline}%
+  \advancepageno
+  \ifnum\outputpenalty>-20000 \else\dosupereject\fi}
 \output={\one_page_out}
 
 % Head- and footline
@@ -542,7 +560,7 @@
 
 \def\image{\handle_option{image_}}
 \def\image_[#1]#2{\def\pris{#1}%
-    \centerline{\XeTeXpicfile "#2"\ifx\pris\empty\else
+    \centerline{\XeTeXpicfile "#2" \ifx\pris\empty\else
         width #1\hsize\fi}}
 
 \def\caption{\medskip\vbox\bgroup\raggedright
