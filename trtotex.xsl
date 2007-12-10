@@ -13,9 +13,6 @@ technical reports.
 		xmlns:tr="http://cesnet.cz/ns/techrep/base/2.0"
                 version="1.0">
 
-  <!-- This parameter selects the proof of final mode -->
-  <xsl:param name="proof-mode" select="1"/>
-
   <!-- This parameter controls whether tilde is used as no-break space -->
   <xsl:param name="nbsp-tilde" select="0"/>
 
@@ -229,9 +226,6 @@ technical reports.
 
   <xsl:template match="tr:report">
     <xsl:text>\input techrep</xsl:text>
-    <xsl:if test="$proof-mode=0">
-      <xsl:value-of select="concat($NL,'\finalMode')"/>
-    </xsl:if>
     <xsl:value-of select="$NLNL"/>
     <xsl:value-of select="concat('\report',$NL)"/>
     <xsl:apply-templates select="tr:title"/>
@@ -283,11 +277,6 @@ technical reports.
   <xsl:template match="tr:abstract">
     <xsl:text>\abstract</xsl:text>
     <xsl:value-of select="$NL"/>
-    <xsl:if test="$proof-mode>0 and
-		  not(tr:p|tr:pre|tr:blockquote|tr:ol|tr:ul
-		  |tr:dl|tr:figure|tr:table)">
-      <xsl:value-of select="concat('\beginPar', $NL)"/>
-    </xsl:if>
     <xsl:apply-templates/>
     <xsl:text>\endAbstract</xsl:text>
     <xsl:value-of select="$NLNL"/>
@@ -375,11 +364,6 @@ technical reports.
   </xsl:template>
 
   <xsl:template match="tr:p">
-    <xsl:if test="$proof-mode>0">
-      <xsl:if test="not(parent::tr:li) or position()>1">
-	<xsl:value-of select="concat('\beginPar', $NL)"/>
-      </xsl:if>
-    </xsl:if>
     <xsl:if test="name(preceding-sibling::*[1])='h1' or
 		  name(preceding-sibling::*[1])='h2' or
 		  name(preceding-sibling::*[1])='h3' or

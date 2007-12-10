@@ -12,7 +12,6 @@
 \newcount\itemCount % counter for list items
 \newcount\foot_count % counter for footnotes
 \newcount\tab_count % counter for tables
-\newcount\text_lno % line counter for text paragraphs
 \newcount\verb_lno % line counter in verbatim listings
 \newdimen\dimen_one % temporary dimension
 \newdimen\abs_inset % left and right indentation of abstract
@@ -44,6 +43,7 @@
 \newbox\para_box % box for entire paragraphs (used in line-numbering mode)
 \newbox\figure % box for figures
 \newbox\vlinebox % vertical line accross the height of a line
+\newbox\foot_box % collects footnotes in proof mode
 \newinsert\margin_ins % marginal insertions (index entries)
 \newwrite\inx % index entries
 \newwrite\toc % table of contents
@@ -338,7 +338,10 @@
     \let\short_title=\empty
     \title_pagetrue}
 
-\def\endReport{\vfill\supereject\end}
+\def\endReport{\ifvoid\foot_box\else
+    \section{}{Footnotes}%
+    \box\foot_box\fi
+  \vfill\supereject\end}
 
 \def\title#1{\titl@={#1}%
     \setbox\title_box=\vbox{%
@@ -375,7 +378,7 @@
 \def\keywords#1{\vbox{
     \advance\leftskip by \abs_inset
     \advance\hsize by -\abs_inset
-    \petit\beginPar\noindent
+    \petit\noindent
     {\sl Keywords:} #1\par}
     \vskip\belowkw_skip}
 
@@ -442,20 +445,12 @@
 \def\numberedVerbatim{\par\begingroup\tt
   \verb_lno=0
   \obeylines\uncatcode_specials\obeyspaces
-  \everypar={\incr\verb_lno \ifproof_mode \incr\text_lno\fi
-    \llap{\ifproof_mode
-        \hbox{\petit$\number\text_lno.$}\hskip.7em\fi
-      \hbox to\parindent{%
+  \everypar={\incr\verb_lno
+    \llap{\hbox to\parindent{%
         \hfil{\ix_i\number\verb_lno\ \ }}}}}
 
 \def\verbatim{\par\medskip\begingroup\tt\parindent=0pt
-  \obeylines\uncatcode_specials\obeyspaces
-  \ifproof_mode
-    \everypar={\global\incr\text_lno
-      \hbox to-\leftskip{\hskip-\leftskip\hss
-          \hbox{\petit$\number\text_lno.$}%
-          \hskip.7em}}
-  \fi}
+  \obeylines\uncatcode_specials\obeyspaces}
 
 \def\endVerbatim{\endgroup\medbreak}
 
@@ -484,7 +479,6 @@
     \else \par\goodbreak \ifcompact_list\vskip-\parskip\fi
   \fi
   \incr\itemCount
-  \beginPar
   \noindent
   \llap{\hbox to \item_indent{\hss\list_label\kern2mm}}%
   \ignorespaces}
@@ -538,8 +532,9 @@
 % Footnotes
 \skip\footins=14.5pt plus 2pt minus 4pt % added when footnote is present
 \dimen\footins=30pc % maximum footnotes per page
+
 \def\footNote{\global\incr\foot_count
-    \footnote{${}^{\number\foot_count}$}}
+  \footnote{${}^{\number\foot_count}$}}
 
 % Figures and tables
 
@@ -567,28 +562,6 @@
 \def\table#1{\par\midinsert\vskip5mm plus 6pt minus3pt
     \def\cap_label{Table~#1}}
 \def\endTable{\medskip\vskip0pt plus 6pt minus3pt\endinsert}
-
-% Line numbering
-\text_lno=0
-\def\beginPar{\ifproof_mode \begingroup 
-    \def\par{\ifhmode\complete_par\fi}
-    \setbox\para_box=\vbox\bgroup
-  \fi}
-
-\def\complete_par{\endgraf
-    \global\advance\text_lno by \prevgraf
-    \count_one=\text_lno \setbox\box_one=\hbox{}
-    \loop \unskip \unpenalty \setbox2=\lastbox
-      \ifhbox2 \global\setbox\box_one=
-        \hbox{\hbox to-\leftskip{\hskip-\leftskip\hss
-                 \hbox{\petit$\number\count_one.$}%
-                 \hskip.7em}%
-              \box2\penalty0\unhbox\box_one}
-        \decr\count_one
-    \repeat
-    \egroup
-    \noindent\unhbox\box_one\unpenalty
-    \endgraf \endgroup}
 
 % Final touches
 \catcode`\_=8 % make _ again subscript symbol

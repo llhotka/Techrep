@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<!-- Program name: techrep1to2.xsl
+<!-- Program name: tr1to2.xsl
 
 © CESNET, 2007
 
