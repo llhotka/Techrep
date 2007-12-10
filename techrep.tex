@@ -43,7 +43,6 @@
 \newbox\para_box % box for entire paragraphs (used in line-numbering mode)
 \newbox\figure % box for figures
 \newbox\vlinebox % vertical line accross the height of a line
-\newbox\foot_box % collects footnotes in proof mode
 \newinsert\margin_ins % marginal insertions (index entries)
 \newwrite\inx % index entries
 \newwrite\toc % table of contents
@@ -338,10 +337,7 @@
     \let\short_title=\empty
     \title_pagetrue}
 
-\def\endReport{\ifvoid\foot_box\else
-    \section{}{Footnotes}%
-    \box\foot_box\fi
-  \vfill\supereject\end}
+\def\endReport{\vfill\supereject\end}
 
 \def\title#1{\titl@={#1}%
     \setbox\title_box=\vbox{%
