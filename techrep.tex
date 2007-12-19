@@ -309,15 +309,21 @@
 \def\one_page_out{%
     \iftitle_page \info_upfalse \info_downtrue \global\title_pagefalse
     \else \info_uptrue \info_downfalse\fi
-    \proof_output}
+    \ifproof_mode\proof_output\else\plainoutput\fi}
+\def\tick_rule{\hrule width1mm}
 \def\make_tick{\global\incr\ruler_count
-    \hbox to1cm{\special{color push Blue}%
-      \hfil\ix_rm\number\ruler_count \special{color pop}}}
-\def\ruler_box{\vbox{\dimen_one=0pt
-    \make_tick
-    \loop\ifdim\dimen_one<\ht\page_box
-      \advance\dimen_one by \baselineskip
-      \make_tick\repeat}}
+  \vbox to15pt{\tick_rule
+    \leaders\vrule\vfil
+    \hbox to1cm{\ix_rm\number\ruler_count \hfil}
+    \leaders\vrule\vfil}}
+\def\ruler_box{\vbox{\special{color push Blue}\offinterlineskip
+  \dimen_one=0pt
+  \make_tick
+  \loop\ifdim\dimen_one<\ht\page_box
+    \advance\dimen_one by 15pt
+    \make_tick\repeat
+  \tick_rule
+  \special{color pop}}}
 \def\proof_output{\setbox\page_box=\pagebody
   \shipout\vbox{\makeheadline
     \hbox to\hsize{\hss\ruler_box
