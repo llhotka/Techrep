@@ -489,8 +489,12 @@
 
 \def\compactList{\compact_listtrue}
 
-\def\begin_list{\par\goodbreak\vskip\list_skip\bgroup
-    \advance\leftskip by \item_indent \first_itemtrue
+\def\begin_list{\handle_option{begin_list_}}
+\def\begin_list_[#1]{\par\goodbreak
+    \def\pris{#1}
+    \vskip\list_skip\bgroup
+    \advance\leftskip by \ifx\pris\empty \item_indent \else\pris\fi
+    \first_itemtrue
     \itemCount=0}
 
 \def\endList{\par\egroup\vskip\list_skip}
@@ -545,7 +549,8 @@
 
 \def\description{\indent\ignorespaces}
 
-\let\bibList=\begin_list
+\def\bibList{\setbox\box_one\hbox{[99] }%
+  \begin_list[\wd\box_one]}
 
 \def\bibItem#1{\def\list_label{[#1]}\list_item}
 
