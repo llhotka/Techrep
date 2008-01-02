@@ -226,7 +226,14 @@ technical reports.
 
   <xsl:template match="tr:report">
     <xsl:text>\input techrep</xsl:text>
-    <xsl:value-of select="$NLNL"/>
+    <xsl:value-of select="$NL"/>
+    <xsl:if test="@xml:lang">
+      <xsl:text>\setlang</xsl:text>
+      <xsl:call-template name="TeXgroup">
+	<xsl:with-param name="arg" select="@xml:lang"/>
+      </xsl:call-template>
+      <xsl:value-of select="$NL"/>
+    </xsl:if>
     <xsl:value-of select="concat('\report',$NL)"/>
     <xsl:apply-templates select="tr:title"/>
     <xsl:apply-templates select="tr:author"/>
@@ -660,9 +667,18 @@ technical reports.
   </xsl:template>
 
   <xsl:template match="tr:q">
-    <xsl:text>``</xsl:text>
-    <xsl:apply-templates/>
-    <xsl:text>''</xsl:text>
+    <xsl:choose>
+      <xsl:when test="ancestor-or-self::*[@xml:lang='cs']">
+	<xsl:text>„</xsl:text>
+	<xsl:apply-templates/>
+	<xsl:text>“</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:text>“</xsl:text>
+	<xsl:apply-templates/>
+	<xsl:text>”</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
   <xsl:template match="tr:a">
@@ -750,7 +766,6 @@ technical reports.
 	<xsl:apply-templates select="." mode="number"/>
       </xsl:with-param>
     </xsl:call-template>
-    <xsl:value-of select="$NL"/>
     <xsl:apply-templates/>
   </xsl:template>
 

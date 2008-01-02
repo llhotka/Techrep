@@ -62,7 +62,6 @@
 \vsize=690pt
 \parindent=6mm
 
-
 % Macros for general use
 \def\macro#1{\csname#1\endcsname}
 \def\defMacro#1{\expandafter\def\csname#1\endcsname}
@@ -558,8 +557,15 @@
 \skip\footins=14.5pt plus 2pt minus 4pt % added when footnote is present
 \dimen\footins=30pc % maximum footnotes per page
 
+\def\foot_mark{${}^{\number\foot_count}$}
+
 \def\footNote{\global\incr\foot_count
-  \footnote{${}^{\number\foot_count}$}}
+  \let\@sf\empty
+  \ifhmode\edef\@sf{\spacefactor\the\spacefactor}\/\fi
+  \foot_mark\@sf\vfootnote{\foot_mark}}  
+
+\def\fo@t{\petit\ifcat\bgroup\noexpand\next \let\next\f@@t
+  \else\let\next\f@t\fi \next}
 
 % Figures and tables
 
