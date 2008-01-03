@@ -43,7 +43,7 @@
 \newbox\title_box % box for report title
 \newbox\auth_box % box for authors
 \newbox\para_box % box for entire paragraphs (used in line-numbering mode)
-\newbox\figure % box for figures
+\newbox\fig_box % box for figures
 \newbox\vlinebox % vertical line accross the height of a line
 \newinsert\margin_ins % marginal insertions (index entries)
 \newwrite\inx % index entries
@@ -577,8 +577,18 @@
 
 \def\image{\handle_option{image_}}
 \def\image_[#1]#2{\def\pris{#1}%
-    \centerline{\XeTeXpicfile "#2" \ifx\pris\empty\else
-        width #1\hsize\fi}}
+  \ifx\pris\empty
+    \setbox\fig_box=\hbox{\XeTeXpicfile "#2"\relax}%
+    \ifdim\wd\fig_box>\hsize
+      \centerline{\XeTeXpicfile "#2" width \hsize}%
+    \else\ifdim\ht\fig_box>\vsize
+      \centerline{\XeTeXpicfile "#2" height \vsize}%
+    \else
+      \centerline{\unhbox\fig_box}%
+    \fi\fi
+  \else
+    \centerline{\XeTeXpicfile "#2" width #1\hsize}%
+  \fi}
 
 \def\caption{\medskip\vbox\bgroup\raggedright
     \advance\leftskip by 2\parindent
