@@ -586,13 +586,11 @@
     \setbox\fig_box=\hbox{\pic_cs "#3"\relax}%
     \ifdim\wd\fig_box>\hsize
       \centerline{\pic_cs "#3" width \hsize}%
-    \else\ifdim\ht\fig_box>\vsize
-      \centerline{\pic_cs "#3" height \vsize}%
     \else
       \centerline{\unhbox\fig_box}%
-    \fi\fi
+    \fi
   \else
-    \centerline{\pic_cs "#3" width #1\hsize}%
+    \centerline{\pic_cs "#3" scaled #1}%
   \fi}
 
 \def\caption{\medskip\vbox\bgroup\raggedright
