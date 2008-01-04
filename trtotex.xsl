@@ -496,10 +496,11 @@ technical reports.
       <xsl:text> to </xsl:text>
       <xsl:value-of select="$figwidth"/>
     </xsl:if>
-    <xsl:text>{%\epsfxsize=</xsl:text>
-    <xsl:value-of select="concat($figwidth,$NL)"/>
-    <xsl:apply-templates select="tr:image"/>
-    <xsl:text>}%</xsl:text>
+    <xsl:call-template name="TeXgroup">
+      <xsl:with-param name="arg">
+	<xsl:apply-templates select="tr:image"/>
+      </xsl:with-param>
+    </xsl:call-template>
     <xsl:value-of select="$NL"/>
     <xsl:apply-templates select="tr:caption"/>
     <xsl:text>\endFigure</xsl:text>
@@ -513,21 +514,29 @@ technical reports.
 	<xsl:with-param name="arg" select="@label"/>
       </xsl:call-template>
     </xsl:if>
-    <xsl:call-template name="TeXgroup">
-      <xsl:with-param name="arg">
-	<xsl:choose>
-	  <xsl:when test="tr:source[@format='EPS']">
-	    <xsl:value-of select="tr:source[@format='EPS']"/>
-	  </xsl:when>
-	  <xsl:when test="tr:source[contains(.,'.eps')]">
-	    <xsl:value-of select="tr:source[contains(.,'.eps')]"/>
-	  </xsl:when>
-	  <xsl:otherwise>
-	    <xsl:value-of select="tr:source[1]"/>
-	  </xsl:otherwise>
-	</xsl:choose>
-      </xsl:with-param>
-    </xsl:call-template>
+    <xsl:variable name="pdf-source"
+		  select="tr:source[@format='PDF' or contains(.,'.pdf')]"/>
+    <xsl:choose>
+      <xsl:when test="$pdf-source">
+	<xsl:call-template name="TeXgroup">
+	  <xsl:with-param name="arg">PDF</xsl:with-param>
+	</xsl:call-template>
+	<xsl:call-template name="TeXgroup">
+	  <xsl:with-param name="arg"
+			  select="$pdf-source"/>
+	</xsl:call-template>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:call-template name="TeXgroup">
+	  <xsl:with-param name="arg" select="tr:source[1]/@format"/>
+	</xsl:call-template>
+	<xsl:call-template name="TeXgroup">
+	  <xsl:with-param name="arg"
+			  select="tr:source[1]"/>
+	</xsl:call-template>
+      </xsl:otherwise>
+    </xsl:choose>
+    <xsl:value-of select="concat('%',$NL)"/>
     <xsl:if test="following-sibling::tr:image">
       <xsl:text>\hfil</xsl:text>
     </xsl:if>

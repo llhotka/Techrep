@@ -568,7 +568,7 @@
   \else\let\next\f@t\fi \next}
 
 % Figures and tables
-
+\def\pdf_fmt{PDF}
 \cap_skip=12pt plus1pt minus2pt
 
 \def\figure#1{\par\midinsert\vskip5mm plus 6pt minus3pt
@@ -576,18 +576,24 @@
 \def\endFigure{\vskip0pt plus 6pt minus3pt\endinsert}
 
 \def\image{\handle_option{image_}}
-\def\image_[#1]#2{\def\pris{#1}%
+\def\image_[#1]#2#3{\def\pris{#1}%
+  \def\pic_fmt{#2}%
+  \ifx\pic_fmt\pdf_fmt
+    \let\pic_cs=\XeTeXpdffile
+  \else
+    \let\pic_cs=\XeTeXpicfile
+  \fi
   \ifx\pris\empty
-    \setbox\fig_box=\hbox{\XeTeXpicfile "#2"\relax}%
+    \setbox\fig_box=\hbox{\pic_cs "#3"\relax}%
     \ifdim\wd\fig_box>\hsize
-      \centerline{\XeTeXpicfile "#2" width \hsize}%
+      \centerline{\pic_cs "#3" width \hsize}%
     \else\ifdim\ht\fig_box>\vsize
-      \centerline{\XeTeXpicfile "#2" height \vsize}%
+      \centerline{\pic_cs "#3" height \vsize}%
     \else
       \centerline{\unhbox\fig_box}%
     \fi\fi
   \else
-    \centerline{\XeTeXpicfile "#2" width #1\hsize}%
+    \centerline{\pic_cs "#3" width #1\hsize}%
   \fi}
 
 \def\caption{\medskip\vbox\bgroup\raggedright
