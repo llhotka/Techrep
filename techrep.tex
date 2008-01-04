@@ -17,6 +17,8 @@
 \newdimen\dimen_one % temporary dimension
 \newdimen\abs_inset % left and right indentation of abstract
 \newdimen\item_indent % amount of item indentation
+\newdimen\fig_left % remaining height of withheld figure insertions
+\newdimen\tab_left % remaining height of withheld table insertions
 \newskip\belowabs_skip % below abstract
 \newskip\belowkw_skip % below keywords
 \newskip\aboveauthors_skip % between the title and authors
@@ -38,6 +40,7 @@
 \newif\ifinfo_down % controls whether footline is set
 \newif\iffirst_item % first item of the list
 \newif\ifcompact_list % switch for modified handling of short items
+\newif\ifins_hold % signals whether to put insertion on hold
 \newbox\box_one % temporary box
 \newbox\page_box % contains entire page (in output routines)
 \newbox\title_box % box for report title
@@ -46,6 +49,8 @@
 \newbox\fig_box % box for figures
 \newbox\vlinebox % vertical line accross the height of a line
 \newinsert\margin_ins % marginal insertions (index entries)
+\newinsert\fig_ins % figure insertions
+\newinsert\tab_ins % table insertions
 \newwrite\inx % index entries
 \newwrite\toc % table of contents
 \newwrite\xrefs % forward cross-references
@@ -65,7 +70,7 @@
 % Macros for general use
 \def\macro#1{\csname#1\endcsname}
 \def\defMacro#1{\expandafter\def\csname#1\endcsname}
-\def\_let#1#2{\expandafter\let\expandafter#1\macro{#2}}
+\def\_let#1#2{\expandafter\let\expandafter#1\csname #2\endcsname}
 \def\xdef_macro#1{\expandafter\xdef\csname#1\endcsname}
 \def\incr#1{\advance#1 by 1}
 \def\decr#1{\advance#1 by -1}
@@ -291,14 +296,18 @@
 \def\finalMode{\proof_modefalse}
 
 % \output routines
-\newinsert\margin_ins % marginal insertions (used for index entries)
 \dimen\margin_ins=\maxdimen
 \count\margin_ins=0 \skip\margin_ins=0pt % marginal inserts take up no space
 \ruler_count=0
 
 \def\pagecontents{\ifvoid\margin_ins\else % marginal info is present
     \rightline{\rlap{\kern1pc\vbox to\z@{\box\margin_ins \vss}}}\fi
-  \ifvoid\topins\else\unvbox\topins\fi
+  \ifvoid\fig_ins
+  \else
+    \global\advance\fig_left by -\ht\fig_ins
+    \global\advance\fig_left by -\dp\fig_ins
+    \unvbox\fig_ins
+  \fi
   \dimen@=\dp\@cclv \unvbox\@cclv % open up \box255
   \ifvoid\footins\else % footnote info is present
     \vskip\skip\footins
@@ -571,9 +580,40 @@
 \def\pdf_fmt{PDF}
 \cap_skip=12pt plus1pt minus2pt
 
-\def\figure#1{\par\midinsert\vskip5mm plus 6pt minus3pt
-    \def\cap_label{Figure~#1}}
-\def\endFigure{\vskip0pt plus 6pt minus3pt\endinsert}
+\fig_left=0pt
+\skip\fig_ins=0pt
+\count\fig_ins=1000
+\dimen\fig_ins=\maxdimen
+\def\add_insert#1{\par\begingroup % #1 specifies insertion class
+  \_let\_ins{#1_ins} \_let\_left{#1_left} \_let\_box{#1_box}
+  \setbox\_box=\vbox\bgroup}
+\def\end_insert{\egroup
+  \ifdim\_left>0pt \ins_holdtrue
+  \else
+    \dimen_one=\ht\_box
+    \advance\dimen_one by \dp\_box
+    \advance\dimen_one by \bigskipamount
+    \advance\dimen_one by \pagetotal
+    \advance\dimen_one by -\pageshrink
+    \advance\dimen_one by -0.333\baselineskip % shrinkability of bigskip
+    \ifdim\dimen_one>\pagegoal \ins_holdtrue \else \ins_holdfalse \fi
+  \fi
+  \ifins_hold
+    \global\advance\_left by \ht\_box
+    \global\advance\_left by \dp\_box
+    \global\advance\_left by \bigskipamount
+    \insert\_ins{\penalty100
+      \splittopskip=0pt \splitmaxdepth=\maxdimen
+      \floatingpenalty=0
+      \box\_box
+      \nobreak\bigskip}
+  \else % insertion goes to the current page
+    \bigskip\box\_box\bigbreak
+  \fi\endgroup}
+
+\def\figure#1{\showthe\fig_left\def\cap_label{Figure~#1}%
+  \add_insert{fig}}
+\let\endFigure=\end_insert
 
 \def\image{\handle_option{image_}}
 \def\image_[#1]#2#3{\def\pris{#1}%
@@ -584,11 +624,11 @@
     \let\pic_cs=\XeTeXpicfile
   \fi
   \ifx\pris\empty
-    \setbox\fig_box=\hbox{\pic_cs "#3"\relax}%
-    \ifdim\wd\fig_box>\hsize
+    \setbox\box_one=\hbox{\pic_cs "#3"\relax}%
+    \ifdim\wd\box_one>\hsize
       \centerline{\pic_cs "#3" width \hsize}%
     \else
-      \centerline{\unhbox\fig_box}%
+      \centerline{\unhbox\box_one}%
     \fi
   \else
     \centerline{\pic_cs "#3" scaled #1}%
