@@ -65,6 +65,7 @@
 % Macros for general use
 \def\macro#1{\csname#1\endcsname}
 \def\defMacro#1{\expandafter\def\csname#1\endcsname}
+\def\_let#1#2{\expandafter\let\expandafter#1\macro{#2}}
 \def\xdef_macro#1{\expandafter\xdef\csname#1\endcsname}
 \def\incr#1{\advance#1 by 1}
 \def\decr#1{\advance#1 by -1}
