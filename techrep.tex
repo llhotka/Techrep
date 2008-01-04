@@ -374,12 +374,17 @@
 \belowkw_skip=30pt plus 15pt minus6pt
 \abs_inset=3em
 
+\let\rep_number=\empty \let\rec_date=\empty
+
 \def\report{%
     \foot_count=0 \auth_count=0
     \let\short_title=\empty
     \title_pagetrue}
 
 \def\endReport{\vfill\end}
+
+\def\repnumber#1{\def\rep_number{#1}}
+\def\recdate#1{\def\rec_date{#1}}
 
 \def\title#1{\titl@={#1}%
     \setbox\title_box=\vbox{%
@@ -399,15 +404,25 @@
         \first_author~et~al.\else \the\@uthors\fi}}%
     \rightRunHead={{\petit\ifx\short_title\empty
         \it\the\titl@\else\short_title\fi\kern2em$\x_i\folio$}}%
+    \ifx\rep_number\empty\else
+      \vbox{\fourteenPoint
+      \centerline{\bf CESNET Technical Report~\rep_number}
+      \medskip}%
+    \fi
     \box\title_box
     \vskip\aboveauthors_skip
     \vbox{\leftskip=3em plus 1fill \rightskip=3em plus 1fill
     \parfillskip=0pt
     \normalSize\noindent\sc\the\@uthors}
+    \ifx\rec_date\empty\else
+      \medskip
+      \centerline{\rm\rec_date}
+    \fi
     \vskip\belowauthors_skip}
 
 \def\abstract{\bgroup\petit
     \centerline{\bf Abstract}
+    \smallskip
     \advance\leftskip by \abs_inset
     \advance\hsize by -\abs_inset}
 
@@ -656,8 +671,8 @@
   \fi}
 
 \def\caption{\medskip\vbox\bgroup\raggedright
-    \advance\leftskip by 2\parindent
-    \advance\rightskip by 2\parindent
+    \advance\leftskip by \parindent
+    \advance\rightskip by \parindent
     \setbox0=\hbox{\bf\cap_label.\space}
     \advance\leftskip by \wd0
     \noindent\llap{\box0}\ignorespaces}

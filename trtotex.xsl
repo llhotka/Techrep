@@ -235,8 +235,10 @@ technical reports.
       <xsl:value-of select="$NL"/>
     </xsl:if>
     <xsl:value-of select="concat('\report',$NL)"/>
+    <xsl:apply-templates select="@number"/>
     <xsl:apply-templates select="tr:title"/>
     <xsl:apply-templates select="tr:author"/>
+    <xsl:apply-templates select="tr:date"/>
     <xsl:if test="tr:title">
       <xsl:text>\makeTitle</xsl:text>
       <xsl:value-of select="$NLNL"/>
@@ -246,6 +248,22 @@ technical reports.
     <xsl:apply-templates select="tr:body"/>
     <xsl:value-of select="$NL"/>
     <xsl:value-of select="concat('\endReport',$NL)"/>
+  </xsl:template>
+
+  <xsl:template match="tr:report/@number">
+    <xsl:text>\repnumber</xsl:text>
+    <xsl:call-template name="TeXgroup">
+      <xsl:with-param name="arg" select="."/>
+    </xsl:call-template>
+    <xsl:value-of select="$NL"/>
+  </xsl:template>
+
+  <xsl:template match="tr:date">
+    <xsl:text>\recdate</xsl:text>
+    <xsl:call-template name="TeXgroup">
+      <xsl:with-param name="arg" select="."/>
+    </xsl:call-template>
+    <xsl:value-of select="$NL"/>
   </xsl:template>
 
   <xsl:template match="tr:title">
