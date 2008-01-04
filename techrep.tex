@@ -82,7 +82,6 @@
 % Font macros
 \def\text_fam{Baskerville 10 Pro}
 \def\mono_fam{Vida Mono 32 Pro}
-%\def\mono_fam{Etelka Monospace Pro}
 \def\text_opts{mapping=tex-text}
 
 \font\x_rm="\text_fam:\text_opts"		% 10-point fonts
@@ -223,14 +222,14 @@
 \def\set_line_sizes#1#2#3{\normalbaselineskip=#1%
   \normallineskip=#2\normallineskiplimit=#3\normalbaselines
   \dimen_one=\baselineskip
-  \divide\dimen_one by 13
-  \setbox\strutbox=\hbox{\vrule height 10\dimen_one
-    depth 3\dimen_one width 0pt}%
-  \setbox\vlinebox=\hbox{\vrule height 10\dimen_one
-    depth 3\dimen_one}%
-  \smallskipamount=3\dimen_one plus\dimen_one minus\dimen_one
-  \medskipamount=6\dimen_one plus2\dimen_one minus2\dimen_one
-  \bigskipamount=12\dimen_one plus4\dimen_one minus4\dimen_one}
+  \divide\dimen_one by 3
+  \setbox\strutbox=\hbox{\vrule height 2.4\dimen_one
+    depth 0.6\dimen_one width 0pt}%
+  \setbox\vlinebox=\hbox{\vrule height 2.4\dimen_one
+    depth 0.6\dimen_one}%
+  \bigskipamount=3\dimen_one plus1\dimen_one minus1\dimen_one
+  \medskipamount=\bigskipamount \divide\medskipamount by 2
+  \smallskipamount=\medskipamount \divide\smallskipamount by 2}
 
 \def\strut{\copy\strutbox}
 \def\vline{\copy\vlinebox}
