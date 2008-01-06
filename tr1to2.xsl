@@ -72,13 +72,13 @@ Translates the original techrep v1 to version 2.
   <xsl:template name="handle-hybrid">
     <!-- Loosely based on recipe 5.3 in XSLT Cookbook -->
     <xsl:choose>
-      <xsl:when test="p|pre|blockquote|ol|ul|dl|figure|table">
+      <xsl:when test="p|pre|blockquote|ol|ul|dl">
 	<xsl:apply-templates
-	    select="p|pre|blockquote|ol|ul|dl|figure|table"
+	    select="p|pre|blockquote|ol|ul|dl"
 	    mode="hybrid"/>
 	<xsl:variable
 	    name="dernier"
-	    select="(p|pre|blockquote|ol|ul|dl|figure|table)[last()]"/>
+	    select="(p|pre|blockquote|ol|ul|dl)[last()]"/>
 	<xsl:variable name="fin"
 		      select="$dernier/following-sibling::node()"/>
 	<xsl:if test="$fin">
@@ -93,7 +93,7 @@ Translates the original techrep v1 to version 2.
     </xsl:choose>
   </xsl:template>
 
-  <xsl:template match="p|pre|blockquote|ol|ul|dl|figure|table"
+  <xsl:template match="p|pre|blockquote|ol|ul|dl"
 		mode="hybrid">
     <xsl:variable name="prev"
 		  select="preceding-sibling::*[self::p or
@@ -101,9 +101,7 @@ Translates the original techrep v1 to version 2.
 			  or self::blockquote
 			  or self::ol
 			  or self::ul
-			  or self::dl
-			  or self::figure
-			  or self::table][last()]"/>
+			  or self::dl][last()]"/>
     <xsl:choose>
       <xsl:when test="$prev">
 	<xsl:variable name="inter"
@@ -285,11 +283,14 @@ Translates the original techrep v1 to version 2.
 
   <xsl:template match="tab">
     <xsl:element name="table">
+      <xsl:apply-templates select="nazev"/>
       <xsl:apply-templates select="@id"/>
-      <xsl:attribute name="colspec">
-	<xsl:value-of select="@sloupce"/>
-      </xsl:attribute>
-      <xsl:apply-templates/>
+      <xsl:element name="tabular">
+	<xsl:attribute name="colspec">
+	  <xsl:value-of select="@sloupce"/>
+	</xsl:attribute>
+	<xsl:apply-templates select="tr"/>
+      </xsl:element>
     </xsl:element>
   </xsl:template>
 

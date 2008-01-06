@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<zprava cislo="XX/2008">
+  <nazev>Test Report</nazev>
+  <autor>Ladislav Lhotka</autor>
+  <datum>6.1.2008</datum>
+
+  <p>This is a first line of text that should be long enough to span
+  the entire line in order to show the horizontal width of the
+  line. Is it perhaps enough now? I guess so.</p>
+
+  <tab sloupce="cc">
+    <tr>
+      <td>one</td>
+      <td>two</td>
+    </tr>
+    <tr>
+      <td>three</td>
+      <td>four</td>
+    </tr>
+    <nazev>This figure caption says <i>everything</i>.</nazev>
+  </tab>
+</zprava>
