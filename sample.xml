@@ -4,6 +4,15 @@
   <autor>Ladislav Lhotka</autor>
   <datum>6.1.2008</datum>
 
+  <p><b>Keywords:</b> one, two, three, four</p>
+
+  <h1>Abstract</h1>
+
+  <p>This is a really, really short abstract.</p>
+
+
+  <h1>Introduction</h1>
+
   <p>This is a first line of text that should be long enough to span
   the entire line in order to show the horizontal width of the
   line. Is it perhaps enough now? I guess so.</p>

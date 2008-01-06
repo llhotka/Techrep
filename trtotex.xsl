@@ -515,6 +515,7 @@ technical reports.
     <xsl:apply-templates select="tr:p|tr:pre|tr:blockquote|tr:image|
 				 tr:tabular|tr:ol|tr:ul|tr:dl"/>
     <xsl:value-of select="concat('}}',$NL)"/>
+    <xsl:value-of select="concat('\medskip',$NL)"/>
     <xsl:apply-templates select="tr:caption"/>
     <xsl:text>\endFigure</xsl:text>
     <xsl:value-of select="$NLNL"/>
@@ -529,9 +530,11 @@ technical reports.
     </xsl:call-template>
     <xsl:value-of select="$NL"/>
     <xsl:apply-templates select="tr:caption"/>
-    <xsl:value-of select="$NL"/>
+    <xsl:value-of select="concat('\medskip',$NL)"/>
+    <xsl:text>\centerline{\vbox{</xsl:text>
     <xsl:apply-templates select="tr:p|tr:pre|tr:blockquote|tr:image|
 				 tr:tabular|tr:ol|tr:ul|tr:dl"/>
+    <xsl:value-of select="concat('}}',$NL)"/>
     <xsl:text>\endTable</xsl:text>
     <xsl:value-of select="$NLNL"/>
   </xsl:template>
@@ -567,7 +570,7 @@ technical reports.
     <xsl:text>\caption</xsl:text>
     <xsl:value-of select="$NL"/>
     <xsl:apply-templates/>
-    <xsl:value-of select="concat($NL,'\endCaption')"/>
+    <xsl:text>\endCaption</xsl:text>
     <xsl:value-of select="$NL"/>
   </xsl:template>
 

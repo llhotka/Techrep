@@ -147,7 +147,8 @@ Translates the original techrep v1 to version 2.
   <xsl:template match="zprava">
     <xsl:element name="report">
       <xsl:apply-templates select="@*|nazev|autor|datum"/>
-      <xsl:variable name="fpar" select="key('parpar',generate-id())[1]"/>
+      <xsl:variable name="fpar"
+		    select="key('parpar',generate-id())[1]"/>
       <xsl:choose>
 	<xsl:when
 	    test="normalize-space(translate(h1[1],'abstrackKt','ABSTRACCCT'))='ABSTRACT'">

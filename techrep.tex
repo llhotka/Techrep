@@ -48,6 +48,7 @@
 \newbox\para_box % box for entire paragraphs (used in line-numbering mode)
 \newbox\fig_box % box for figures
 \newbox\tab_box % box for tables
+\newbox\cap_box % box for figure and table captions
 \newbox\vlinebox % vertical line accross the height of a line
 \newinsert\margin_ins % marginal insertions (index entries)
 \newinsert\fig_ins % figure insertions
@@ -670,15 +671,19 @@
     \hbox{\pic_cs "#3" scaled #1}%
   \fi}
 
-\def\caption{\medskip\vbox\bgroup\raggedright
+\def\caption{\setbox\cap_box=\hbox\bgroup
+  {\bf\cap_label.}~}
+\def\endCaption{\egroup
+  \dimen_one=\hsize \advance\dimen_one by -2\parindent
+  \ifdim\wd\cap_box>\dimen_one
+    \vbox{\setbox\box_one=\hbox{\bf\cap_label.\space}%
     \advance\leftskip by \parindent
+    \advance\leftskip by \wd\box_one
     \advance\rightskip by \parindent
-    \setbox0=\hbox{\bf\cap_label.\space}
-    \advance\leftskip by \wd0
-    \noindent\llap{\box0}\ignorespaces}
-\def\endCaption{\par\egroup\smallskip}
-
-\def\centerCaption#1{\medskip\centerline{{\bf\cap_label.}~#1}\smallskip}
+    \noindent\kern-\wd\box_one\unhbox\cap_box}
+  \else
+    \centerline{\unhbox\cap_box}
+  \fi}
 
 % Final touches
 \catcode`\_=8 % make _ again subscript symbol
