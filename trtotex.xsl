@@ -23,8 +23,10 @@ technical reports.
 
   <xsl:param name="noic">.,</xsl:param>
 
-  <!-- Maximum width of figures. -->
-  <xsl:param name="figwidth">\hsize</xsl:param>
+  <!-- Block elements -->
+  <xsl:param name="block-choice">
+    
+  </xsl:param>
 
   <!-- Table spacing -->
   <xsl:param name="tabskip">1em</xsl:param>
@@ -32,7 +34,7 @@ technical reports.
   <xsl:output method="text"/>
 
   <xsl:strip-space elements="tr:body tr:blockquote tr:ol tr:ul tr:dl
-			     tr:figure tr:table tr:tr"/>
+			     tr:figure tr:table tr:tr tr:td tr:th"/>
 
   <xsl:variable name="NL">
     <xsl:text>
@@ -509,29 +511,33 @@ technical reports.
       </xsl:with-param>
     </xsl:call-template>
     <xsl:value-of select="$NL"/>
-    <xsl:text>\hbox</xsl:text>
-    <xsl:if test="count(tr:image)>1">
-      <xsl:text> to </xsl:text>
-      <xsl:value-of select="$figwidth"/>
-    </xsl:if>
-    <xsl:call-template name="TeXgroup">
-      <xsl:with-param name="arg">
-	<xsl:apply-templates select="tr:image"/>
-      </xsl:with-param>
-    </xsl:call-template>
-    <xsl:value-of select="$NL"/>
+    <xsl:text>\centerline{\vbox{</xsl:text>
+    <xsl:apply-templates select="tr:p|tr:pre|tr:blockquote|tr:image|
+				 tr:tabular|tr:ol|tr:ul|tr:dl"/>
+    <xsl:value-of select="concat('}}',$NL)"/>
     <xsl:apply-templates select="tr:caption"/>
     <xsl:text>\endFigure</xsl:text>
     <xsl:value-of select="$NLNL"/>
   </xsl:template>
 
+  <xsl:template match="tr:table">
+    <xsl:text>\table</xsl:text>
+    <xsl:call-template name="TeXgroup">
+      <xsl:with-param name="arg">
+	<xsl:apply-templates select="." mode="number"/>
+      </xsl:with-param>
+    </xsl:call-template>
+    <xsl:value-of select="$NL"/>
+    <xsl:apply-templates select="tr:caption"/>
+    <xsl:value-of select="$NL"/>
+    <xsl:apply-templates select="tr:p|tr:pre|tr:blockquote|tr:image|
+				 tr:tabular|tr:ol|tr:ul|tr:dl"/>
+    <xsl:text>\endTable</xsl:text>
+    <xsl:value-of select="$NLNL"/>
+  </xsl:template>
+
   <xsl:template match="tr:image">
     <xsl:text>\image</xsl:text>
-    <xsl:if test="@label">
-      <xsl:call-template name="TeXopt">
-	<xsl:with-param name="arg" select="@label"/>
-      </xsl:call-template>
-    </xsl:if>
     <xsl:variable name="pdf-source"
 		  select="tr:source[@format='PDF' or contains(.,'.pdf')]"/>
     <xsl:choose>
@@ -555,10 +561,6 @@ technical reports.
       </xsl:otherwise>
     </xsl:choose>
     <xsl:value-of select="concat('%',$NL)"/>
-    <xsl:if test="following-sibling::tr:image">
-      <xsl:text>\hfil</xsl:text>
-    </xsl:if>
-    <xsl:value-of select="$NL"/>
   </xsl:template>
 
   <xsl:template match="tr:caption">
@@ -569,24 +571,15 @@ technical reports.
     <xsl:value-of select="$NL"/>
   </xsl:template>
 
-  <xsl:template match="tr:table">
-    <xsl:text>\table</xsl:text>
-    <xsl:call-template name="TeXgroup">
-      <xsl:with-param name="arg">
-	<xsl:apply-templates select="." mode="number"/>
-      </xsl:with-param>
-    </xsl:call-template>
-    <xsl:value-of select="$NL"/>
-    <xsl:apply-templates select="tr:caption"/>
-    <xsl:text>\nobreak$$\halign{\tabskip=</xsl:text>
+  <xsl:template match="tr:tabular">
+    <xsl:text>\halign{\tabskip=</xsl:text>
     <xsl:value-of select="$tabskip"/>
     <xsl:value-of select="$NL"/>
     <xsl:call-template name="TeX-table-template">
       <xsl:with-param name="colspec" select="@colspec"/>
     </xsl:call-template>
     <xsl:apply-templates select="tr:tr"/>
-    <xsl:value-of select="concat('}$$',$NL)"/>
-    <xsl:value-of select="concat('\endTable',$NLNL)"/>
+    <xsl:value-of select="concat('}',$NL)"/>
   </xsl:template>
 
   <xsl:template match="tr:tr">

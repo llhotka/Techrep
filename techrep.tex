@@ -662,12 +662,12 @@
   \ifx\pris\empty
     \setbox\box_one=\hbox{\pic_cs "#3"\relax}%
     \ifdim\wd\box_one>\hsize
-      \centerline{\pic_cs "#3" width \hsize}%
+      \hbox{\pic_cs "#3" width \hsize}%
     \else
-      \centerline{\unhbox\box_one}%
+      \box\box_one
     \fi
   \else
-    \centerline{\pic_cs "#3" scaled #1}%
+    \hbox{\pic_cs "#3" scaled #1}%
   \fi}
 
 \def\caption{\medskip\vbox\bgroup\raggedright

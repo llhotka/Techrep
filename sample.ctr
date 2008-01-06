@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<report xmlns="http://cesnet.cz/ns/techrep/base/2.0" number="XX/2008">
+  <title>Test Report</title>
+  <author>
+    <name>Ladislav Lhotka</name>
+  </author>
+  <keywords>one, two</keywords>
+  <abstract>This is a very short abstract.</abstract>
+
+  <body>
+    <p>This is a first line of text that should be long enough to span
+    the entire line in order to show the horizontal width of the
+    line. Is it perhaps enough now? I guess so.</p>
+
+    <figure>
+      <caption>This figure caption says <em>everything</em>.</caption>
+      <tabular colspec="cc">
+	<tr>
+	  <td>a</td>
+	  <td>b</td>
+	</tr>
+	<tr>
+	  <td>
+	    <image>
+	      <source>week.png</source>
+	    </image>
+	  </td>
+	  <td>
+	    <image>
+	      <source>flowstats.png</source>
+	    </image>
+	  </td>
+	</tr>
+      </tabular>
+    </figure>
+  </body>
+</report>

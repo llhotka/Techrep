@@ -65,8 +65,9 @@ This is a boolean switch.
   
   <define name="common-attributes">
     <a:rest>
-Three attributes &#x2013; `xml:id`, `xml:lang` and `role` &#x2013; may
-be optionally attached to all block elements and some inlines, too.
+Three attributes &#x2013; `xml:id`_, `xml:lang`_ and `role`_ &#x2013;
+may be optionally attached to all block elements and some inlines,
+too.
     </a:rest>
     <optional>
       <ref name="id-attribute"/>
@@ -87,6 +88,7 @@ recommendation. This attribute replaces the `id` attribute that was
 used for the same purpose in version&#xA0;1.
 
 __ http://www.w3.org/TR/xml-id/
+.. _`xml:id`: `id-attribute`_
     </a:rest>
     <attribute name="xml:id">
       <data type="ID"/>
@@ -103,6 +105,7 @@ Only English (``en``) and Czech (``cs``) languages are currently
 supported, English being the default one.
 
 __ http://www.w3.org/TR/2006/REC-xml-20060816/
+.. _`xml:lang`: `lang-attribute`_
     </a:rest>
     <attribute name="xml:lang">
       <choice>
@@ -118,7 +121,7 @@ This attribute allows for extending the language (e.g., if used with
 the `phrase`_ element) or specifying more detailed semantics for
 existing elements.
 
-.. _phrase: `phrase-element`_
+.. _`role`: `role-attribute`_
     </a:rest>
     <attribute name="role">
       <data type="token"/>
@@ -279,14 +282,26 @@ This is the selection of block elements.
       <ref name="p-element"/>
       <ref name="pre-element"/>
       <ref name="blockquote-element"/>
+      <ref name="image-element"/>
+      <ref name="tabular-element"/>
       <ref name="ol-element"/>
       <ref name="ul-element"/>
       <ref name="dl-element"/>
+    </choice>
+  </define>
+  
+  <define name="toplevel-choice">
+    <a:rest>
+This pattern defines top-level content of a document that may only be
+interspersed with section headings (elements `h1`, `h2` and `h3`).
+    </a:rest>
+    <choice>
+      <ref name="block-choice"/>
       <ref name="figure-element"/>
       <ref name="table-element"/>
     </choice>
   </define>
-  
+
   <define name="body-content">
     <a:rest>
 This pattern defines the top level structure of the document body:
@@ -298,7 +313,7 @@ option is better but since techrep v1 required the list of references
 to be at the very end, we allow the latter option, too.
     </a:rest>
     <zeroOrMore>
-      <ref name="block-choice"/>
+      <ref name="toplevel-choice"/>
     </zeroOrMore>
     <zeroOrMore>
       <element name="h1">
@@ -335,7 +350,7 @@ Content of top-level sections and appendices.
     </a:rest>
     <oneOrMore>
       <choice>
-	<ref name="block-choice"/>
+	<ref name="toplevel-choice"/>
 	<group>
 	  <element name="h2">
 	    <ref name="heading-content"/>
@@ -352,12 +367,12 @@ Content of subsections.
     </a:rest>
     <oneOrMore>
       <choice>
-	<ref name="block-choice"/>
+	<ref name="toplevel-choice"/>
 	<group>
 	  <element name="h3">
 	    <ref name="heading-content"/>
 	  </element>
-	  <ref name="block-choice"/>
+	  <ref name="toplevel-choice"/>
 	</group>
       </choice>
     </oneOrMore>
@@ -380,7 +395,7 @@ appendices.
   <define name="bibitem-content">
     <a:rest>
 This pattern defines the content of bibliography items. It should
-probably be more structured. The `xml:id` attribute is mandatory for
+probably be more structured. The `xml:id`_ attribute is mandatory for
 this element.
     </a:rest>
     <ref name="id-attribute"/>
@@ -397,7 +412,9 @@ this element.
 
   <define name="tt-element">
     <a:rest>
-Markup for text in fixed-width (typewriter) font.      
+Markup for text in fixed-width (typewriter) font.
+
+.. _tt: `tt-element`_
     </a:rest>
     <element name="tt">
       <ref name="inline-content"/>
@@ -406,7 +423,9 @@ Markup for text in fixed-width (typewriter) font.
 
   <define name="sup-element">
     <a:rest>
-Markup for superscripts.      
+Markup for superscripts.
+
+.. _sup: `sup-element`_
     </a:rest>
     <element name="sup">
       <ref name="inline-content"/>
@@ -416,6 +435,8 @@ Markup for superscripts.
   <define name="sub-element">
     <a:rest>
 Markup for subscripts.      
+
+.. _sub: `sub-element`_
     </a:rest>
     <element name="sub">
       <ref name="inline-content"/>
@@ -425,6 +446,8 @@ Markup for subscripts.
   <define name="em-element">
     <a:rest>
 Generic markup for emphasized text. Standard rendering is italics.
+
+.. _em: `em-element`_
     </a:rest>
     <element name="em">
       <ref name="inline-content"/>
@@ -435,6 +458,8 @@ Generic markup for emphasized text. Standard rendering is italics.
     <a:rest>
 Generic markup for strongly emphasized text. Standard rendering is
 boldface.
+
+.. _strong: `strong-element`_
     </a:rest>
     <element name="strong">
       <ref name="inline-content"/>
@@ -444,10 +469,13 @@ boldface.
   <define name="phrase-element">
     <a:rest>
 This element is intended for special parts of the text for which no
-explicit markup is available. Usually the `role` attribute should be
-use to specify the meaning. This is a lightweight method for ad hoc
+explicit markup is available. Usually the `role`_ attribute should be
+used to specify the meaning. This is a lightweight method for ad hoc
 schema extensions. By default, the `phrase` element is rendered in
 italics.
+
+.. _phrase: `phrase-element`_
+
     </a:rest>
     <ref name="common-attributes"/>
     <element name="phrase">
@@ -459,6 +487,8 @@ italics.
     <a:rest>
 Markup for names of operating system commands and other
 programs. Standard rendering is boldface.
+
+.. _command: `command-element`_
     </a:rest>
     <element name="command">
       <ref name="inline-content"/>
@@ -469,6 +499,8 @@ programs. Standard rendering is boldface.
     <a:rest>
 Markup for data entered by user. It is normally rendered using a
 fixed-width font.
+
+.. _input: `input-element`_
     </a:rest>
     <element name="input">
       <ref name="inline-content"/>
@@ -481,6 +513,7 @@ Markup for `Uniform Resource Identifiers`__ and similar objects
 (hostnames etc.).
 
 .. __: http://en.wikipedia.org/wiki/Uniform_Resource_Identifier
+.. _uri: `uri-element`_
     </a:rest>
     <element name="uri">
       <ref name="inline-content"/>
@@ -489,7 +522,9 @@ Markup for `Uniform Resource Identifiers`__ and similar objects
 
   <define name="file-element">
     <a:rest>
-Markup for file names.      
+Markup for file names.
+
+.. _file: `file-element`_
     </a:rest>
     <element name="file">
       <ref name="inline-content"/>
@@ -500,6 +535,8 @@ Markup for file names.
     <a:rest>
 Footnotes are restricted to simple inline content, i.e., a single
 paragraph without figures, tables and lists.      
+
+.. _footnote: `footnote-element`_
     </a:rest>
     <element name="footnote">
       <ref name="inline-content"/>
@@ -510,8 +547,10 @@ paragraph without figures, tables and lists.
     <a:rest>
 Markup for quoted text. It is normally rendered with double quotes
 using the typographical conventions of the active language as
-specified by the `xml:lang` attribute on this element or one of its
+specified by the `xml:lang`_ attribute on this element or one of its
 ancestors.
+
+.. _q: `q-element`_
     </a:rest>
     <element name="q">
       <ref name="inline-content"/>
@@ -525,7 +564,7 @@ version&#xA0;1, it cannot be used for cross-referencing entities
 within the same document &#x2013; use the `xref`_ element for the
 latter purpose.
 
-.. _xref: `xref-element`_
+.. _a: `a-element`_
     </a:rest>
     <element name="a">
       <ref name="common-attributes"/>
@@ -542,7 +581,7 @@ latter purpose.
 
   <define name="a-choice">
     <a:rest>
-An `a` element may contain all inline elements except `a` and `cite`.
+An `a` element may contain all inline elements except `a` and `cite`_.
     </a:rest>
     <choice>
       <ref name="tt-element"/>
@@ -576,7 +615,7 @@ If the attribute `raw` is set to ``true``, the autogenerated label
 will be suppressed and only the identifier will be generated. The
 default value of the raw attribute is ``false``.
 
-.. _`xml:id`: `id-attribute`_
+.. _xref: `xref-element`_
     </a:rest>
     <element name="xref">
       <optional>
@@ -595,8 +634,10 @@ default value of the raw attribute is ``false``.
   <define name="cite-element">
     <a:rest>
 This element is used for bibliography references. The value of the
-`bibref` attribute must be the same as the `xml:id` attribute of the
+`bibref` attribute must be the same as the `xml:id`_ attribute of the
 `bibitem` we are referring to.
+
+.. _cite: `cite-element`_
     </a:rest>
     <element name="cite">
       <ref name="common-attributes"/>
@@ -640,6 +681,8 @@ the main text it refers to:
     * ``xe`` &#x2013; the index entry is an XML element. It will be
       rendered with the the &lt; and &gt; delimiters but these will be
       ignored when sorting the entries.
+
+.. _index: `index-element`_
     </a:rest>
     <element name="index">
       <optional>
@@ -669,6 +712,8 @@ the main text it refers to:
   <define name="br-element">
     <a:rest>
 This element forces a line break within a paragraph.
+
+.. _br: `br-element`_
     </a:rest>
     <element name="br">
       <empty/>
@@ -682,6 +727,8 @@ This element forces a line break within a paragraph.
 This element is for verbatim text such as program listings. If the
 `numbered` attribute is ``true``, the lines will be numbered. The
 default value is ``false``. 
+
+.. _pre: `pre-element`_
     </a:rest>
     <element name="pre">
       <ref name="common-attributes"/>
@@ -696,7 +743,10 @@ default value is ``false``.
 
   <define name="blockquote-element">
     <a:rest>
-Markup for quotations set off from the main text.      
+Markup for quotations set off from the main text. Unlike normal text
+it may not contain “floating” elements (`figure`_ or `table`_)
+
+.. _blockquote: `blockquote-element`_
     </a:rest>
     <element name="blockquote">
       <zeroOrMore>
@@ -708,6 +758,8 @@ Markup for quotations set off from the main text.
   <define name="p-element">
     <a:rest>
 This is a single paragraph. Note that it can be empty.      
+
+.. _p: `p-element`_
     </a:rest>
     <element name="p">
       <ref name="common-attributes"/>
@@ -751,41 +803,16 @@ the paragraph first so let's not insist on this.
     </choice>
   </define>
 
-  <define name="figure-element">
-    <a:rest>
-This element represents a figure and contains a `caption` and one or
-more `image` elements. Unlike version&#xA0;1, the caption is optional.
-    </a:rest>
-    <element name="figure">
-      <ref name="common-attributes"/>
-      <interleave>
-	<oneOrMore>
-	  <ref name="image-element"/>
-	</oneOrMore>
-	<optional>
-	  <ref name="caption-element"/>
-	</optional>
-      </interleave>
-    </element>
-  </define>
-
   <define name="image-element">
     <a:rest>
 The `image` element specifies one or more URLs of source graphic
 files. The optional attribute `format` specifies the graphic format of
-each file. If it is not given, the format is determined by other
+each file. If it is not given, the format may be determined by other
 means, for example from the file extension.
 
-The optional `label` subelement gives the (short) text that will be
-typeset next to the image. It is mainly useful with multiple images in
-one figure, where one can use the ``a``, ``b``, ... distinguishers. 
+.. _image: `image-element`_
     </a:rest>
     <element name="image">
-      <optional>
-	<element name="label">
-	  <ref name="inline-content"/>
-	</element>
-      </optional>
       <oneOrMore>
 	<element name="source">
 	  <optional>
@@ -813,14 +840,26 @@ This is the selection of recognised graphic formats.
     </choice>
   </define>
 
-  <define name="table-element">
+  <define name="tabular-element">
     <a:rest>
-This element represents a rectangular table. It contains a number of
-table rows and an optional caption, which may precede or follow the
-rows. (Actually, it could also appear in between two rows but this can
-hardly be useful.)
+This element represents a horizontally aligned tabular array of
+cells. It is structured into rows represented by `tr`_ elements. The
+`colspec` attribute serves two purposes:
+
+* its string length defines the number of columns,
+
+* each character specifies the default alignment of the corresponding
+  column: ``l`` means left-aligned, ``r`` right-aligned and ``c``
+  centered. Aligment of individual cells can be changed by using the
+  `align` attribute of `td`_ and `th`_ elements.
+
+In the typeset output, the contents of `tabular` elements must appear
+all on one page. It is therefore better to wrap them into “floating”
+elements such as `figure`_ or `table`_. 
+
+.. _tabular: `tabular-element`_
     </a:rest>
-    <element name="table">
+    <element name="tabular">
       <ref name="common-attributes"/>
       <attribute name="colspec">
 	<data type="token">
@@ -838,18 +877,11 @@ hardly be useful.)
     </element>
   </define>
 
-  <define name="caption-element">
-    <a:rest>
-This is the figure or table caption.
-    </a:rest>
-    <element name="caption">
-      <ref name="hybrid-content"/>
-    </element>
-  </define>
-
   <define name="tr-element">
     <a:rest>
-This is a single table row containing header (`th`) or data (`td`) cells.      
+This is a single table row containing header (`th`_) or data (`td`_) cells.
+
+.. _tr: `tr-element`_
     </a:rest>
     <element name="tr">
       <ref name="common-attributes"/>
@@ -867,6 +899,8 @@ This is a single table row containing header (`th`) or data (`td`) cells.
     <a:rest>
 Background colour of a table cell specified as a hexadecimal RGB
 value. The default value is ``#000000`` (white).
+
+.. _`bgcolor`: `bgcolor-attribute`_
     </a:rest>
     <optional>
       <attribute name="bgcolor">
@@ -879,29 +913,35 @@ value. The default value is ``#000000`` (white).
 
   <define name="td-element">
     <a:rest>
-Table cell with data.      
+This element represents a single data cell in a tabular array.      
+
+.. _td: `td-element`_
     </a:rest>
     <element name="td">
-      <ref name="table-cell-content"/>
+      <ref name="tabular-cell-content"/>
     </element>
   </define>
 
   <define name="th-element">
     <a:rest>
-Header table cell.      
+This element represents a header cell in a tabular array. It may be
+rendered differently, for example in boldface.      
+
+.. _th: `th-element`_
     </a:rest>
     <element name="th">
-      <ref name="table-cell-content"/>
+      <ref name="tabular-cell-content"/>
     </element>
   </define>
 
-  <define name="table-cell-content">
+  <define name="tabular-cell-content">
     <a:rest>
-This is the content of a table cell. The `bgcolor` attribute may be
-used to override the background color set for the entire
-row. Similarly, the optional `align` attribute may override the column
-alignment. Finally, the `colspan` attribute gives the number of
-table columns to be spanned by the cell. The default is&#xA0;1.
+This is the content of a data or header cells in a tabular array. The
+`bgcolor`_ attribute may be used to override the background color set
+for the entire row. Similarly, the optional `align` attribute may
+override the default column alignment. Finally, the `colspan`
+attribute gives the number of table columns to be spanned by the
+cell. The default is&#xA0;1.
     </a:rest>
     <ref name="common-attributes"/>
     <ref name="bgcolor-attribute"/>
@@ -922,6 +962,57 @@ table columns to be spanned by the cell. The default is&#xA0;1.
     <ref name="hybrid-content"/>
   </define>
 
+  <define name="figure-element">
+    <a:rest>
+This element is one of the two “floating” structures (the other is
+`table`_), typically containing an image or `tabular`_ array of
+images. Stylesheets processing the documents are expected to provide
+automatic numbering of figures in the text. A `figure` must also
+contain a `caption`_ element describing the contents.
+
+.. _figure: `figure-element`_
+    </a:rest>
+    <element name="figure">
+      <ref name="common-attributes"/>
+      <interleave>
+	<oneOrMore>
+	  <ref name="block-choice"/>
+	</oneOrMore>
+	<ref name="caption-element"/>
+      </interleave>
+    </element>
+  </define>
+
+  <define name="table-element">
+    <a:rest>
+This element is similar to figure-element_ but usually contains tables
+represented using `tabular` elements. Tables are also automatically
+numbered (independently from figures). A `caption` element is required. 
+
+.. _table: `table-element`_
+    </a:rest>
+    <element name="table">
+      <ref name="common-attributes"/>
+      <interleave>
+	<oneOrMore>
+	  <ref name="block-choice"/>
+	</oneOrMore>
+	<ref name="caption-element"/>
+      </interleave>
+    </element>
+  </define>
+
+  <define name="caption-element">
+    <a:rest>
+This is the figure or table caption.
+
+.. _caption: `caption-element`_
+    </a:rest>
+    <element name="caption">
+      <ref name="hybrid-content"/>
+    </element>
+  </define>
+
   <define name="ol-element">
     <a:rest>
 This is an ordered list. Two optional `continue` attribute contains a
@@ -931,6 +1022,8 @@ left off.
 
 In addition, the `labels` attribute may be used to specify the type of
 labels (see `labels-choice`_). The default is ``arabic``.
+
+.. _ol: `ol-element`_
     </a:rest>
     <element name="ol">
       <optional>
@@ -975,6 +1068,8 @@ ordered list items:
     <a:rest>
 This is an unordered list. The labels (bullets, dashes etc.) are
 determined from the level of embedding.
+
+.. _ul: `ul-element`_
     </a:rest>
     <element name="ul">
       <ref name="list-content"/>
@@ -1001,6 +1096,8 @@ list items. This is typically useful if all items are one-liners.
   <define name="li-element">
     <a:rest>
 This element represents a single item of an (un)ordered list.
+
+.. _li: `li-element`_
     </a:rest>
     <element name="li">
       <ref name="common-attributes"/>
@@ -1013,6 +1110,8 @@ This element represents a single item of an (un)ordered list.
 This is the definition list where each item consist of a group of one
 or more `dt` elements (terms) and exactly one `dd` element
 (description). This is modelled after HTML.
+
+.. _dl: `dl-element`_
     </a:rest>
     <element name="dl">
       <ref name="common-attributes"/>
@@ -1028,6 +1127,8 @@ or more `dt` elements (terms) and exactly one `dd` element
   <define name="dt-element">
     <a:rest>
 The definition term is simple inline content.      
+
+.. _dt: `dt-element`_
     </a:rest>
     <element name="dt">
       <ref name="inline-content"/>
@@ -1037,6 +1138,8 @@ The definition term is simple inline content.
   <define name="dd-element">
     <a:rest>
 The description has the same content model as items in (un)ordered lists.      
+
+.. _dd: `dd-element`_
     </a:rest>
     <element name="dd">
       <ref name="common-attributes"/>
