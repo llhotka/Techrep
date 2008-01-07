@@ -40,6 +40,8 @@
     <nazev>This figure caption says <i>everything</i>.</nazev>
   </tab>
 
+  <obr src="pu.pdf">Interesting picture</obr>
+
   <seznamknih>
     <kniha id="Lho96">
       Lhotka L. <i>Server v Internetu</i>. České Budějovice: Kopp,

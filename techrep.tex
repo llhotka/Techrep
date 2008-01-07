@@ -201,6 +201,48 @@
 \font\xxi_ttib="\mono_fam/IB" at 20pt
 \font\xxi_sy=cmsy10 at 21pt
 
+% math stuff
+\newfam\euexfam % family 9
+\mathcode`0="7130
+\mathcode`1="7131
+\mathcode`2="7132
+\mathcode`3="7133
+\mathcode`4="7134
+\mathcode`5="7135
+\mathcode`6="7136
+\mathcode`7="7137
+\mathcode`8="7138
+\mathcode`9="7139
+\mathchardef\intop="1852
+\mathchardef\ointop="1848
+\mathchardef\coprod="1860
+\mathchardef\prod="1851
+\mathchardef\sum="1850
+\mathchardef\braceld="87A \mathchardef\bracerd="87B
+\mathchardef\bracelu="87C \mathchardef\braceru="87D
+\mathchardef\infty="0831
+
+\mathchardef\nearrow="3825
+\mathchardef\searrow="3826
+\mathchardef\nwarrow="382D
+\mathchardef\swarrow="382E
+\mathchardef\Leftrightarrow="382C
+\mathchardef\Leftarrow="3828
+\mathchardef\Rightarrow="3829
+\mathchardef\leftrightarrow="3824 \mathcode`\^^W="3824
+\mathchardef\leftarrow="3820 \let\gets=\leftarrow \mathcode`\^^X="3820
+\mathchardef\rightarrow="3821 \let\to=\rightarrow \mathcode`\^^Y="3821
+\def\uparrow{\delimiter"3822378 } \mathcode`\^^K="3822
+\def\downarrow{\delimiter"3823379 } \mathcode`\^^A="3823
+\def\updownarrow{\delimiter"386C33F }
+\def\Uparrow{\delimiter"382A37E }
+\def\Downarrow{\delimiter"382B37F }
+\def\Updownarrow{\delimiter"386D377 }
+\mathchardef\leftharpoonup="3818
+\mathchardef\leftharpoondown="3819
+\mathchardef\rightharpoonup="381A
+\mathchardef\rightharpoondown="381B
+
 \def\set_families#1#2#3{%
   \textfont0=\macro{#1_rm}\scriptfont0=\macro{#2_rm}%
     \scriptscriptfont0=\macro{#3_rm}%
@@ -212,7 +254,9 @@
     \scriptscriptfont3=\macro{#1_euex}%
   \textfont\bffam=\macro{#1_bf}%
   \textfont\itfam=\macro{#1_it}%
-  \textfont\ttfam=\macro{#1_tt}}
+  \textfont\ttfam=\macro{#1_tt}%
+  \textfont\euexfam=\macro{#1_euex}%
+}
 
 \def\set_styles#1{%
   \def\rm{\macro{#1_rm}\fam0 \font_style={rm}}%
@@ -302,9 +346,6 @@
 \count\margin_ins=0 \skip\margin_ins=0pt % marginal inserts take up no space
 \ruler_count=0
 
-%\def\dosupereject{\ifnum\insertpenalties>0
-%  \showthe\insertpenalties
-%  \line{}\kern-\topskip\nobreak\vfill\supereject\fi}
 \def\pagecontents{\ifvoid\margin_ins\else % marginal info is present
     \rightline{\rlap{\kern1pc\vbox to\z@{\box\margin_ins \vss}}}\fi
   \ifdim\fig_left>0pt
