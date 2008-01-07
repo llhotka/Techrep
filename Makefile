@@ -12,7 +12,7 @@ all: techreport.pdf
 	xsltproc -o $@ $(TR2TEX) $<
 
 %.pdf: %.tex
-	xetex $<
+	ixetex $<
 
 %.ps: %.dvi
 	dvips $<
