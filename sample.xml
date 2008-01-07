@@ -17,6 +17,17 @@
   the entire line in order to show the horizontal width of the
   line. Is it perhaps enough now? I guess so.</p>
 
+  <dl>
+    <dt>Sample definition term</dt>
+    <dd>
+      <p>Testing definition description with multiple paragraphs.</p>
+
+      <p>And this is another paragraph.</p>
+    </dd>
+    <dt>Second term</dt>
+    <dd>Voilà, this is a simple definition (without paragraph).</dd>
+  </dl>
+
   <tab sloupce="cc">
     <tr>
       <td>one</td>
@@ -28,4 +39,16 @@
     </tr>
     <nazev>This figure caption says <i>everything</i>.</nazev>
   </tab>
+
+  <seznamknih>
+    <kniha id="Lho96">
+      Lhotka L. <i>Server v Internetu</i>. České Budějovice: Kopp,
+      1976. 206 p.
+    </kniha>
+    <kniha id="LS07">
+      Lhotka L., Satrapa P. <i>Networking Studies: Selected Technical
+      Reports</i>. Praha: CESNET, 2007. 178 p.
+    </kniha>
+  </seznamknih>
+
 </zprava>

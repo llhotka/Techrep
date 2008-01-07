@@ -14,7 +14,7 @@ Translates the original techrep v1 to version 2.
 
   <xsl:output method="xml" indent="yes"/>
 
-  <xsl:strip-space elements="li"/>
+  <xsl:strip-space elements="li dd"/>
 
   <xsl:key name="parpar"
 	   match="p"
