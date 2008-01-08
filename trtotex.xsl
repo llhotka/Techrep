@@ -732,9 +732,9 @@ technical reports.
   </xsl:template>
 
   <xsl:template match="tr:cite">
-    <xsl:text>[$</xsl:text>
+    <xsl:text>[</xsl:text>
     <xsl:apply-templates select="id(@bibref)" mode="number"/> 
-    <xsl:text>$]</xsl:text>
+    <xsl:text>]</xsl:text>
   </xsl:template>
 
   <xsl:template match="tr:index">
