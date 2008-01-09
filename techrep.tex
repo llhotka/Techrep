@@ -551,7 +551,10 @@
 
 \catcode`\¤=\active \let¤=\endVerbatim
 
-\def\blockQuote{\par\begingroup\nobreak\medskip}
+\def\blockQuote{\par\begingroup
+  \advance\leftskip by\parskip
+  \advance\rightskip by\parskip
+  \nobreak\medskip}
 
 \def\endBlockQuote{\endgroup\medbreak}
 
