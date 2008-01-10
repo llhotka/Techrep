@@ -49,21 +49,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
   <xsl:param name="tr-number">XX/2006</xsl:param>
   <xsl:param name="tr-lang">en</xsl:param>
 
-  <xsl:template name="seclevel">
-    <xsl:param name="secel"/>
-    <xsl:choose>
-      <xsl:when test="secel[parent::section]">
-	<xsl:variable name="parlev">
-	  <xsl:call-template name="seclevel">
-	    <xsl:with-param name="secel" select="secel/parent::section"/>
-	  </xsl:call-template>
-	</xsl:variable>
-	<xsl:value-of select="$parlev + 1"/>
-      </xsl:when>
-      <xsl:otherwise>1</xsl:otherwise>
-    </xsl:choose>
-  </xsl:template>
-
   <xsl:template match="article">
     <xsl:element name="zprava">
       <xsl:attribute name="cislo">
@@ -108,11 +93,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
   </xsl:template>
 
   <xsl:template match="section">
-    <xsl:variable name="secl">
-      <xsl:call-template name="seclevel">
-	<xsl:with-param name="secel" select="."/>
-      </xsl:call-template>
-    </xsl:variable>
+    <xsl:variable name="secl" select="count(ancestor-or-self::section)"/>
     <xsl:choose>
       <xsl:when test="$secl=1">
 	<xsl:element name="h1">
@@ -180,6 +161,99 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
     <xsl:element name="li">
       <xsl:apply-templates/>
     </xsl:element>
+  </xsl:template>
+
+  <xsl:template match="acronym">
+    <xsl:apply-templates/>
+  </xsl:template>
+
+  <xsl:template match="programlisting">
+    <xsl:element name="pre">
+      <xsl:apply-templates/>
+    </xsl:element>
+  </xsl:template>
+
+  <xsl:template match="command">
+    <xsl:element name="prikaz">
+      <xsl:apply-templates/>
+    </xsl:element>
+  </xsl:template>
+
+  <xsl:template match="filename">
+    <xsl:element name="soubor">
+      <xsl:apply-templates/>
+    </xsl:element>
+  </xsl:template>
+
+  <xsl:template match="varname|productname">
+    <xsl:element name="i">
+      <xsl:apply-templates/>
+    </xsl:element>
+  </xsl:template>
+
+  <xsl:template match="link">
+    <xsl:choose>
+      <xsl:when test="local-name(id(@linkend))='biblioentry'">
+	<xsl:element name="cite">
+	  <xsl:attribute name="href">
+	    <xsl:value-of select="@linkend"/>
+	  </xsl:attribute>
+	</xsl:element>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:element name="a">
+	  <xsl:attribute name="href">
+	    <xsl:value-of select="concat('#',@linkend)"/>
+	  </xsl:attribute>
+	</xsl:element>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
+  <xsl:template match="bibliography">
+    <xsl:element name="seznamknih">
+      <xsl:apply-templates/>
+    </xsl:element>
+  </xsl:template>
+
+  <xsl:template match="biblioentry">
+    <xsl:element name="kniha">
+      <xsl:apply-templates select="@id"/>
+      <xsl:for-each select=".//author">
+	<xsl:value-of select="surname"/>
+	<xsl:text> </xsl:text>
+	<xsl:value-of select="substring(firstname,1,1)"/>
+	<xsl:text>.</xsl:text>
+	<xsl:choose>
+	<xsl:when test="position()=last()">
+	  <xsl:text>: </xsl:text>
+	</xsl:when>
+	<xsl:otherwise>
+	  <xsl:text>, </xsl:text>
+	</xsl:otherwise>
+	</xsl:choose>
+      </xsl:for-each>
+      <xsl:apply-templates select="title"/>
+      <xsl:apply-templates select="subtitle"/>
+      <xsl:apply-templates select="publisher/publishername"/>
+      <xsl:apply-templates select="pubdate"/>
+    </xsl:element>
+  </xsl:template>
+
+  <xsl:template match="@id">
+    <xsl:copy>
+      <xsl:value-of select="."/>
+    </xsl:copy>
+  </xsl:template>
+
+  <xsl:template match="bibentry/title|bibentry/subtitle|bibentry/pubdate">
+    <xsl:apply-templates/>
+    <xsl:text>. </xsl:text>
+  </xsl:template>
+
+  <xsl:template match="publishername">
+    <xsl:apply-templates/>
+    <xsl:text>, </xsl:text>
   </xsl:template>
 
   <!-- Sentinel -->
