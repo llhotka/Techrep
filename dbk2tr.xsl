@@ -46,11 +46,23 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
   
   <!-- Global parameters -->
 
-  <!-- Value of text:h/@text:outline-level for h1 elements -->
   <xsl:param name="tr-number">XX/2006</xsl:param>
   <xsl:param name="tr-lang">en</xsl:param>
 
-  <!-- Style variables -->
+  <xsl:template name="seclevel">
+    <xsl:param name="secel"/>
+    <xsl:choose>
+      <xsl:when test="secel[parent::section]">
+	<xsl:variable name="parlev">
+	  <xsl:call-template name="seclevel">
+	    <xsl:with-param name="secel" select="secel/parent::section"/>
+	  </xsl:call-template>
+	</xsl:variable>
+	<xsl:value-of select="$parlev + 1"/>
+      </xsl:when>
+      <xsl:otherwise>1</xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
 
   <xsl:template match="article">
     <xsl:element name="zprava">
@@ -93,6 +105,32 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
     <xsl:element name="p">
       <xsl:apply-templates/>
     </xsl:element>
+  </xsl:template>
+
+  <xsl:template match="section">
+    <xsl:variable name="secl">
+      <xsl:call-template name="seclevel">
+	<xsl:with-param name="secel" select="."/>
+      </xsl:call-template>
+    </xsl:variable>
+    <xsl:choose>
+      <xsl:when test="$secl=1">
+	<xsl:element name="h1">
+	  <xsl:value-of select="title"/>
+	</xsl:element>
+      </xsl:when>
+      <xsl:when test="$secl=2">
+	<xsl:element name="h2">
+	  <xsl:value-of select="title"/>
+	</xsl:element>
+      </xsl:when>
+      <xsl:when test="$secl=3">
+	<xsl:element name="h3">
+	  <xsl:value-of select="title"/>
+	</xsl:element>
+      </xsl:when>
+    </xsl:choose>
+    <xsl:apply-templates/>
   </xsl:template>
 
   <xsl:template match="sect1">
