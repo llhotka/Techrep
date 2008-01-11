@@ -246,7 +246,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
     </xsl:copy>
   </xsl:template>
 
-  <xsl:template match="bibentry/title|bibentry/subtitle|bibentry/pubdate">
+  <xsl:template match="biblioentry/title|biblioentry/subtitle|
+		       biblioentry/pubdate">
     <xsl:apply-templates/>
     <xsl:text>. </xsl:text>
   </xsl:template>
