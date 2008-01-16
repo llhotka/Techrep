@@ -630,7 +630,8 @@
 \def\description{\indent\ignorespaces}
 
 \def\bibList{\setbox\box_one\hbox{[99] }%
-  \begin_list[\wd\box_one]\parskip=\smallskipamount}
+  \begin_list[\wd\box_one]\parskip=\smallskipamount
+  \widowpenalty=2000 \clubpenalty=2000}
 
 \def\bibItem#1{\def\list_label{[#1]}\list_item}
 
