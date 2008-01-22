@@ -284,8 +284,8 @@ Translates the original techrep v1 to version 2.
 
   <xsl:template match="tab">
     <xsl:element name="table">
-      <xsl:apply-templates select="nazev"/>
       <xsl:apply-templates select="@id"/>
+      <xsl:apply-templates select="nazev"/>
       <xsl:element name="tabular">
 	<xsl:attribute name="colspec">
 	  <xsl:value-of select="@sloupce"/>
