@@ -30,7 +30,7 @@ incrementally using the extension mechanisms of RELAX NG.
    reStructuredText*. Technical report `3/2006`_, Praha: CESNET, 2006.
 
 .. [Lho07] Lhotka L.: *New Version of the XML Schema for Technical
-   Reports.* Technical report `X/2007`_, Praha: CESNET, 2007.
+   Reports.* Technical report `X/2008`_, Praha: CESNET, 2007.
 
 .. _RELAX NG: http://relaxng.org
 
@@ -774,9 +774,9 @@ This is a single paragraph. Note that it can be empty.
   <define name="p-choice">
     <a:rest>
 These elements can be contained in a paragraph. Apart from standard
-inline elements we also allow lists, tables and figures. Strictly
-speaking, this should be avoided, but people keep ignoring to close
-the paragraph first so let's not insist on this.      
+inline elements we also allow lists (ul_, ol_ and dl_). Strictly
+speaking, this should be avoided, but some people apparently like
+lists inside paragraphs.
     </a:rest>
     <choice>
       <ref name="tt-element"/>
@@ -794,12 +794,10 @@ the paragraph first so let's not insist on this.
       <ref name="a-element"/>
       <ref name="xref-element"/>
       <ref name="cite-element"/>
+      <ref name="index-element"/>
       <ref name="ol-element"/>
       <ref name="ul-element"/>
       <ref name="dl-element"/>
-      <ref name="figure-element"/>
-      <ref name="table-element"/>
-      <ref name="index-element"/>
     </choice>
   </define>
 
