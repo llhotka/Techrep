@@ -108,8 +108,7 @@ technical reports.
       </xsl:variable>
       <xsl:choose>
 	<xsl:when test="string-length($colspec)=1">
-	  <xsl:value-of select="concat($result,'\cr')"/>
-	  <xsl:value-of select="$NL"/>
+	  <xsl:value-of select="concat($result,'\cr ')"/>
 	</xsl:when>
 	<xsl:otherwise>
 	  <xsl:value-of select="concat($result,'&amp;')"/>
@@ -587,7 +586,7 @@ technical reports.
 
   <xsl:template match="tr:tr">
     <xsl:apply-templates select="tr:th|tr:td"/>
-    <xsl:value-of select="concat('\cr',$NL)"/>
+    <xsl:text>\cr </xsl:text>
   </xsl:template>
 
   <xsl:template match="tr:td">
@@ -604,7 +603,7 @@ technical reports.
 	<xsl:call-template name="TeXgroup">
 	  <xsl:with-param name="arg">
 	    <xsl:text>\bf </xsl:text>
-	    <xsl:value-of select="."/>
+	    <xsl:apply-templates/>
 	  </xsl:with-param>
 	</xsl:call-template>
       </xsl:with-param>
