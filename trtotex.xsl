@@ -20,13 +20,7 @@ technical reports.
   <xsl:param name="bullets">&#x2022;&#x2013;&#x25B6;&#x25B7;</xsl:param>
 
   <!-- Characters that do no need preceding italic correction -->
-
   <xsl:param name="noic">.,</xsl:param>
-
-  <!-- Block elements -->
-  <xsl:param name="block-choice">
-    
-  </xsl:param>
 
   <!-- Table spacing -->
   <xsl:param name="tabskip">1em</xsl:param>
