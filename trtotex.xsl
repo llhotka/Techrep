@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-tr2proc.xsl: translates techrep XML v2 to TeX macros
+trtotex.xsl: translates techrep XML v2 to TeX macros
 Copyright © 2007-2008 CESNET
 Author: Ladislav Lhotka
 -->
