@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!-- Program name: tr2proc.xsl
-
-© CESNET, 2007
-
-Translates techrep v2 to texrep TeX macros for proceedings of selected
-technical reports.
-
+<!--
+tr2proc.xsl: translates techrep XML v2 to TeX macros
+Copyright © 2007-2008 CESNET
+Author: Ladislav Lhotka
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
