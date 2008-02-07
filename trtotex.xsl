@@ -113,6 +113,7 @@ Author: Ladislav Lhotka
 
   <xsl:template name="table-cell">
     <xsl:param name="content"/>
+    <xsl:apply-templates select="@colspan"/>
     <xsl:if test="@align='right' or @align='center'">
       <xsl:text>\hfill </xsl:text>
     </xsl:if>
@@ -123,6 +124,13 @@ Author: Ladislav Lhotka
     <xsl:if test="position()!=last()">
       <xsl:text>&amp;</xsl:text>
     </xsl:if>
+  </xsl:template>
+
+  <xsl:template match="@colspan">
+    <xsl:text>\multispan</xsl:text>
+    <xsl:call-template name="TeXgroup">
+      <xsl:with-param name="arg" select="."/>
+    </xsl:call-template>
   </xsl:template>
 
   <!-- "label" mode generates the element's label for crossrefs -->
