@@ -59,7 +59,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
       </xsl:attribute>
       <xsl:value-of select="$NL"/>
       <xsl:element name="nazev">
-	<xsl:value-of select="articleinfo/title"/>
+	<xsl:apply-templates select="articleinfo/title"/>
       </xsl:element>
       <xsl:value-of select="$NL"/>
       <xsl:element name="autor">
@@ -77,7 +77,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
   </xsl:template>
 
   <xsl:template match="articleinfo"/>
+
   <xsl:template match="title"/>
+  <xsl:template match="title" mode="active">
+    <xsl:apply-templates/>
+  </xsl:template>
 
   <xsl:template match="abstract">
     <xsl:element name="h1">
@@ -97,17 +101,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
     <xsl:choose>
       <xsl:when test="$secl=1">
 	<xsl:element name="h1">
-	  <xsl:value-of select="title"/>
+	  <xsl:apply-templates select="title" mode="active"/>
 	</xsl:element>
       </xsl:when>
       <xsl:when test="$secl=2">
 	<xsl:element name="h2">
-	  <xsl:value-of select="title"/>
+	  <xsl:apply-templates select="title" mode="active"/>
 	</xsl:element>
       </xsl:when>
       <xsl:when test="$secl=3">
 	<xsl:element name="h3">
-	  <xsl:value-of select="title"/>
+	  <xsl:apply-templates select="title" mode="active"/>
 	</xsl:element>
       </xsl:when>
     </xsl:choose>
@@ -116,28 +120,28 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 
   <xsl:template match="sect1">
     <xsl:element name="h1">
-      <xsl:value-of select="title"/>
+      <xsl:apply-templates select="title" mode="active"/>
     </xsl:element>
     <xsl:apply-templates/>
   </xsl:template>
   
   <xsl:template match="sect2">
     <xsl:element name="h2">
-      <xsl:value-of select="title"/>
+      <xsl:apply-templates select="title" mode="active"/>
     </xsl:element>
     <xsl:apply-templates/>
   </xsl:template>
   
   <xsl:template match="sect3">
     <xsl:element name="h3">
-      <xsl:value-of select="title"/>
+      <xsl:apply-templates select="title" mode="active"/>
     </xsl:element>
     <xsl:apply-templates/>
   </xsl:template>
   
   <xsl:template match="simplesect">
     <xsl:element name="h3">
-      <xsl:value-of select="title"/>
+      <xsl:apply-templates select="title" mode="active"/>
     </xsl:element>
     <xsl:apply-templates/>
   </xsl:template>
@@ -255,6 +259,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
   <xsl:template match="publishername">
     <xsl:apply-templates/>
     <xsl:text>, </xsl:text>
+  </xsl:template>
+
+  <xsl:template match="figure">
+    <xsl:element name="obr">
+      <xsl:attribute name="src">
+	<xsl:value-of
+	    select="mediaobject/imageobject/imagedata/@fileref"/>
+      </xsl:attribute>
+      <xsl:apply-templates select="title" mode="active"/>
+    </xsl:element>
   </xsl:template>
 
   <!-- Sentinel -->
