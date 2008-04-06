@@ -63,11 +63,11 @@
 \newtoks\rightRunHead % contains right running head
 \newtoks\titl@ % report title
 \newtoks\@uthors % comma-separated list of authors
+\newtoks\item_sep % separator of list items (typically '.' or ')')
 
 % Basic dimensions
 \hsize=159mm
 \vsize=690pt
-\parindent=6mm
 
 % Macros for general use
 \def\macro#1{\csname#1\endcsname}
@@ -560,7 +560,6 @@
 
 % Lists
 
-\item_indent=\ifdim\parindent<5mm 5mm\else\parindent\fi
 \list_skip=3pt plus1pt minus2pt
 \compact_listfalse
 
@@ -584,12 +583,12 @@
   \fi
   \incr\itemCount
   \noindent
-  \llap{\hbox to \item_indent{\hss\list_label\kern2mm}}%
+  \llap{\hbox to \item_indent{\hss\list_label\the\item_sep\kern2mm}}%
   \ignorespaces}
 
 \def\ASCII_item#1{%
   \count_one=\itemCount \advance\count_one by #1
-  \def\list_label{\char\number\count_one.}\list_item}
+  \def\list_label{\char\number\count_one}\list_item}
 
 \def\unorderedList{\handle_option{unorderedList_}}
 \def\unorderedList_[#1]{\begin_list
@@ -598,26 +597,28 @@
     \let\item=\list_item}
 
 \def\orderedList{\handle_option{orderedList_}}
-\def\orderedList_[#1]{\begin_list
-    \def\pris{#1}\ifx\pris\empty \arabic_list
-        \else \macro{#1_list}\fi}
+\def\orderedList_[#1]#2{\begin_list
+  \def\pris{#1}
+  \item_sep={\ifx\pris\empty.\else)\fi}
+  \macro{#2_list}}
 
 \def\arabic_item{
-  \def\list_label{\number\itemCount.}\list_item}
+  \def\list_label{\number\itemCount}\list_item}
 \def\arabic_list{\let\item=\arabic_item}
 
 \def\roman_item{%
-  \def\list_label{(\romannumeral\itemCount)}\list_item}
+  \def\list_label{\romannumeral\itemCount}\list_item}
 \def\roman_list{\let\item=\roman_item}
 
 \def\ROMAN_item{%
-  \def\list_label{(\uppercase{\romannumeral\itemCount})}\list_item}
+  \def\list_label{\uppercase\expandafter{\romannumeral\itemCount}}%
+  \list_item}
 \def\ROMAN_list{\let\item=\ROMAN_item}
 
-\def\alpha_item{\ASCII_item{96}}
+\def\alpha_item{\ASCII_item{97}}
 \def\alpha_list{\let\item=\alpha_item}
 
-\def\ALPHA_item{\ASCII_item{64}}
+\def\ALPHA_item{\ASCII_item{65}}
 \def\ALPHA_list{\let\item=\ALPHA_item}
 
 \def\definitionList{\par\vskip\list_skip\bgroup
@@ -738,9 +739,10 @@
   \fi}
 
 % Final touches
-\catcode`\_=8 % make _ again subscript symbol
-\catcode`@=12 % at signs are no longer letters
-
 \normalSize\rm
+\parindent=1em
+\item_indent=2em
 \widowpenalty=300
 \proofMode
+\catcode`\_=8 % make _ again subscript symbol
+\catcode`@=12 % at signs are no longer letters

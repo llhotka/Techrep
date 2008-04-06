@@ -53,16 +53,6 @@ version&#xA0;1 to their English equivalents.
 
   <!-- Common patterns -->
 
-  <define name="switch-content">
-    <a:rest>
-This is a boolean switch.
-    </a:rest>
-    <choice>
-      <value>true</value>
-      <value>false</value>
-    </choice>
-  </define>
-  
   <define name="common-attributes">
     <a:rest>
 Three attributes &#x2013; `xml:id`_, `xml:lang`_ and `role`_ &#x2013;
@@ -620,7 +610,7 @@ default value of the raw attribute is ``false``.
     <element name="xref">
       <optional>
 	<attribute name="raw">
-	  <ref name="switch-content"/>
+	  <data type="boolean"/>
 	</attribute>
       </optional>
       <ref name="common-attributes"/>
@@ -687,7 +677,7 @@ the main text it refers to:
     <element name="index">
       <optional>
 	<attribute name="silent">
-	  <ref name="switch-content"/>
+	  <data type="boolean"/>
 	</attribute>
       </optional>
       <optional>
@@ -734,7 +724,7 @@ default value is ``false``.
       <ref name="common-attributes"/>
       <optional>
 	<attribute name="numbered">
-	  <ref name="switch-content"/>
+	  <data type="boolean"/>
 	</attribute>
       </optional>
       <text/>
@@ -774,30 +764,18 @@ This is a single paragraph. Note that it can be empty.
   <define name="p-choice">
     <a:rest>
 These elements can be contained in a paragraph. Apart from standard
-inline elements we also allow lists (ul_, ol_ and dl_). Strictly
-speaking, this should be avoided, but some people apparently like
-lists inside paragraphs.
+inline elements simple lists (ul_ and ol_) are also allowed, but they
+are treated as single-sentence lists, can be only single-level and are
+rendered differently from lists appearing outside paragraphs.
     </a:rest>
     <choice>
-      <ref name="tt-element"/>
-      <ref name="sup-element"/>
-      <ref name="sub-element"/>
-      <ref name="em-element"/>
-      <ref name="strong-element"/>
-      <ref name="phrase-element"/>
-      <ref name="command-element"/>
-      <ref name="input-element"/>
-      <ref name="uri-element"/>
-      <ref name="file-element"/>
-      <ref name="footnote-element"/>
-      <ref name="q-element"/>
-      <ref name="a-element"/>
-      <ref name="xref-element"/>
-      <ref name="cite-element"/>
-      <ref name="index-element"/>
-      <ref name="ol-element"/>
-      <ref name="ul-element"/>
-      <ref name="dl-element"/>
+      <ref name="inline-choice"/>
+      <element name="ol">
+	<ref name="single-sentence-list-content"/>
+      </element>
+      <element name="ul">
+	<ref name="single-sentence-list-content"/>
+      </element>
     </choice>
   </define>
 
@@ -1013,13 +991,14 @@ This is the figure or table caption.
 
   <define name="ol-element">
     <a:rest>
-This is an ordered list. Two optional `continue` attribute contains a
+This is an ordered list. The optional `continue` attribute contains a
 reference to a previous `ol` list (via the `xml:id` attribute). The
 numbering of the present list will continue where the referenced list
 left off.
 
-In addition, the `labels` attribute may be used to specify the type of
-labels (see `labels-choice`_). The default is ``arabic``.
+In addition, the optional `labels` attribute may be used to specify
+the type of labels (see `labels-choice`_). The default is determined
+from the level of the list.
 
 .. _ol: `ol-element`_
     </a:rest>
@@ -1074,6 +1053,21 @@ determined from the level of embedding.
     </element>
   </define>
 
+  <define name="single-sentence-list-content">
+    <a:rest>
+The common content of single sentence lists (ordered or unordered).
+    </a:rest>
+    <ref name="common-attributes"/>
+    <optional>
+      <attribute name="compact">
+	<data type="boolean"/>
+      </attribute>
+    </optional>
+    <oneOrMore>
+      <ref name="simple-li-element"/>
+    </oneOrMore>
+  </define>
+
   <define name="list-content">
     <a:rest>
 The common content of ordered and unordered lists. The optional
@@ -1083,7 +1077,7 @@ list items. This is typically useful if all items are one-liners.
     <ref name="common-attributes"/>
     <optional>
       <attribute name="compact">
-	<ref name="switch-content"/>
+	<data type="boolean"/>
       </attribute>
     </optional>
     <oneOrMore>
@@ -1093,13 +1087,24 @@ list items. This is typically useful if all items are one-liners.
 
   <define name="li-element">
     <a:rest>
-This element represents a single item of an (un)ordered list.
+This element represents an item of an (un)ordered list.
 
 .. _li: `li-element`_
     </a:rest>
     <element name="li">
       <ref name="common-attributes"/>
       <ref name="hybrid-content"/>
+    </element>
+  </define>
+
+  <define name="simple-li-element">
+    <a:rest>
+This element represents an item of single-sentence list. Being part of
+a sentence, it may only contain inline content.
+    </a:rest>
+    <element name="li">
+      <ref name="common-attributes"/>
+      <ref name="inline-content"/>
     </element>
   </define>
 

@@ -14,7 +14,7 @@ Author: Ladislav Lhotka
   <xsl:param name="nbsp-tilde" select="0"/>
 
   <!-- Item labels for an unordered list with respect to its depth -->
-  <xsl:param name="bullets">&#x2022;&#x2013;&#x25B6;&#x25B7;</xsl:param>
+  <xsl:param name="bullets">&#x2014;&#x2022;&#x2013;-------</xsl:param>
 
   <!-- Characters that do no need preceding italic correction -->
   <xsl:param name="noic">.,</xsl:param>
@@ -423,12 +423,32 @@ Author: Ladislav Lhotka
 
   <xsl:template match="tr:ol">
     <xsl:text>\orderedList</xsl:text>
-    <xsl:if test="@labels">
+    <!-- Is it single-sentence list? -->
+    <xsl:if test="ancestor::tr:p">
       <xsl:call-template name="TeXopt">
-	<xsl:with-param name="arg" select="@labels"/>
+	<xsl:with-param name="arg">)</xsl:with-param>
       </xsl:call-template>
     </xsl:if>
-    <xsl:apply-templates select="@compact"/>
+    <xsl:call-template name="TeXgroup">
+      <xsl:with-param name="arg">
+	<xsl:choose>
+	  <xsl:when test="@labels">
+	    <xsl:value-of select="@labels"/>
+	  </xsl:when>
+	  <xsl:otherwise>
+	    <xsl:variable name="llev"
+			  select="count(ancestor::tr:ol)"/>
+	    <xsl:choose>
+	      <xsl:when test="$llev=0">ROMAN</xsl:when>
+	      <xsl:when test="$llev=1">ALPHA</xsl:when>
+	      <xsl:when test="$llev=2">arabic</xsl:when>
+	      <xsl:otherwise>alpha</xsl:otherwise>
+	    </xsl:choose>
+	  </xsl:otherwise>
+	</xsl:choose>
+      </xsl:with-param>
+    </xsl:call-template>
+    <xsl:call-template name="test-compact"/>
     <xsl:if test="@continue">
       <xsl:text>\itemCount=</xsl:text>
       <xsl:apply-templates select="id(@continue)" mode="itemcount"/>
@@ -453,8 +473,10 @@ Author: Ladislav Lhotka
     </xsl:choose>
   </xsl:template>
 
-  <xsl:template match="@compact">
-    <xsl:text>\compactList</xsl:text>
+  <xsl:template name="test-compact">
+      <xsl:if test="@compact='true' or @compact=1 or ancestor::p">
+	<xsl:text>\compactList</xsl:text>
+      </xsl:if>
   </xsl:template>
 
   <xsl:template match="tr:li">
@@ -470,7 +492,7 @@ Author: Ladislav Lhotka
 	  name="arg"
 	  select="substring($bullets,count(ancestor-or-self::tr:ul),1)"/>
     </xsl:call-template>
-    <xsl:apply-templates select="@compact"/>
+    <xsl:call-template name="test-compact"/>
     <xsl:value-of select="$NL"/>
     <xsl:apply-templates/>
     <xsl:text>\endList</xsl:text>
