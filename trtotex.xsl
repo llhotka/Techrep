@@ -238,17 +238,15 @@ Author: Ladislav Lhotka
       </xsl:call-template>
       <xsl:value-of select="$NL"/>
     </xsl:if>
-    <xsl:if test="$proceedings=1">
-      <xsl:text>\trpars</xsl:text>
-      <xsl:value-of select="$NL"/>
-    </xsl:if>
     <xsl:value-of select="concat('\report',$NL)"/>
     <xsl:if test="$proceedings=0">
       <xsl:apply-templates select="@number"/>
     </xsl:if>
     <xsl:apply-templates select="tr:title"/>
     <xsl:apply-templates select="tr:author"/>
-    <xsl:apply-templates select="tr:date"/>
+    <xsl:if test="$proceedings=0">
+      <xsl:apply-templates select="tr:date"/>
+    </xsl:if>
     <xsl:if test="tr:title">
       <xsl:text>\makeTitle</xsl:text>
       <xsl:value-of select="$NLNL"/>

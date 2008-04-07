@@ -14,6 +14,7 @@
 \newcount\verb_lno % line counter in verbatim listings
 \newcount\ruler_count % counter for proof mode ruler numbers
 \newdimen\dimen_one % temporary dimension
+\newdimen\page_ht % page height (fixed)
 \newdimen\abs_inset % left and right indentation of abstract
 \newdimen\item_indent % amount of item indentation
 \newdimen\fig_left % remaining height of withheld figure insertions
@@ -276,18 +277,22 @@
 
 \def\set_line_sizes#1#2#3{\normalbaselineskip=#1%
   \normallineskip=#2\normallineskiplimit=#3\normalbaselines
-  \dimen_one=\baselineskip
-  \divide\dimen_one by 3
-  \setbox\strutbox=\hbox{\vrule height 2.4\dimen_one
-    depth 0.6\dimen_one width 0pt}%
-  \setbox\vlinebox=\hbox{\vrule height 2.4\dimen_one
-    depth 0.6\dimen_one}%
-  \bigskipamount=3\dimen_one plus1\dimen_one minus1\dimen_one
+  \divide\page_ht by 3
+  \setbox\strutbox=\hbox{\vrule height 2.4\page_ht
+    depth 0.6\page_ht width 0pt}%
+  \setbox\vlinebox=\hbox{\vrule height 2.4\page_ht
+    depth 0.6\page_ht}%
+  \bigskipamount=3\page_ht plus1\page_ht minus1\page_ht
   \medskipamount=\bigskipamount \divide\medskipamount by 2
   \smallskipamount=\medskipamount \divide\smallskipamount by 2}
 
 \def\strut{\copy\strutbox}
 \def\vline{\copy\vlinebox}
+
+\def\ninePoint{\set_styles{ix}%
+  \set_families{ix}{vi}{v}%
+  \set_line_sizes{12pt}{0pt}{0pt}%
+  \macro{\the\font_style}}
 
 \def\tenPoint{\set_styles{x}%
   \set_families{x}{vii}{v}%
@@ -368,7 +373,7 @@
     \ifproof_mode\proof_output\else\plainoutput\fi}
 \def\tick_rule{\hrule width1mm}
 \def\make_tick{\global\incr\ruler_count
-  \vbox to15pt{\tick_rule
+  \vbox to \page_ht{\tick_rule
     \leaders\vrule\vfil
     \hbox to1cm{\ix_rm\number\ruler_count \hfil}
     \leaders\vrule\vfil}}
@@ -376,7 +381,7 @@
   \dimen_one=0pt
   \make_tick
   \loop\ifdim\dimen_one<\ht\page_box
-    \advance\dimen_one by 15pt
+    \advance\dimen_one by \page_ht
     \make_tick\repeat
   \tick_rule
   \special{color pop}}}
@@ -717,36 +722,53 @@
     \fi
   \fi}
 
-\def\trpars{\proc_modefalse
+\def\tr_pars{\proc_modefalse
   \hsize=159mm
   \vsize=690pt
-  \parindent=2em
-  \item_indent=2em
-  \aboveauthors_skip=30pt plus 8pt
-  \belowauthors_skip=30pt plus 8pt
-  \belowabs_skip=12pt minus6pt
-  \belowkw_skip=30pt plus 15pt minus6pt
-  \abovesec_skip=23pt plus 7pt
-  \belowsec_skip=12pt plus 1pt
-  \abovesubsec_skip=18pt plus 3pt
-  \belowsubsec_skip=8pt plus 1pt
-  \abovesss_skip=18pt plus 3pt
-  \belowsss_skip=8pt plus 1pt
-  \skip\footins=14.5pt plus 2pt minus 4pt
-  \dimen\footins=30pc
-  \cap_skip=12pt plus1pt minus2pt
   \let\normalSize=\twelvePoint
   \let\petit=\tenPoint
   \def\titleFont{\seventeenPoint\bf}
   \def\sectionFont{\fourteenPoint\bf}
+}
+
+\def\proc_pars{\proc_modetrue
+  \hsize=130mm \hoffset=12mm
+  \vsize=516pt \voffset=26.5mm
+  \let\normalSize=\tenPoint
+  \let\petit=\ninePoint
+  \def\titleFont{\fourteenPoint\bf}
+  \def\sectionFont{\twelvePoint\bf}
+}
+
+\def\parameter_setup{
+  \normalSize\rm
+  \abs_inset=2em
+  \parindent=2em
+  \item_indent=2em
+  \page_ht=\baselineskip
+  \aboveauthors_skip=2.0\page_ht plus 0.5\page_ht
+  \belowauthors_skip=2.0\page_ht plus 0.5\page_ht
+  \belowabs_skip=\page_ht minus 0.25\page_ht
+  \belowkw_skip=2.0\page_ht plus \page_ht minus 0.5\page_ht
+  \abovesec_skip=1.5\page_ht plus 0.3\page_ht
+  \belowsec_skip=0.7\page_ht plus 0.05\page_ht
+  \abovesubsec_skip=1.2\page_ht plus 0.2\page_ht
+  \belowsubsec_skip=0.5\page_ht plus 0.05\page_ht
+  \abovesss_skip=1.2\page_ht plus 0.2\page_ht
+  \belowsss_skip=0.5\page_ht plus 0.05\page_ht
+  \cap_skip=\page_ht plus 0.1\page_ht minus 0.2\page_ht
+  \skip\footins=\page_ht plus 0.15\page_ht minus 0.3\page_ht
+  \dimen\footins=30\page_ht
+  \widowpenalty=300
   \def\subsectionFont{\normalSize\bf}
   \def\sssectionFont{\normalSize\bf}
 }
 
+\def\trsetup{\tr_pars\parameter_setup}
+\def\procsetup{\proc_pars\parameter_setup}
+
 % Final setup
-\normalSize\rm
-\abs_inset=3em
-\widowpenalty=300
-\proofMode
+
+\trsetup\proofMode
 \catcode`\_=8 % make _ again subscript symbol
 \catcode`@=12 % at signs are no longer letters
