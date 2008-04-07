@@ -10,6 +10,10 @@ Author: Ladislav Lhotka
 		xmlns:tr="http://cesnet.cz/ns/techrep/base/2.0"
                 version="1.0">
 
+  <!-- This parameter control whether we are processing proceedings (1)
+       or single technical report (0, default) -->
+  <xsl:param name="proceedings" select="0"/>
+
   <!-- This parameter controls whether tilde is used as no-break space -->
   <xsl:param name="nbsp-tilde" select="0"/>
 
@@ -234,8 +238,14 @@ Author: Ladislav Lhotka
       </xsl:call-template>
       <xsl:value-of select="$NL"/>
     </xsl:if>
+    <xsl:if test="$proceedings=1">
+      <xsl:text>\trpars</xsl:text>
+      <xsl:value-of select="$NL"/>
+    </xsl:if>
     <xsl:value-of select="concat('\report',$NL)"/>
-    <xsl:apply-templates select="@number"/>
+    <xsl:if test="$proceedings=0">
+      <xsl:apply-templates select="@number"/>
+    </xsl:if>
     <xsl:apply-templates select="tr:title"/>
     <xsl:apply-templates select="tr:author"/>
     <xsl:apply-templates select="tr:date"/>

@@ -8,7 +8,6 @@
 % Allocation of registers
 \newcount\count_one % temporary counter
 \newcount\auth_count % number authors
-\newcount\appendix_no % appendix label
 \newcount\itemCount % counter for list items
 \newcount\foot_count % counter for footnotes
 \newcount\tab_count % counter for tables
@@ -31,6 +30,7 @@
 \newskip\belowsss_skip % below the subsubsection heading
 \newskip\list_skip % above and below lists
 \newskip\cap_skip % above/below caption
+\newif\ifproc_mode % proceedings/single report 
 \newif\ifproof_mode % proof mode switch
 \newif\ifin_sec % indicates open section
 \newif\ifin_subsec % indicates open subsection
@@ -64,10 +64,6 @@
 \newtoks\titl@ % report title
 \newtoks\@uthors % comma-separated list of authors
 \newtoks\item_sep % separator of list items (typically '.' or ')')
-
-% Basic dimensions
-\hsize=159mm
-\vsize=690pt
 
 % Macros for general use
 \def\macro#1{\csname#1\endcsname}
@@ -313,13 +309,6 @@
   \set_line_sizes{21pt}{0pt}{0pt}%
   \macro{\the\font_style}}
 
-\let\normalSize=\twelvePoint
-\let\petit=\tenPoint
-\def\titleFont{\seventeenPoint\bf}
-\def\sectionFont{\fourteenPoint\bf}
-\def\subsectionFont{\normalSize\bf}
-\def\sssectionFont{\normalSize\bf}
-
 % mapping of special characters (via XeTeX)
 
 \catcode`＃=\active
@@ -415,14 +404,6 @@
         \ifproof_mode PROOF \number\day.\number\month.\number\year\else
             © CESNET, \number\year\fi}\hfil\fi\fi}
 
-% Front matter
-
-\aboveauthors_skip=30pt plus 8pt
-\belowauthors_skip=30pt plus 8pt
-\belowabs_skip=12pt minus6pt
-\belowkw_skip=30pt plus 15pt minus6pt
-\abs_inset=3em
-
 \let\rep_number=\empty \let\rec_date=\empty
 
 \def\report{%
@@ -483,14 +464,6 @@
     \petit\noindent
     {\sl Keywords:} #1\par}
     \vskip\belowkw_skip}
-
-% Sectioning macros
-\abovesec_skip=23pt plus 7pt
-\belowsec_skip=12pt plus 1pt
-\abovesubsec_skip=18pt plus 3pt
-\belowsubsec_skip=8pt plus 1pt
-\abovesss_skip=18pt plus 3pt
-\belowsss_skip=8pt plus 1pt
 
 \def\set_heading_box#1#2#3#4#5{\setbox0=\hbox{#2#3}%
     \setbox0=\vbox{#2%\hrule height0pt
@@ -648,9 +621,6 @@
 \def\bibItem#1{\def\list_label{[#1]}\list_item}
 
 % Footnotes
-\skip\footins=14.5pt plus 2pt minus 4pt % added when footnote is present
-\dimen\footins=30pc % maximum footnotes per page
-
 \def\foot_mark{${}^{\number\foot_count}$}
 
 \def\footNote{\global\incr\foot_count
@@ -663,8 +633,6 @@
 
 % Figures and tables
 \def\pdf_fmt{PDF}
-\cap_skip=12pt plus1pt minus2pt
-
 \fig_left=0pt
 \skip\fig_ins=\bigskipamount
 \count\fig_ins=1000
@@ -749,10 +717,35 @@
     \fi
   \fi}
 
-% Final touches
+\def\trpars{\proc_modefalse
+  \hsize=159mm
+  \vsize=690pt
+  \parindent=2em
+  \item_indent=2em
+  \aboveauthors_skip=30pt plus 8pt
+  \belowauthors_skip=30pt plus 8pt
+  \belowabs_skip=12pt minus6pt
+  \belowkw_skip=30pt plus 15pt minus6pt
+  \abovesec_skip=23pt plus 7pt
+  \belowsec_skip=12pt plus 1pt
+  \abovesubsec_skip=18pt plus 3pt
+  \belowsubsec_skip=8pt plus 1pt
+  \abovesss_skip=18pt plus 3pt
+  \belowsss_skip=8pt plus 1pt
+  \skip\footins=14.5pt plus 2pt minus 4pt
+  \dimen\footins=30pc
+  \cap_skip=12pt plus1pt minus2pt
+  \let\normalSize=\twelvePoint
+  \let\petit=\tenPoint
+  \def\titleFont{\seventeenPoint\bf}
+  \def\sectionFont{\fourteenPoint\bf}
+  \def\subsectionFont{\normalSize\bf}
+  \def\sssectionFont{\normalSize\bf}
+}
+
+% Final setup
 \normalSize\rm
-\parindent=2em
-\item_indent=2em
+\abs_inset=3em
 \widowpenalty=300
 \proofMode
 \catcode`\_=8 % make _ again subscript symbol
