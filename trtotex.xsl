@@ -439,10 +439,10 @@ Author: Ladislav Lhotka
 	    <xsl:variable name="llev"
 			  select="count(ancestor::tr:ol)"/>
 	    <xsl:choose>
-	      <xsl:when test="$llev=0">ROMAN</xsl:when>
-	      <xsl:when test="$llev=1">ALPHA</xsl:when>
-	      <xsl:when test="$llev=2">arabic</xsl:when>
-	      <xsl:otherwise>alpha</xsl:otherwise>
+	      <xsl:when test="$llev=0">arabic</xsl:when>
+	      <xsl:when test="$llev=1">alpha</xsl:when>
+	      <xsl:when test="$llev=2">roman</xsl:when>
+	      <xsl:otherwise>callout</xsl:otherwise>
 	    </xsl:choose>
 	  </xsl:otherwise>
 	</xsl:choose>

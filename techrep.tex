@@ -97,6 +97,7 @@
 \font\x_bf="\text_fam/B:\text_opts"
 \font\x_ib="\text_fam/IB:\text_opts"
 \font\x_sc="\text_fam:+smcp,\text_opts"
+\font\x_cout="\text_fam:+salt,\text_opts"
 \font\x_i=eurm10
 \font\x_eubf=eurb10
 \font\x_euex=euex10
@@ -111,6 +112,7 @@
 \font\ix_bf="\text_fam/B:\text_opts" at 9pt
 \font\ix_ib="\text_fam/IB:\text_opts" at 9pt
 \font\ix_sc="\text_fam:+smcp,\text_opts" at 9pt
+\font\ix_cout="\text_fam:+salt,\text_opts" at 9pt
 \font\ix_i=eurm9
 \font\ix_eubf=eurb9
 \font\ix_euex=euex9
@@ -150,6 +152,7 @@
 \font\xii_bf="\text_fam/B:\text_opts" at 12pt
 \font\xii_ib="\text_fam/IB:\text_opts" at 12pt
 \font\xii_sc="\text_fam:+smcp,\text_opts" at 12pt
+\font\xii_cout="\text_fam:+salt,\text_opts" at 12pt
 \font\xii_i=eurm10 at 12pt
 \font\xii_eubf=eurb10 at 12pt
 \font\xii_euex=euex10 at 12pt 
@@ -164,6 +167,7 @@
 \font\xiv_bf="\text_fam/B:\text_opts" at 14pt
 \font\xiv_ib="\text_fam/IB:\text_opts" at 14pt
 \font\xiv_sc="\text_fam:+smcp,\text_opts" at 14pt
+\font\xiv_cout="\text_fam:+salt,\text_opts" at 14pt
 \font\xiv_i=eurm10 at 14pt
 \font\xiv_eubf=eurb10 at 14pt
 \font\xiv_euex=euex10 at 14pt 
@@ -178,6 +182,7 @@
 \font\xvii_bf="\text_fam/B:\text_opts" at 17pt
 \font\xvii_ib="\text_fam/IB:\text_opts" at 17pt
 \font\xvii_sc="\text_fam:+smcp,\text_opts" at 17pt
+\font\xvii_cout="\text_fam:+salt,\text_opts" at 17pt
 \font\xvii_i=eurm10 at 17pt
 \font\xvii_eubf=eurb10 at 17pt
 \font\xvii_euex=euex10 at 17pt 
@@ -192,6 +197,7 @@
 \font\xxi_bf="\text_fam/B:\text_opts" at 21pt
 \font\xxi_ib="\text_fam/IB:\text_opts" at 21pt
 \font\xxi_sc="\text_fam:+smcp,\text_opts" at 21pt
+\font\xxi_cout="\text_fam:+salt,\text_opts" at 21pt
 \font\xxi_i=eurm10 at 21pt
 \font\xxi_eubf=eurb10 at 21pt
 \font\xxi_euex=euex10 at 21pt 
@@ -262,8 +268,9 @@
   \def\rm{\macro{#1_rm}\fam0 \font_style={rm}}%
   \def\it{\macro{#1_it}\fam\itfam \font_style={it}}%
   \def\bf{\macro{#1_bf}\fam\bffam \font_style={bf}}%
-  \def\ib{\macro{#1_ib}\font_style={ib}}%
-  \def\sc{\macro{#1_sc}\font_style={sc}}%
+  \def\ib{\macro{#1_ib}\font_style={ib}}% bold italic
+  \def\sc{\macro{#1_sc}\font_style={sc}}% small caps
+  \def\cout{\macro{#1_cout}\font_style={cout}}% callout numbers
   \def\tt{\macro{#1_tt}\fam\ttfam \font_style={tt}}%
   \def\tti{\macro{#1_tti}\font_style={tti}}%
   \def\ttib{\macro{#1_ttib}\font_style={ttib}}%
@@ -602,9 +609,13 @@
   \item_sep={\ifx\pris\empty.\else)\fi}
   \macro{#2_list}}
 
-\def\arabic_item{
+\def\arabic_item{%
   \def\list_label{\number\itemCount}\list_item}
 \def\arabic_list{\let\item=\arabic_item}
+
+\def\callout_item{%
+  \def\list_label{\cout\number\itemCount}\list_item}
+\def\callout_list{\item_sep={}\let\item=\callout_item}
 
 \def\roman_item{%
   \def\list_label{\romannumeral\itemCount}\list_item}
@@ -740,7 +751,7 @@
 
 % Final touches
 \normalSize\rm
-\parindent=1em
+\parindent=2em
 \item_indent=2em
 \widowpenalty=300
 \proofMode
