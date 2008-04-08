@@ -76,13 +76,6 @@ Author: Ladislav Lhotka
   </xsl:template>
 
   <xsl:template name="xref-text">
-    <xsl:if test="@raw!='true'">
-      <xsl:apply-templates select="id(@linkend)"
-			   mode="label"/>
-      <xsl:text>~</xsl:text>
-    </xsl:if>
-    <xsl:apply-templates select="id(@linkend)"
-			 mode="number"/>
   </xsl:template>
 
   <xsl:template name="TeX-table-template">
@@ -743,18 +736,29 @@ Author: Ladislav Lhotka
   </xsl:template>
 
   <xsl:template match="tr:xref">
+    <xsl:apply-templates/>
     <xsl:choose>
-      <xsl:when test="child::text()">
-	<xsl:apply-templates/>
-	<xsl:text>\footNote</xsl:text>
-	<xsl:call-template name="TeXgroup">
-	  <xsl:with-param name="arg">
-	    <xsl:call-template name="xref-text"/>
-	  </xsl:with-param>
-	</xsl:call-template>
+      <xsl:when test="descendant::text()">
+	<xsl:if test="not(@raw='true' or @raw=1)">
+	  <xsl:text> (</xsl:text>
+	  <xsl:apply-templates select="id(@linkend)"
+			       mode="label"/>
+	</xsl:if>
+	<xsl:text>&#xA0;</xsl:text>
+	<xsl:apply-templates select="id(@linkend)"
+			     mode="number"/>
+	<xsl:if test="not(@raw='true' or @raw=1)">
+	  <xsl:text>)</xsl:text>
+	</xsl:if>
       </xsl:when>
       <xsl:otherwise>
-	<xsl:call-template name="xref-text"/>
+	<xsl:if test="not(@raw='true' or @raw=1)">
+	  <xsl:apply-templates select="id(@linkend)"
+			       mode="label"/>
+	  <xsl:text>&#xA0;</xsl:text>
+	</xsl:if>
+	<xsl:apply-templates select="id(@linkend)"
+			     mode="number"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>

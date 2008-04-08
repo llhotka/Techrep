@@ -234,18 +234,22 @@ Author: Ladislav Lhotka
     </xsl:element>
   </xsl:template>
 
-  <xsl:template match="tr:blockquote">
+  <xsl:template match="tr:strong|tr:sup|tr:sub|tr:blockquote">
     <xsl:element name="{local-name()}">
       <xsl:apply-templates/>
     </xsl:element>
   </xsl:template>
 
-  <xsl:template match="tr:em|tr:command|tr:file|tr:uri">
-    <em><xsl:apply-templates/></em>
+  <xsl:template match="tr:dt">
+    <xsl:element name="dt">
+      <xsl:element name="strong">
+	<xsl:apply-templates/>
+      </xsl:element>
+    </xsl:element>
   </xsl:template>
 
-  <xsl:template match="tr:strong">
-    <strong><xsl:apply-templates/></strong>
+  <xsl:template match="tr:em|tr:command|tr:file|tr:uri|tr:phrase">
+    <em><xsl:apply-templates/></em>
   </xsl:template>
 
   <xsl:template match="tr:tt|tr:input">
@@ -265,6 +269,15 @@ Author: Ladislav Lhotka
 	<xsl:text>”</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
+  </xsl:template>
+
+  <xsl:template match="tr:a">
+    <xsl:element name="a">
+      <xsl:attribute name="href">
+	<xsl:value-of select="@href"/>
+      </xsl:attribute>
+      <xsl:apply-templates/>
+    </xsl:element>
   </xsl:template>
 
   <xsl:template match="footnote">
