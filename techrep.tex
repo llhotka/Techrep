@@ -1,6 +1,7 @@
 % -*- mode: fundamental; -*-
 
-% © CESNET, 2007
+% Author: Ladislav Lhotka
+% © CESNET, 2007, 2008
 
 \catcode`_=11 % to hide private macros
 \catcode`@=11 % to borrow plain TeX macros
@@ -31,7 +32,7 @@
 \newskip\belowsss_skip % below the subsubsection heading
 \newskip\list_skip % above and below lists
 \newskip\cap_skip % above/below caption
-\newif\ifproc_mode % proceedings/single report 
+\newif\ifproc_output % proceedings/single report 
 \newif\ifproof_mode % proof mode switch
 \newif\ifin_sec % indicates open section
 \newif\ifin_subsec % indicates open subsection
@@ -341,6 +342,11 @@
 % Processing modes
 \def\proofMode{\proof_modetrue}
 \def\finalMode{\proof_modefalse}
+\def\cleanPage{\footline={}%
+  \def\makeheadline{\vbox to 0pt{\skip0=\topskip
+      \advance\skip0 by -2.75\baselineskip \vskip\skip0
+      \hbox to \hsize{\hfill}\vss}%
+    \nointerlineskip}}
 
 % \output routines
 \dimen\margin_ins=\maxdimen
@@ -414,6 +420,13 @@
 \def\report{%
     \foot_count=0 \auth_count=0
     \let\short_title=\empty
+    \ifproc_output
+      \ifodd\pageno\else
+        \ifproof_mode \advancepageno \else
+	    \cleanPage\null\vfill\eject
+        \fi
+      \fi
+    \fi
     \title_pagetrue}
 
 \def\endReport{\vfill\end}
@@ -722,7 +735,7 @@
     \fi
   \fi}
 
-\def\tr_pars{\proc_modefalse
+\def\tr_pars{\proc_outputfalse
   \hsize=159mm
   \vsize=690pt
   \let\normalSize=\twelvePoint
@@ -731,7 +744,7 @@
   \def\sectionFont{\fourteenPoint\bf}
 }
 
-\def\proc_pars{\proc_modetrue
+\def\proc_pars{\proc_outputtrue
   \hsize=130mm \hoffset=12mm
   \vsize=516pt \voffset=26.5mm
   \let\normalSize=\tenPoint

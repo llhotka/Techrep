@@ -29,8 +29,7 @@ incrementally using the extension mechanisms of RELAX NG.
 .. [Lho06] Lhotka L.: *Annotating XML Schemas with
    reStructuredText*. Technical report `3/2006`_, Praha: CESNET, 2006.
 
-.. [Lho07] Lhotka L.: *New Version of the XML Schema for Technical
-   Reports.* Technical report `X/2008`_, Praha: CESNET, 2007.
+.. [Lho07] Lhotka L.: *Using Techrep 2.* To appear.
 
 .. _RELAX NG: http://relaxng.org
 
@@ -147,12 +146,14 @@ version of the title that can be used in page headings etc.
 	<ref name="date-content"/>
       </element>
     </optional>
-    <element name="keywords">
-      <ref name="keywords-content"/>
-    </element>
-    <element name="abstract">
-      <ref name="abstract-content"/>
-    </element>
+    <interleave>
+      <element name="keywords">
+	<ref name="keywords-content"/>
+      </element>
+      <element name="abstract">
+	<ref name="abstract-content"/>
+      </element>
+    </interleave>
     <element name="body">
       <ref name="body-content"/>
     </element>
