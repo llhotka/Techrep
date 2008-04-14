@@ -1,19 +1,16 @@
 TR2TEX = /home/lhotka/Devel/Techrep/trtotex.xsl
 TR1TO2 = /home/lhotka/Devel/Techrep/tr1to2.xsl
+TR2XHTML = /home/lhotka/Devel/Techrep/trtoxhtml.xsl
 
 .PHONY: all
 
-all: techreport.pdf
+all: eduacc.html
 
 %.ctr: %.xml
 	xsltproc --novalid -o $@ $(TR1TO2) $<
 
 %.tex: %.ctr
-	xsltproc -o $@ $(TR2TEX) $<
+	xsltproc --stringparam nbsp-tilde 1 -o $@ $(TR2TEX) $<
 
-%.pdf: %.tex
-	ixetex $<
-
-%.ps: %.dvi
-	dvips $<
-
+%.html: %.ctr
+	xsltproc -o $@ $(TR2XHTML) $<
