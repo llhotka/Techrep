@@ -63,7 +63,7 @@ Author: Ladislav Lhotka
   </xsl:template>
 
   <xsl:template match="tr:h1[not(@role='loose')]" mode="number">
-    <xsl:number value="count(preceding-sibling::tr:h1)+1"/>
+    <xsl:number value="count(preceding-sibling::tr:h1[not(@role='loose')])+1"/>
     <xsl:text>.</xsl:text>
   </xsl:template>
   
@@ -93,8 +93,7 @@ Author: Ladislav Lhotka
   </xsl:template>
 
   <xsl:template match="tr:appendix" mode="number">
-    <xsl:number value="count(preceding-sibling::tr:appendix)+1"
-		format="A"/>
+    <xsl:number format="A"/>
     <xsl:text>.</xsl:text>
   </xsl:template>
   
@@ -105,9 +104,8 @@ Author: Ladislav Lhotka
     </xsl:call-template>
   </xsl:template>
 
-  <xsl:template match="tr:figure"
-		mode="number">
-    <xsl:number value="count(preceding-sibling::tr:figure)+1"/>
+  <xsl:template match="tr:figure" mode="number">
+    <xsl:number/>
   </xsl:template>
 
   <xsl:template match="tr:table" mode="label">
@@ -129,9 +127,12 @@ Author: Ladislav Lhotka
     </xsl:call-template>
   </xsl:template>
 
-  <xsl:template match="tr:bibitem"
-		mode="number">
-    <xsl:number value="count(preceding-sibling::tr:bibitem)+1"/>
+  <xsl:template match="tr:bibitem" mode="number">
+    <xsl:number/>
+  </xsl:template>
+
+  <xsl:template match="tr:footnote" mode="number">
+    
   </xsl:template>
 
   <!-- Root element -->
@@ -154,7 +155,11 @@ Author: Ladislav Lhotka
   </xsl:template>
 
   <xsl:template match="@xml:id">
-    <xsl:copy/>
+    <xsl:element name="a">
+      <xsl:attribute name="name">
+	<xsl:value-of select="."/>
+      </xsl:attribute>
+    </xsl:element>
   </xsl:template>
 
   <xsl:template match="tr:report">
@@ -183,11 +188,32 @@ Author: Ladislav Lhotka
 	<xsl:value-of select="tr:date"/>
       </strong></big>
     </p>
+    <xsl:apply-templates select="tr:abstract"/>
+    <xsl:apply-templates select="tr:keywords"/>
     <xsl:apply-templates select="tr:body"/>
   </xsl:template>
 
   <xsl:template match="tr:title">
     <h1><xsl:apply-templates/></h1>
+  </xsl:template>
+
+  <xsl:template match="tr:abstract">
+    <h2>
+      <xsl:call-template name="select-local">
+	<xsl:with-param name="cs">Abstrakt</xsl:with-param>
+	<xsl:with-param name="en">Abstract</xsl:with-param>
+      </xsl:call-template>
+    </h2>
+    <xsl:apply-templates/>
+  </xsl:template>
+
+  <xsl:template match="tr:keywords">
+    <p><strong>
+      <xsl:call-template name="select-local">
+	<xsl:with-param name="cs">Klíčová slova</xsl:with-param>
+	<xsl:with-param name="en">Keywords</xsl:with-param>
+      </xsl:call-template>
+    </strong><xsl:apply-templates/></p>
   </xsl:template>
 
   <xsl:template match="tr:body">
