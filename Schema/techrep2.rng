@@ -643,7 +643,7 @@ This element is used for bibliography references. The value of the
     <element name="cite">
       <ref name="common-attributes"/>
       <attribute name="bibref">
-	<data type="anyURI"/>
+	<data type="IDREF"/>
       </attribute>
     </element>
   </define>

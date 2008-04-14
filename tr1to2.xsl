@@ -349,6 +349,9 @@ Translates the original techrep v1 to version 2.
 	<xsl:value-of select="."/>
 	<xsl:text>&#xA0;</xsl:text>
 	<xsl:element name="xref">
+	  <xsl:attribute name="raw">
+	    <xsl:text>true</xsl:text>
+	  </xsl:attribute>
 	  <xsl:attribute name="linkend">
 	    <xsl:value-of select="substring(@href,2)"/>
 	  </xsl:attribute>
