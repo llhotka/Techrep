@@ -107,7 +107,7 @@ Author: Ladislav Lhotka
   </xsl:template>
 
   <xsl:template match="tr:table" mode="number">
-    <xsl:number value="count(preceding-sibling::tr:table)+1"/>
+    <xsl:number/>
   </xsl:template>
 
   <xsl:template match="tr:ol/tr:li" mode="label">
