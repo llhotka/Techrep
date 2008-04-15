@@ -14,6 +14,9 @@ Translates the original techrep v1 to version 2.
 
   <xsl:output method="xml" indent="yes"/>
 
+  <!-- This parameter controls whether tilde is used as no-break space -->
+  <xsl:param name="nbsp-tilde" select="0"/>
+
   <xsl:strip-space elements="li dd"/>
 
   <xsl:key name="parpar"
@@ -414,6 +417,17 @@ Translates the original techrep v1 to version 2.
     <xsl:element name="q">
       <xsl:apply-templates/>
     </xsl:element>
+  </xsl:template>
+
+  <xsl:template match="text()">
+    <xsl:choose>
+      <xsl:when test="$nbsp-tilde>0">
+	<xsl:value-of select="translate(.,'~','&#xA0;')"/>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:value-of select="."/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
 </xsl:stylesheet>

@@ -7,10 +7,10 @@ TR2XHTML = /home/lhotka/Devel/Techrep/trtoxhtml.xsl
 all: eduacc.html
 
 %.ctr: %.xml
-	xsltproc --novalid -o $@ $(TR1TO2) $<
+	xsltproc --novalid --stringparam nbsp-tilde 0 -o $@ $(TR1TO2) $<
 
 %.tex: %.ctr
-	xsltproc --stringparam nbsp-tilde 1 -o $@ $(TR2TEX) $<
+	xsltproc -o $@ $(TR2TEX) $<
 
 %.html: %.ctr
 	xsltproc -o $@ $(TR2XHTML) $<

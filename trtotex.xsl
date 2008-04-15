@@ -14,9 +14,6 @@ Author: Ladislav Lhotka
        or single technical report (0, default) -->
   <xsl:param name="proceedings" select="0"/>
 
-  <!-- This parameter controls whether tilde is used as no-break space -->
-  <xsl:param name="nbsp-tilde" select="0"/>
-
   <!-- Item labels for an unordered list with respect to its depth -->
   <xsl:param name="bullets">&#x2014;&#x2022;&#x2013;-------</xsl:param>
 
@@ -46,20 +43,9 @@ Author: Ladislav Lhotka
        then made active and appropriately defined for XeTeX.
   -->
 
-  <xsl:variable name="chfrom">
-    <xsl:choose>
-      <xsl:when test="$nbsp-tilde>0">#$%&amp;\^_{}</xsl:when>
-      <xsl:otherwise>#$%&amp;\^_{}~</xsl:otherwise>
-    </xsl:choose>
-  </xsl:variable>
+  <xsl:variable name="chfrom">#$%&amp;\^_{}~</xsl:variable>
 
-  <xsl:variable name="chto">
-    <xsl:choose>
-      <xsl:when
-	  test="$nbsp-tilde>0">&#xff03;&#xff04;&#xff05;&#xff06;&#xff3c;&#xff3e;&#xff3f;&#xff5b;&#xff5d;</xsl:when>
-      <xsl:otherwise>&#xff03;&#xff04;&#xff05;&#xff06;&#xff3c;&#xff3e;&#xff3f;&#xff5b;&#xff5d;&#xff5e;</xsl:otherwise>
-    </xsl:choose>
-  </xsl:variable>
+  <xsl:variable name="chto">&#xff03;&#xff04;&#xff05;&#xff06;&#xff3c;&#xff3e;&#xff3f;&#xff5b;&#xff5d;&#xff5e;</xsl:variable>
 
   <xsl:template name="TeXopt">
     <xsl:param name="arg"/>
@@ -73,9 +59,6 @@ Author: Ladislav Lhotka
     <xsl:text>{</xsl:text>
     <xsl:value-of select="$arg"/>
     <xsl:text>}</xsl:text>
-  </xsl:template>
-
-  <xsl:template name="xref-text">
   </xsl:template>
 
   <xsl:template name="TeX-table-template">
