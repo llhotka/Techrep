@@ -308,7 +308,9 @@ Author: Ladislav Lhotka
   </xsl:template>
 
   <xsl:template match="tr:tt|tr:input">
-    <code><xsl:apply-templates/></code>
+    <xsl:element name="code">
+      <xsl:apply-templates/>
+    </xsl:element>
   </xsl:template>
 
   <xsl:template match="tr:q">
