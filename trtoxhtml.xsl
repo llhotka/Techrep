@@ -157,9 +157,12 @@ Author: Ladislav Lhotka
 		</xsl:element>
 	      </xsl:element>
 	      <xsl:element name="table">
-		<xsl:attribute name="border">0</xsl:attribute>
-		<xsl:apply-templates select="tr:report//tr:footnote"
-				     mode="list"/>
+		<xsl:element name="tbody">
+		  <xsl:attribute name="valign">top</xsl:attribute>
+		  <xsl:attribute name="border">0</xsl:attribute>
+		  <xsl:apply-templates select="tr:report//tr:footnote"
+				       mode="list"/>
+		</xsl:element>
 	      </xsl:element>
 	    </xsl:if>
 	  </div>
