@@ -34,8 +34,6 @@ incrementally using the extension mechanisms of RELAX NG.
 
 .. _3/2006: http://www.cesnet.cz/doc/techzpravy/2006/rngrest/
 
-.. _X/2007: http://www.cesnet.cz/doc/techzpravy/2007/techrep/
-
 .. _MathML: http://www.w3.org/Math/
   </a:rest>
 
@@ -853,14 +851,9 @@ elements such as `figure`_ or `table`_.
 	  <param name="pattern">[lcr]+</param>
 	</data>
       </attribute>
-      <interleave>
-	<optional>
-	<ref name="caption-element"/>
-	</optional>
-	<oneOrMore>
-	  <ref name="tr-element"/>
-	</oneOrMore>
-      </interleave>
+      <oneOrMore>
+	<ref name="tr-element"/>
+      </oneOrMore>
     </element>
   </define>
 
@@ -925,8 +918,8 @@ rendered differently, for example in boldface.
     <a:rest>
 This is the content of a data or header cells in a tabular array. The
 `bgcolor`_ attribute may be used to override the background color set
-for the entire row. Similarly, the optional `align` attribute may
-override the default column alignment. Finally, the `colspan`
+for the entire row. Similarly, the optional `align` attribute may be
+used to override the default column alignment. Finally, the `colspan`
 attribute gives the number of table columns to be spanned by the
 cell. The default is&#xA0;1.
     </a:rest>
