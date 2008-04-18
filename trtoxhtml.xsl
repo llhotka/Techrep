@@ -16,8 +16,11 @@ Author: Ladislav Lhotka
 
   <xsl:include href="cesnet-head.xsl"/>
   <xsl:include href="cesnet-body.xsl"/>
+  <xsl:include href="cesnet-back.xsl"/>
 
   <xsl:variable name="version">2.0</xsl:variable>
+
+  <xsl:param name="tr-name">REPORT</xsl:param>
 
   <!-- Selection of localised terms -->
 
@@ -160,13 +163,20 @@ Author: Ladislav Lhotka
 	</xsl:element>
 	<xsl:call-template name="ceshead"/>
 	<xsl:element name="title">
+	  <xsl:call-template name="select-local">
+	    <xsl:with-param name="cs">Technická zpráva - </xsl:with-param>
+	    <xsl:with-param name="en">Technical report - </xsl:with-param>
+	  </xsl:call-template>
 	  <xsl:value-of select="tr:report/tr:title"/>
 	</xsl:element>
       </xsl:element>
       <xsl:element name="body">
 	<xsl:call-template name="cesbody"/>
-	<div id="ramecek">
-	  <div id="main">
+	<xsl:element name="div">
+	  <xsl:attribute name="id">ramecek</xsl:attribute>
+	  <xsl:element name="div">
+	    <xsl:attribute name="id">main</xsl:attribute>
+	    <xsl:comment>stranka</xsl:comment>
 	    <xsl:apply-templates select="tr:report"/>
 	    <xsl:if test="tr:report//tr:footnote">
 	      <xsl:element name="hr"/>
@@ -184,8 +194,10 @@ Author: Ladislav Lhotka
 		</xsl:element>
 	      </xsl:element>
 	    </xsl:if>
-	  </div>
-	</div>
+	  </xsl:element>
+	  <xsl:comment>stranka</xsl:comment>
+	</xsl:element>
+	<xsl:call-template name="cesback"/>
       </xsl:element>
     </xsl:element>
   </xsl:template>
@@ -199,16 +211,49 @@ Author: Ladislav Lhotka
   </xsl:template>
 
   <xsl:template match="tr:report">
+    <xsl:variable name="basename">
+      <xsl:choose>
+	<xsl:when test="$tr-name='REPORT'">
+	  <xsl:value-of
+	      select="concat('techreport-', translate(@number, '/', '-'))"/>
+	</xsl:when>
+	<xsl:otherwise>
+	  <xsl:value-of select="$tr-name"/>
+	</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
     <xsl:apply-templates select="tr:title"/>
     <xsl:element name="p">
       <xsl:element name="strong">
-	<xsl:call-template name="select-local">
-	  <xsl:with-param name="cs">Technická zpráva</xsl:with-param>
-	  <xsl:with-param name="en">Technical report</xsl:with-param>
-	</xsl:call-template>
-	<xsl:text>&#xa0;</xsl:text>
+	<xsl:element name="a">
+	  <xsl:attribute name="href">
+	    <xsl:text>http://www.cesnet.cz/doc/techzpravy/</xsl:text>
+	  </xsl:attribute>
+	  <xsl:call-template name="select-local">
+	    <xsl:with-param name="cs">Technická zpráva CESNETu</xsl:with-param>
+	    <xsl:with-param name="en">CESNET technical report</xsl:with-param>
+	  </xsl:call-template>
+	</xsl:element>
+	<xsl:text> number&#xA0;</xsl:text>
 	<xsl:value-of select="@number"/>
+	<xsl:text>,</xsl:text>
       </xsl:element>
+      <xsl:element name="br"/>
+      <xsl:text>also available in </xsl:text>
+      <xsl:element name="a">
+	<xsl:attribute name="href">
+	  <xsl:value-of select="concat($basename, '.pdf')"/>
+	</xsl:attribute>
+	<xsl:text>PDF</xsl:text>
+      </xsl:element>
+      <xsl:text> and </xsl:text>
+      <xsl:element name="a">
+	<xsl:attribute name="href">
+	  <xsl:value-of select="concat($basename, '.ctr')"/>
+	</xsl:attribute>
+	<xsl:text>XML</xsl:text>
+      </xsl:element>
+      <xsl:text> formats.</xsl:text>
     </xsl:element>
     <xsl:element name="p">
       <xsl:element name="big">
@@ -406,21 +451,26 @@ Author: Ladislav Lhotka
 	<xsl:value-of select="concat('#',@linkend)"/>
       </xsl:attribute>
       <xsl:choose>
-	<xsl:when test="descendant::text()">
-	  <xsl:apply-templates/>
-	  <xsl:text>&#xA0;</xsl:text>
-	  <xsl:apply-templates select="id(@linkend)"
-			       mode="number"/>
+	<xsl:when test="id(@linkend)">
+	  <xsl:choose>
+	    <xsl:when test="descendant::text()">
+	      <xsl:apply-templates/>
+	      <xsl:text>&#xA0;</xsl:text>
+	      <xsl:apply-templates select="id(@linkend)"
+				   mode="number"/>
+	    </xsl:when>
+	    <xsl:otherwise>
+	      <xsl:if test="not(@raw='true' or @raw=1)">
+		<xsl:apply-templates select="id(@linkend)"
+				     mode="label"/>
+		<xsl:text>&#xa0;</xsl:text>
+	      </xsl:if>
+	      <xsl:apply-templates select="id(@linkend)"
+				   mode="number"/>
+	    </xsl:otherwise>
+	  </xsl:choose>
 	</xsl:when>
-	<xsl:otherwise>
-	  <xsl:if test="not(@raw='true' or @raw=1)">
-	    <xsl:apply-templates select="id(@linkend)"
-				 mode="label"/>
-	    <xsl:text>&#xa0;</xsl:text>
-	  </xsl:if>
-	  <xsl:apply-templates select="id(@linkend)"
-			       mode="number"/>
-	</xsl:otherwise>
+	<xsl:otherwise>??</xsl:otherwise>
       </xsl:choose>
     </xsl:element>
   </xsl:template>
@@ -469,14 +519,10 @@ Author: Ladislav Lhotka
   </xsl:template>
 
   <xsl:template match="tr:tabular">
-    <xsl:element name="div">
-      <xsl:attribute name="class">center</xsl:attribute>
-      <xsl:apply-templates select="@xml:id"/>
-      <xsl:element name="table">
-	<xsl:attribute name="cellspacing">0</xsl:attribute>
-	<xsl:attribute name="class">sede blockcenter</xsl:attribute>
-	<xsl:apply-templates select="tr:tr"/>
-      </xsl:element>
+    <xsl:element name="table">
+      <xsl:attribute name="cellspacing">0</xsl:attribute>
+      <xsl:attribute name="class">sede blockcenter</xsl:attribute>
+      <xsl:apply-templates select="tr:tr"/>
     </xsl:element>
   </xsl:template>
 
@@ -503,6 +549,47 @@ Author: Ladislav Lhotka
 
   <xsl:template match="@bgcolor|@align|@colspan">
     <xsl:copy/>
+  </xsl:template>
+
+  <xsl:template match="tr:image">
+    <xsl:variable name="srcfile" select="tr:source[@format='JPEG' or
+				@format='PNG' or @format='GIF' or
+				@format='SVG']/@file"/>
+      <xsl:element name="img">
+	<xsl:attribute name="src">
+	  <xsl:choose>
+	    <xsl:when test="$srcfile">
+	      <xsl:value-of select="$srcfile[1]"/>
+	    </xsl:when>
+	    <xsl:otherwise>
+	      <xsl:value-of select="tr:source[1]/@file"/>
+	    </xsl:otherwise>
+	  </xsl:choose>
+	</xsl:attribute>
+	<xsl:attribute name="alt">[Image]</xsl:attribute>
+      </xsl:element>
+  </xsl:template>
+
+  <xsl:template match="tr:table|tr:figure">
+    <xsl:element name="div">
+      <xsl:attribute name="class">center</xsl:attribute>
+      <xsl:apply-templates select="@xml:id"/>
+      <xsl:apply-templates select="tr:p|tr:pre|tr:blockquote|tr:image|
+				   tr:tabular|tr:ol|tr:ul|tr:dl"/>
+      <xsl:apply-templates select="tr:caption"/>
+    </xsl:element>
+  </xsl:template>
+
+  <xsl:template match="tr:caption">
+    <xsl:element name="p">
+      <xsl:element name="em">
+	<xsl:apply-templates select="parent::*" mode="label"/>
+	<xsl:text>&#xA0;</xsl:text>
+	<xsl:apply-templates select="parent::*" mode="number"/>
+	<xsl:text>.&#xA0;</xsl:text>
+	<xsl:apply-templates/>
+      </xsl:element>
+    </xsl:element>
   </xsl:template>
 
 </xsl:stylesheet>

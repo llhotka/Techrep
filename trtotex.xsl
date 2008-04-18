@@ -546,7 +546,7 @@ Author: Ladislav Lhotka
   <xsl:template match="tr:image">
     <xsl:text>\image</xsl:text>
     <xsl:variable name="pdf-source"
-		  select="tr:source[@format='PDF' or contains(.,'.pdf')]"/>
+		  select="tr:source[@format='PDF']/@file"/>
     <xsl:choose>
       <xsl:when test="$pdf-source">
 	<xsl:call-template name="TeXgroup">
@@ -563,7 +563,7 @@ Author: Ladislav Lhotka
 	</xsl:call-template>
 	<xsl:call-template name="TeXgroup">
 	  <xsl:with-param name="arg"
-			  select="tr:source[1]"/>
+			  select="tr:source[1]/@file"/>
 	</xsl:call-template>
       </xsl:otherwise>
     </xsl:choose>

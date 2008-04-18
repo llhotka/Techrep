@@ -55,15 +55,17 @@ Three attributes &#x2013; `xml:id`_, `xml:lang`_ and `role`_ &#x2013;
 may be optionally attached to all block elements and some inlines,
 too.
     </a:rest>
-    <optional>
-      <ref name="id-attribute"/>
-    </optional>
-    <optional>
-      <ref name="lang-attribute"/>
-    </optional>
-    <optional>
-      <ref name="role-attribute"/>
-    </optional>
+    <interleave>
+      <optional>
+	<ref name="id-attribute"/>
+      </optional>
+      <optional>
+	<ref name="lang-attribute"/>
+      </optional>
+      <optional>
+	<ref name="role-attribute"/>
+      </optional>
+    </interleave>
   </define>
 
   <define name="id-attribute">
@@ -791,21 +793,20 @@ rendered differently from lists appearing outside paragraphs.
   <define name="image-element">
     <a:rest>
 The `image` element specifies one or more URLs of source graphic
-files. The optional attribute `format` specifies the graphic format of
-each file. If it is not given, the format may be determined by other
-means, for example from the file extension.
+files. The attribute `format` specifies the graphic format of
+each file anf `file` the file name. Both attributes are mandatory.
 
 .. _image: `image-element`_
     </a:rest>
     <element name="image">
       <oneOrMore>
 	<element name="source">
-	  <optional>
-	    <attribute name="format">
-	      <ref name="format-choice"/>
-	    </attribute>
-	  </optional>
-	  <data type="anyURI"/>
+	  <attribute name="format">
+	    <ref name="format-choice"/>
+	  </attribute>
+	  <attribute name="file">
+	    <data type="anyURI"/>
+	  </attribute>
 	</element>
       </oneOrMore>
     </element>
