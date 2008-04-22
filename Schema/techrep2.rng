@@ -55,17 +55,15 @@ Three attributes &#x2013; `xml:id`_, `xml:lang`_ and `role`_ &#x2013;
 may be optionally attached to all block elements and some inlines,
 too.
     </a:rest>
-    <interleave>
-      <optional>
-	<ref name="id-attribute"/>
-      </optional>
-      <optional>
-	<ref name="lang-attribute"/>
-      </optional>
-      <optional>
-	<ref name="role-attribute"/>
-      </optional>
-    </interleave>
+    <optional>
+      <ref name="id-attribute"/>
+    </optional>
+    <optional>
+      <ref name="lang-attribute"/>
+    </optional>
+    <optional>
+      <ref name="role-attribute"/>
+    </optional>
   </define>
 
   <define name="id-attribute">

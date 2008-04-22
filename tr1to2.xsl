@@ -276,7 +276,9 @@ Translates the original techrep v1 to version 2.
       <xsl:apply-templates select="@id"/>
       <xsl:element name="image">
 	<xsl:element name="source">
-	  <xsl:value-of select="@src"/>
+	  <xsl:attribute name="file">
+	    <xsl:value-of select="@src"/>
+	  </xsl:attribute>
 	</xsl:element>
       </xsl:element>
       <xsl:element name="caption">
