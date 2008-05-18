@@ -429,7 +429,7 @@
     \fi
     \title_pagetrue}
 
-\def\endReport{\vfill\end}
+\def\endReport{\vfill\ifproc_output\supereject\else\end\fi}
 
 \def\repnumber#1{\def\rep_number{#1}}
 \def\recdate#1{\def\rec_date{#1}}
