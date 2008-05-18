@@ -65,6 +65,8 @@
 \newtoks\rightRunHead % contains right running head
 \newtoks\titl@ % report title
 \newtoks\@uthors % comma-separated list of authors
+\newtoks\this_author % current author (with affiliation)
+\newtoks\auth_names % author names
 \newtoks\item_sep % separator of list items (typically '.' or ')')
 
 % Macros for general use
@@ -351,7 +353,6 @@
 % \output routines
 \dimen\margin_ins=\maxdimen
 \count\margin_ins=0 \skip\margin_ins=0pt % marginal inserts take up no space
-\ruler_count=0
 
 \def\put_insert#1{%
   \_let\_ins{#1_ins}\_let\_left{#1_left}\_let\_box{#1_box}%
@@ -417,17 +418,18 @@
 
 \let\rep_number=\empty \let\rec_date=\empty
 
-\def\report{%
-    \foot_count=0 \auth_count=0
-    \let\short_title=\empty
-    \ifproc_output
-      \ifodd\pageno\else
-        \ifproof_mode \advancepageno \else
-	    \cleanPage\null\vfill\eject
-        \fi
+\def\report{\ruler_count=0
+  \foot_count=0 \auth_count=0
+  \@uthors={}
+  \let\short_title=\empty
+  \ifproc_output
+    \ifodd\pageno\else
+      \ifproof_mode \advancepageno \else
+	  \cleanPage\null\vfill\eject
       \fi
     \fi
-    \title_pagetrue}
+  \fi
+  \title_pagetrue}
 
 \def\endReport{\vfill\ifproc_output\supereject\else\end\fi}
 
@@ -442,30 +444,37 @@
 
 \def\shortTitle#1{\def\short_title{#1}}
 
-\def\author#1{\ifnum\auth_count=0
-        \@uthors={#1}\def\first_author{#1}\else
-        \@uthors=\expandafter{\the\@uthors, #1}\fi
-    \incr\auth_count}
+\def\append_author#1{\@uthors=\expandafter{\the\@uthors#1}}
+
+\def\author#1#2#3{\def\@ffil{#2}%
+  \ifnum\auth_count=0
+    \append_author{#1\ifx\@ffil\empty\else~(#2)\fi}
+    \auth_names={#1}
+    \def\first_author{#1}
+  \else
+    \append_author{, #1\ifx\@ffil\empty\else~(#2)\fi}
+    \auth_names=\expandafter{\the\auth_names, #1}\fi
+  \incr\auth_count}
 
 \def\makeTitle{\edef\the_title{\the\titl@}%
     \leftRunHead={{\x_i\folio}\kern2em{\x_sc\ifnum\auth_count>3
-        \first_author~et~al.\else \the\@uthors\fi}}%
+        \first_author~et~al.\else \the\auth_names\fi}}%
     \rightRunHead={{\petit\ifx\short_title\empty
         \it\the\titl@\else\short_title\fi\kern2em$\x_i\folio$}}%
-    \ifx\rep_number\empty\else
+    \ifx\rep_number\empty\else\ifproc_output\else
       \vbox{\fourteenPoint
       \centerline{\bf CESNET Technical Report~\rep_number}
       \medskip}%
-    \fi
+    \fi\fi
     \box\title_box
     \vskip\aboveauthors_skip
     \vbox{\leftskip=3em plus 1fill \rightskip=3em plus 1fill
     \parfillskip=0pt
     \normalSize\noindent\sc\the\@uthors}
-    \ifx\rec_date\empty\else
+    \ifx\rec_date\empty\else\ifproc_output\else
       \medskip
       \centerline{\rm\rec_date}
-    \fi
+    \fi\fi
     \vskip\belowauthors_skip}
 
 \def\abstract{\bgroup\petit
