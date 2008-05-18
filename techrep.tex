@@ -733,16 +733,20 @@
     \vbox{\hangindent=\wd\box_one \hangafter=1
       \noindent\unhbox\cap_box}%
   \else
-    \dimen_one=\hsize \advance\dimen_one by -2\parindent
+    \dimen_one=\hsize %\advance\dimen_one by -2\parindent
     \ifdim\wd\cap_box>\dimen_one
-      \vbox{\advance\leftskip by \parindent
+      \vbox{%\advance\leftskip by \parindent
       \advance\leftskip by \wd\box_one
-      \advance\rightskip by \parindent
+      %\advance\rightskip by \parindent
       \noindent\kern-\wd\box_one\unhbox\cap_box}
     \else
       \centerline{\unhbox\cap_box}
     \fi
   \fi}
+
+% Miscellaneous stuff
+
+\def\eqNo#1$${\eqno\hbox{(#1)}$$}
 
 \def\tr_pars{\proc_outputfalse
   \hsize=159mm
