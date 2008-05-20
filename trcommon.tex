@@ -652,8 +652,8 @@
 \let\endFigure=\end_insert
 
 \def\table#1{\def\cap_label{Table~#1}%
-  \add_insert{tab}\hrule\smallskip}
-\def\endTable{\smallskip\hrule\end_insert}
+  \add_insert{tab}\smallskip}
+\def\endTable{\smallskip\end_insert}
 
 \def\image{\handle_option{image_}}
 \def\image_[#1]#2#3{\def\pris{#1}%
@@ -678,19 +678,13 @@
   {\bf\cap_label.}~\ignorespaces}
 \def\endCaption{\egroup
   \setbox\box_one=\hbox{\bf\cap_label.\space}%
-  \ifx\_ins\tab_ins
-    \vbox{\hangindent=\wd\box_one \hangafter=1
-      \noindent\unhbox\cap_box}%
+  \dimen_one=\hsize %\advance\dimen_one by -2\parindent
+  \ifdim\wd\cap_box>\dimen_one
+    \vbox{%\advance\leftskip by \parindent
+    \advance\leftskip by \wd\box_one
+    \noindent\kern-\wd\box_one\unhbox\cap_box}
   \else
-    \dimen_one=\hsize %\advance\dimen_one by -2\parindent
-    \ifdim\wd\cap_box>\dimen_one
-      \vbox{%\advance\leftskip by \parindent
-      \advance\leftskip by \wd\box_one
-      %\advance\rightskip by \parindent
-      \noindent\kern-\wd\box_one\unhbox\cap_box}
-    \else
-      \centerline{\unhbox\cap_box}
-    \fi
+    \centerline{\unhbox\cap_box}
   \fi}
 
 % Miscellaneous stuff
