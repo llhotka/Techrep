@@ -1,0 +1,725 @@
+% -*- mode: fundamental; -*-
+
+% Author: Ladislav Lhotka
+% © CESNET, 2008
+
+\catcode`_=11 % to hide private macros
+\catcode`@=11 % to borrow plain TeX macros
+
+% Allocation of registers
+\newcount\count_one % temporary counter
+\newcount\auth_count % number authors
+\newcount\itemCount % counter for list items
+\newcount\foot_count % counter for footnotes
+\newcount\tab_count % counter for tables
+\newcount\verb_lno % line counter in verbatim listings
+\newcount\ruler_count % counter for proof mode ruler numbers
+\newdimen\dimen_one % temporary dimension
+\newdimen\line_ht % page height (fixed)
+\newdimen\abs_inset % left and right indentation of abstract
+\newdimen\item_indent % amount of item indentation
+\newdimen\fig_left % remaining height of withheld figure insertions
+\newdimen\tab_left % remaining height of withheld table insertions
+\newskip\belowabs_skip % below abstract
+\newskip\belowkw_skip % below keywords
+\newskip\aboveauthors_skip % between the title and authors
+\newskip\abovesec_skip % above the section heading
+\newskip\abovesubsec_skip % above the subsection heading
+\newskip\abovesss_skip % above the subsubsection heading
+\newskip\belowauthors_skip % below the title stuff (authors)
+\newskip\belowsec_skip % below the section heading
+\newskip\belowsubsec_skip % below the subsection heading
+\newskip\belowsss_skip % below the subsubsection heading
+\newskip\list_skip % above and below lists
+\newskip\cap_skip % above/below caption
+\newif\ifproof_mode % proof mode switch
+\newif\ifin_sec % indicates open section
+\newif\ifin_subsec % indicates open subsection
+\newif\ifin_sssec % indicates open subsubsection
+\newif\iftitle_page % indicates report title page
+\newif\ifinfo_up % controls whether headline is set
+\newif\ifinfo_down % controls whether footline is set
+\newif\iffirst_item % first item of the list
+\newif\ifcompact_list % switch for modified handling of short items
+\newif\ifins_hold % signals whether to put insertion on hold
+\newbox\box_one % temporary box
+\newbox\page_box % contains entire page (in output routines)
+\newbox\title_box % box for report title
+\newbox\auth_box % box for authors
+\newbox\fig_box % box for figures
+\newbox\tab_box % box for tables
+\newbox\cap_box % box for figure and table captions
+\newbox\vlinebox % vertical line accross the height of a line
+\newinsert\margin_ins % marginal insertions (index entries)
+\newinsert\fig_ins % figure insertions
+\newinsert\tab_ins % table insertions
+\newtoks\toks_one % temporary tokens
+\newtoks\font_style % current font style
+\newtoks\leftRunHead % contains left running head
+\newtoks\rightRunHead % contains right running head
+\newtoks\titl@ % report title
+\newtoks\@uthors % comma-separated list of authors
+\newtoks\auth_names % author names
+\newtoks\item_sep % separator of list items (typically '.' or ')')
+
+% Macros for general use
+\def\macro#1{\csname#1\endcsname}
+\def\defMacro#1{\expandafter\def\csname#1\endcsname}
+\def\_let#1#2{\expandafter\let\expandafter#1\csname #2\endcsname}
+\def\xdef_macro#1{\expandafter\xdef\csname#1\endcsname}
+\def\incr#1{\advance#1 by 1}
+\def\decr#1{\advance#1 by -1}
+
+% optional parameters (enclosed in [..])
+\def\handle_option#1{%  #1 is the macro to be called
+    \toks0={\macro{#1}}%
+    \futurelet\text\is_option}
+\def\is_option{%
+    \def\pris{\the\toks0}%
+    \ifx\text[\def\text{}%
+    \else \def\text{[]}\fi
+    \expandafter\pris\text}
+
+% Font macros
+\def\text_fam{Baskerville 10 Pro}
+\def\mono_fam{Vida Mono 32 Pro}
+\def\text_opts{mapping=tex-text}
+
+\font\x_rm="\text_fam:\text_opts"		% 10-point fonts
+\font\x_it="\text_fam/I:\text_opts"
+\font\x_bf="\text_fam/B:\text_opts"
+\font\x_ib="\text_fam/IB:\text_opts"
+\font\x_sc="\text_fam:+smcp,\text_opts"
+\font\x_cout="\text_fam:+salt,\text_opts"
+\font\x_i=eurm10
+\font\x_eubf=eurb10
+\font\x_euex=euex10
+\font\x_tt="\mono_fam" at 9pt
+\font\x_tti="\mono_fam/I" at 9pt
+\font\x_ttb="\mono_fam/B" at 9pt
+\font\x_ttib="\mono_fam/IB" at 9pt
+\font\x_sy=cmsy10
+
+\font\ix_rm="\text_fam:\text_opts" at 9pt	% 9-point fonts
+\font\ix_it="\text_fam/I:\text_opts" at 9pt
+\font\ix_bf="\text_fam/B:\text_opts" at 9pt
+\font\ix_ib="\text_fam/IB:\text_opts" at 9pt
+\font\ix_sc="\text_fam:+smcp,\text_opts" at 9pt
+\font\ix_cout="\text_fam:+salt,\text_opts" at 9pt
+\font\ix_i=eurm9
+\font\ix_eubf=eurb9
+\font\ix_euex=euex9
+\font\ix_tt="\mono_fam" at 8pt
+\font\ix_tti="\mono_fam/I" at 8pt
+\font\ix_ttb="\mono_fam/B" at 8pt
+\font\ix_ttib="\mono_fam/IB" at 8pt
+\font\ix_sy=cmsy9
+
+\font\vii_rm="\text_fam:\text_opts" at 7pt	% 7-point fonts
+\font\vii_it="\text_fam/I:\text_opts" at 7pt
+\font\vii_bf="\text_fam/B:\text_opts" at 7pt
+\font\vii_tt="\mono_fam" at 7pt
+\font\vii_i=eurm7
+\font\vii_eubf=eurb7
+\font\vii_euex=euex7
+\font\vii_sy=cmsy7
+
+\font\vi_rm="\text_fam:\text_opts" at 6pt	% 6-point fonts
+\font\vi_it="\text_fam/I:\text_opts" at 6pt
+\font\vi_bf="\text_fam/B:\text_opts" at 6pt
+\font\vi_tt="\mono_fam" at 6pt
+\font\vi_i=eurm6
+\font\vi_eubf=eurb6
+\font\vi_sy=cmsy6
+
+\font\v_rm="\text_fam:\text_opts" at 5pt	% 5-point fonts
+\font\v_it="\text_fam/I:\text_opts" at 5pt
+\font\v_bf="\text_fam/B:\text_opts" at 5pt
+\font\v_tt="\mono_fam" at 5pt
+\font\v_i=eurm5
+\font\v_eubf=eurb5
+\font\v_sy=cmsy5
+
+\font\xii_rm="\text_fam:\text_opts" at 12pt	% 12-point fonts
+\font\xii_it="\text_fam/I:\text_opts" at 12pt
+\font\xii_bf="\text_fam/B:\text_opts" at 12pt
+\font\xii_ib="\text_fam/IB:\text_opts" at 12pt
+\font\xii_sc="\text_fam:+smcp,\text_opts" at 12pt
+\font\xii_cout="\text_fam:+salt,\text_opts" at 12pt
+\font\xii_i=eurm10 at 12pt
+\font\xii_eubf=eurb10 at 12pt
+\font\xii_euex=euex10 at 12pt 
+\font\xii_tt="\mono_fam" at 11pt
+\font\xii_tti="\mono_fam/I" at 11pt
+\font\xii_ttb="\mono_fam/B" at 11pt
+\font\xii_ttib="\mono_fam/IB" at 11pt
+\font\xii_sy=cmsy10 at 12pt
+
+\font\xiv_rm="\text_fam:\text_opts" at 14pt	% 14-point fonts
+\font\xiv_it="\text_fam/I:\text_opts" at 14pt
+\font\xiv_bf="\text_fam/B:\text_opts" at 14pt
+\font\xiv_ib="\text_fam/IB:\text_opts" at 14pt
+\font\xiv_sc="\text_fam:+smcp,\text_opts" at 14pt
+\font\xiv_cout="\text_fam:+salt,\text_opts" at 14pt
+\font\xiv_i=eurm10 at 14pt
+\font\xiv_eubf=eurb10 at 14pt
+\font\xiv_euex=euex10 at 14pt 
+\font\xiv_tt="\mono_fam" at 13pt
+\font\xiv_tti="\mono_fam/I" at 13pt
+\font\xiv_ttb="\mono_fam/B" at 13pt
+\font\xiv_ttib="\mono_fam/IB" at 13pt
+\font\xiv_sy=cmsy10 at 14pt
+
+\font\xvii_rm="\text_fam:\text_opts" at 17pt	% 17-point fonts
+\font\xvii_it="\text_fam/I:\text_opts" at 17pt
+\font\xvii_bf="\text_fam/B:\text_opts" at 17pt
+\font\xvii_ib="\text_fam/IB:\text_opts" at 17pt
+\font\xvii_sc="\text_fam:+smcp,\text_opts" at 17pt
+\font\xvii_cout="\text_fam:+salt,\text_opts" at 17pt
+\font\xvii_i=eurm10 at 17pt
+\font\xvii_eubf=eurb10 at 17pt
+\font\xvii_euex=euex10 at 17pt 
+\font\xvii_tt="\mono_fam" at 16pt
+\font\xvii_tti="\mono_fam/I" at 16pt
+\font\xvii_ttb="\mono_fam/B" at 16pt
+\font\xvii_ttib="\mono_fam/IB" at 16pt
+\font\xvii_sy=cmsy10 at 17pt
+
+\font\xxi_rm="\text_fam:\text_opts" at 21pt	% 21-point fonts
+\font\xxi_it="\text_fam/I:\text_opts" at 21pt
+\font\xxi_bf="\text_fam/B:\text_opts" at 21pt
+\font\xxi_ib="\text_fam/IB:\text_opts" at 21pt
+\font\xxi_sc="\text_fam:+smcp,\text_opts" at 21pt
+\font\xxi_cout="\text_fam:+salt,\text_opts" at 21pt
+\font\xxi_i=eurm10 at 21pt
+\font\xxi_eubf=eurb10 at 21pt
+\font\xxi_euex=euex10 at 21pt 
+\font\xxi_tt="\mono_fam" at 20pt
+\font\xxi_tti="\mono_fam/I" at 20pt
+\font\xxi_ttb="\mono_fam/B" at 20pt
+\font\xxi_ttib="\mono_fam/IB" at 20pt
+\font\xxi_sy=cmsy10 at 21pt
+
+% math stuff
+\newfam\euexfam % family 9
+\mathcode`0="7130
+\mathcode`1="7131
+\mathcode`2="7132
+\mathcode`3="7133
+\mathcode`4="7134
+\mathcode`5="7135
+\mathcode`6="7136
+\mathcode`7="7137
+\mathcode`8="7138
+\mathcode`9="7139
+\mathchardef\intop="1852
+\mathchardef\ointop="1848
+\mathchardef\coprod="1860
+\mathchardef\prod="1851
+\mathchardef\sum="1850
+\mathchardef\braceld="87A \mathchardef\bracerd="87B
+\mathchardef\bracelu="87C \mathchardef\braceru="87D
+\mathchardef\infty="0831
+
+\mathchardef\nearrow="3825
+\mathchardef\searrow="3826
+\mathchardef\nwarrow="382D
+\mathchardef\swarrow="382E
+\mathchardef\Leftrightarrow="382C
+\mathchardef\Leftarrow="3828
+\mathchardef\Rightarrow="3829
+\mathchardef\leftrightarrow="3824 \mathcode`\^^W="3824
+\mathchardef\leftarrow="3820 \let\gets=\leftarrow \mathcode`\^^X="3820
+\mathchardef\rightarrow="3821 \let\to=\rightarrow \mathcode`\^^Y="3821
+\def\uparrow{\delimiter"3822378 } \mathcode`\^^K="3822
+\def\downarrow{\delimiter"3823379 } \mathcode`\^^A="3823
+\def\updownarrow{\delimiter"386C33F }
+\def\Uparrow{\delimiter"382A37E }
+\def\Downarrow{\delimiter"382B37F }
+\def\Updownarrow{\delimiter"386D377 }
+\mathchardef\leftharpoonup="3818
+\mathchardef\leftharpoondown="3819
+\mathchardef\rightharpoonup="381A
+\mathchardef\rightharpoondown="381B
+
+\def\set_families#1#2#3{%
+  \textfont0=\macro{#1_rm}\scriptfont0=\macro{#2_rm}%
+    \scriptscriptfont0=\macro{#3_rm}%
+  \textfont1=\macro{#1_i}\scriptfont1=\macro{#2_i}%
+    \scriptscriptfont1=\macro{#3_i}%
+  \textfont2=\macro{#1_sy}\scriptfont2=\macro{#2_sy}%
+    \scriptscriptfont2=\macro{#3_sy}%
+  \textfont3=\macro{#1_euex}\scriptfont3=\macro{#1_euex}%
+    \scriptscriptfont3=\macro{#1_euex}%
+  \textfont\bffam=\macro{#1_bf}%
+  \textfont\itfam=\macro{#1_it}%
+  \textfont\ttfam=\macro{#1_tt}%
+  \textfont\euexfam=\macro{#1_euex}%
+}
+
+\def\set_styles#1{%
+  \def\rm{\macro{#1_rm}\fam0 \font_style={rm}}%
+  \def\it{\macro{#1_it}\fam\itfam \font_style={it}}%
+  \def\bf{\macro{#1_bf}\fam\bffam \font_style={bf}}%
+  \def\ib{\macro{#1_ib}\font_style={ib}}% bold italic
+  \def\sc{\macro{#1_sc}\font_style={sc}}% small caps
+  \def\cout{\macro{#1_cout}\font_style={cout}}% callout numbers
+  \def\tt{\macro{#1_tt}\fam\ttfam \font_style={tt}}%
+  \def\tti{\macro{#1_tti}\font_style={tti}}%
+  \def\ttib{\macro{#1_ttib}\font_style={ttib}}%
+  }
+
+\def\sl{\it}
+
+\def\set_line_sizes#1#2#3{\normalbaselineskip=#1%
+  \normallineskip=#2\normallineskiplimit=#3\normalbaselines
+  \line_ht=#1
+  \dimen_one=\line_ht
+  \divide\dimen_one by 3
+  \setbox\strutbox=\hbox{\vrule height 2.4\dimen_one
+    depth 0.6\dimen_one width 0pt}%
+  \setbox\vlinebox=\hbox{\vrule height 2.4\dimen_one
+    depth 0.6\dimen_one}%
+  \bigskipamount=3\dimen_one plus1\dimen_one minus1\dimen_one
+  \medskipamount=\bigskipamount \divide\medskipamount by 2
+  \smallskipamount=\medskipamount \divide\smallskipamount by 2}
+
+\def\strut{\copy\strutbox}
+\def\vline{\copy\vlinebox}
+
+\def\ninePoint{\set_styles{ix}%
+  \set_families{ix}{vi}{v}%
+  \set_line_sizes{12pt}{0pt}{0pt}%
+  \macro{\the\font_style}}
+
+\def\tenPoint{\set_styles{x}%
+  \set_families{x}{vii}{v}%
+  \set_line_sizes{13pt}{0pt}{0pt}%
+  \macro{\the\font_style}}
+
+\def\twelvePoint{\set_styles{xii}%
+  \set_families{xii}{ix}{vi}%
+  \set_line_sizes{15pt}{0pt}{0pt}%
+  \macro{\the\font_style}}
+
+\def\fourteenPoint{\set_styles{xiv}%
+  \set_families{xiv}{x}{vii}%
+  \set_line_sizes{18pt}{0pt}{0pt}%
+  \macro{\the\font_style}}
+
+\def\seventeenPoint{\set_styles{xvii}%
+  \set_families{xvii}{xii}{ix}%
+  \set_line_sizes{21pt}{0pt}{0pt}%
+  \macro{\the\font_style}}
+
+% mapping of special characters (via XeTeX)
+
+\catcode`＃=\active
+\catcode`＄=\active
+\catcode`％=\active
+\catcode`＆=\active
+\catcode`＼=\active
+\catcode`＾=\active
+\catcode`＿=\active
+\catcode`｛=\active
+\catcode`｝=\active
+\catcode`～=\active
+
+\chardef＃=`\#
+\chardef＄=`\$
+\chardef％=`\%
+\chardef＆=`\&
+\chardef＼=`\\
+\chardef＾=`\^
+\chardef＿=`\_
+\chardef｛=`\{
+\chardef｝=`\}
+\chardef～=`\~
+
+% Processing modes
+\def\proofMode{\proof_modetrue}
+
+% \output routines
+\dimen\margin_ins=\maxdimen
+\count\margin_ins=0 \skip\margin_ins=0pt % marginal inserts take up no space
+
+\def\put_insert#1{%
+  \_let\_ins{#1_ins}\_let\_left{#1_left}\_let\_box{#1_box}%
+  \ifdim\ht\_ins>0pt
+    \global\advance\_left by -\bigskipamount
+    \global\advance\_left by -\ht\_ins
+    \global\advance\_left by -\dp\_ins
+    \unvbox\_ins
+    \bigskip
+  \fi}
+
+\def\pagecontents{\ifvoid\margin_ins\else % marginal info is present
+    \rightline{\rlap{\kern1pc\vbox to\z@{\box\margin_ins \vss}}}\fi
+  \put_insert{fig}%
+  \put_insert{tab}%
+  \dimen@=\dp\@cclv \unvbox\@cclv % open up \box255
+  \ifvoid\footins\else % footnote info is present
+    \vskip\skip\footins
+    \footnoterule
+    \unvbox\footins\fi
+  \ifr@ggedbottom \kern-\dimen@ \vfil \fi}
+\def\one_page_out{%
+    \iftitle_page \info_upfalse \info_downtrue \global\title_pagefalse
+    \else \info_uptrue \info_downfalse\fi
+    \ifproof_mode\proof_output\else\plainoutput\fi}
+\def\tick_rule{\hrule width1mm}
+\def\make_tick{\global\incr\ruler_count
+  \vbox to \line_ht{\tick_rule
+    \leaders\vrule\vfil
+    \hbox to1cm{\ix_rm\number\ruler_count \hfil}
+    \leaders\vrule\vfil}}
+\def\ruler_box{\vbox{\special{color push Blue}\offinterlineskip
+  \dimen_one=0pt
+  \make_tick
+  \loop\ifdim\dimen_one<\ht\page_box
+    \advance\dimen_one by \line_ht
+    \make_tick\repeat
+  \tick_rule
+  \special{color pop}}}
+\def\proof_output{\setbox\page_box=\pagebody
+  \shipout\vbox{\makeheadline
+    \hbox to\hsize{\hss\ruler_box
+      \kern1em \box\page_box}%
+    \makefootline}%
+  \advancepageno
+  \ifnum\outputpenalty>-20000 \else\dosupereject\fi}
+\output={\one_page_out}
+
+% Head- and footline
+\def\makeheadline{\vbox to 0pt{\skip0=\topskip
+\advance\skip0 by -2.75\baselineskip \vskip\skip0
+  \hbox to \hsize{\normalSize\strut
+    \ifodd\pageno
+	\ifinfo_up{\x_rm\hfil\the\rightRunHead}\else\hfil\fi
+    \else\ifinfo_up{\x_rm\the\leftRunHead\hfil}\fi\fi}\vss}%
+    \nointerlineskip}
+\def\makefootline{\baselineskip=2\normalbaselineskip
+\hbox to \hsize{\the\footline}}
+
+\let\rep_number=\empty \let\rec_date=\empty
+\def\repnumber#1{\def\rep_number{#1}}
+\def\recdate#1{\def\rec_date{#1}}
+
+\def\title#1{\titl@={#1}%
+    \setbox\title_box=\vbox{%
+    \leftskip=3em plus 1fill \rightskip=3em plus 1fill
+    \parfillskip=0pt
+    \titleFont\noindent\the\titl@\par}}
+
+\def\shortTitle#1{\def\short_title{#1}}
+
+\def\append_author#1{\@uthors=\expandafter{\the\@uthors#1}}
+
+\def\author#1#2#3{\def\@ffil{#2}%
+  \ifnum\auth_count=0
+    \append_author{#1\ifx\@ffil\empty\else (#2)\fi}
+    \auth_names={#1}
+    \def\first_author{#1}
+  \else
+    \append_author{, #1\ifx\@ffil\empty\else (#2)\fi}
+    \auth_names=\expandafter{\the\auth_names, #1}\fi
+  \incr\auth_count}
+
+\def\abstract{\bgroup\petit
+    \centerline{\bf Abstract}
+    \smallskip
+    \advance\leftskip by \abs_inset
+    \advance\hsize by -\abs_inset}
+
+\def\endAbstract{\par\egroup\vskip\belowabs_skip}
+
+\def\keywords#1{\vbox{
+    \advance\leftskip by \abs_inset
+    \advance\hsize by -\abs_inset
+    \petit\noindent
+    {\sl Keywords:} #1\par}
+    \vskip\belowkw_skip}
+
+\def\set_heading_box#1#2#3#4#5{\setbox0=\hbox{#2#3}%
+    \setbox0=\vbox{#2%\hrule height0pt
+        \skip0=#1
+        \vskip \ifx\par\endgraf \else .5\fi\skip0
+        \hangindent=\wd0
+        \hangafter=1 \parskip=0pt
+        \hyphenpenalty=10000 \rightskip=0pt plus 5em
+        \noindent#3#4\par\nobreak\vskip#5}}
+
+\def\set_heading{\unvbox0
+    \vskip-\parskip\ignorespaces}
+
+\def\check_leftspace{\dimen0=\pagetotal
+    \advance\dimen0 by -\pageshrink
+    \ifdim\dimen0>\pagegoal
+    \else\dimen0=\pagetotal
+         \advance\dimen0 by \pagestretch
+         \ifdim\dimen0<\pagegoal \dimen0=\pagetotal
+             \advance\dimen0 by \ht0
+             \advance\dimen0 by 3\baselineskip
+             \ifdim\dimen0>\pagegoal \vfill\eject\fi
+             \else\eject\fi\fi}
+
+\def\section#1#2{\ifvmode\else\par\fi
+    \ifin_rep\else
+        \errmessage{Report not started yet!}\fi
+    \set_heading_box\abovesec_skip\sectionFont
+        {#1\kern1em}{#2}\belowsec_skip
+    \check_leftspace
+    \set_heading}
+
+\def\subsection#1#2{\ifvmode\else\par\fi
+    \set_heading_box\abovesubsec_skip\subsectionFont
+        {#1\kern1em}{#2}\belowsubsec_skip
+    \check_leftspace
+    \set_heading}
+
+\def\subsubsection#1#2{\ifvmode\else\par\fi
+    \set_heading_box\abovesss_skip\sssectionFont
+        {#1\kern1em}{#2\kern1em}\belowsss_skip
+    \check_leftspace
+    \set_heading}
+
+\def\appendix#1#2{\ifvmode\else\par\fi
+    \set_heading_box\abovesec_skip\sectionFont
+        {Appendix~#1.\kern1em}{#2}\belowsec_skip
+    \check_leftspace
+    \set_heading}
+
+% Verbatim mode - terminated by U+00A4 (CURRENCY SIGN)
+
+\def\uncatcode_specials{\def\do##1{\catcode`##1=12 }\dospecials}
+{\obeyspaces\global\let =\ }
+
+\def\numberedVerbatim{\par\begingroup\tt
+  \verb_lno=0
+  \obeylines\uncatcode_specials\obeyspaces
+  \everypar={\incr\verb_lno
+    \llap{\hbox to\parindent{%
+        \hfil{\ix_i\number\verb_lno\ \ }}}}}
+
+\def\verbatim{\par\medskip\begingroup\tt\parindent=0pt
+  \obeylines\uncatcode_specials\obeyspaces}
+
+\def\endVerbatim{\endgroup\medbreak}
+
+\catcode`\¤=\active \let¤=\endVerbatim
+
+\def\blockQuote{\par\begingroup
+  \advance\leftskip by\parskip
+  \advance\rightskip by\parskip
+  \nobreak\medskip}
+
+\def\endBlockQuote{\endgroup\medbreak}
+
+% Lists
+
+\list_skip=3pt plus1pt minus2pt
+\compact_listfalse
+
+\def\compactList{\compact_listtrue}
+
+\def\begin_list{\handle_option{begin_list_}}
+\def\begin_list_[#1]{\par\goodbreak
+    \def\pris{#1}
+    \vskip\list_skip\bgroup
+    \advance\leftskip by \ifx\pris\empty \item_indent \else\pris\fi
+    \first_itemtrue
+    \itemCount=0}
+
+\def\endList{\par\egroup\vskip\list_skip}
+
+\def\list_item{
+  \iffirst_item
+    \par\first_itemfalse
+  \else
+    \par\goodbreak \ifcompact_list\vskip-\parskip\fi
+  \fi
+  \incr\itemCount
+  \noindent
+  \llap{\hbox to \item_indent{\hss\list_label\the\item_sep\kern2mm}}%
+  \ignorespaces}
+
+\def\ASCII_item#1{%
+  \count_one=\itemCount \advance\count_one by #1
+  \def\list_label{\char\number\count_one}\list_item}
+
+\def\unorderedList{\handle_option{unorderedList_}}
+\def\unorderedList_[#1]{\begin_list
+    \def\pris{#1}%
+    \edef\list_label{\ifx\pris\empty •\else\pris\fi}
+    \let\item=\list_item}
+
+\def\orderedList{\handle_option{orderedList_}}
+\def\orderedList_[#1]#2{\begin_list
+  \def\pris{#1}
+  \item_sep={\ifx\pris\empty.\else)\fi}
+  \macro{#2_list}}
+
+\def\arabic_item{%
+  \def\list_label{\number\itemCount}\list_item}
+\def\arabic_list{\let\item=\arabic_item}
+
+\def\callout_item{%
+  \def\list_label{\cout\number\itemCount}\list_item}
+\def\callout_list{\item_sep={}\let\item=\callout_item}
+
+\def\roman_item{%
+  \def\list_label{\romannumeral\itemCount}\list_item}
+\def\roman_list{\let\item=\roman_item}
+
+\def\ROMAN_item{%
+  \def\list_label{\uppercase\expandafter{\romannumeral\itemCount}}%
+  \list_item}
+\def\ROMAN_list{\let\item=\ROMAN_item}
+
+\def\alpha_item{\ASCII_item{97}}
+\def\alpha_list{\let\item=\alpha_item}
+
+\def\ALPHA_item{\ASCII_item{65}}
+\def\ALPHA_list{\let\item=\ALPHA_item}
+
+\def\definitionList{\par\vskip\list_skip\bgroup
+    \parindent=0pt \parskip=2pt plus1pt \first_itemtrue
+    \advance\leftskip by \item_indent}
+
+\def\term#1{\par\iffirst_item \first_itemfalse\else \medbreak\fi
+    \hbox{\it #1}}
+
+\def\description{\indent\ignorespaces}
+
+\def\bibList{\setbox\box_one\hbox{[99] }%
+  \begin_list[\wd\box_one]\parskip=\smallskipamount
+  \widowpenalty=2000 \clubpenalty=2000}
+
+\def\bibItem#1{\def\list_label{[#1]}\list_item}
+
+% Footnotes
+\def\foot_mark{${}^{\number\foot_count}$}
+
+\def\footNote{\global\incr\foot_count
+  \let\@sf\empty
+  \ifhmode\edef\@sf{\spacefactor\the\spacefactor}\/\fi
+  \foot_mark\@sf\vfootnote{\foot_mark}}  
+
+\def\fo@t{\petit\ifcat\bgroup\noexpand\next \let\next\f@@t
+  \else\let\next\f@t\fi \next}
+
+% Figures and tables
+\def\pdf_fmt{PDF}
+\fig_left=0pt
+\tab_left=0pt
+\skip\fig_ins=\bigskipamount
+\count\fig_ins=1000
+\dimen\fig_ins=\maxdimen
+\skip\tab_ins=\bigskipamount
+\count\tab_ins=1000
+\dimen\tab_ins=\maxdimen
+
+\def\add_insert#1{\par\begingroup % #1 specifies insertion class
+  \_let\_ins{#1_ins} \_let\_left{#1_left} \_let\_box{#1_box}
+  \setbox\_box=\vbox\bgroup}
+\def\end_insert{\egroup
+  \ifdim\_left>0pt \ins_holdtrue
+  \else
+    \dimen_one=\ht\_box
+    \advance\dimen_one by \dp\_box
+    \advance\dimen_one by \bigskipamount
+    \advance\dimen_one by \pagetotal
+    \advance\dimen_one by -\pageshrink
+    \advance\dimen_one by -0.333\line_ht % shrinkability of bigskip
+    \ifdim\dimen_one>\pagegoal \ins_holdtrue \else \ins_holdfalse \fi
+  \fi
+  \ifins_hold
+    \global\advance\_left by \ht\_box
+    \global\advance\_left by \dp\_box
+    \global\advance\_left by \bigskipamount
+    \insert\_ins{\penalty100
+      \splittopskip=0pt \splitmaxdepth=\maxdimen
+      \floatingpenalty=0
+      \bigskip
+      \box\_box
+      \nobreak}%
+  \else % insertion goes to the current page
+    \bigskip\box\_box\bigbreak
+  \fi\endgroup}
+
+\def\figure#1{\def\cap_label{Figure~#1}%
+  \add_insert{fig}}
+\let\endFigure=\end_insert
+
+\def\table#1{\def\cap_label{Table~#1}%
+  \add_insert{tab}\hrule\smallskip}
+\def\endTable{\smallskip\hrule\end_insert}
+
+\def\image{\handle_option{image_}}
+\def\image_[#1]#2#3{\def\pris{#1}%
+  \def\pic_fmt{#2}%
+  \ifx\pic_fmt\pdf_fmt
+    \let\pic_cs=\XeTeXpdffile
+  \else
+    \let\pic_cs=\XeTeXpicfile
+  \fi
+  \ifx\pris\empty
+    \setbox\box_one=\hbox{\pic_cs "#3"\relax}%
+    \ifdim\wd\box_one>\hsize
+      \hbox{\pic_cs "#3" width \hsize}%
+    \else
+      \box\box_one
+    \fi
+  \else
+    \hbox{\pic_cs "#3" scaled #1}%
+  \fi}
+
+\def\caption{\setbox\cap_box=\hbox\bgroup
+  {\bf\cap_label.}~\ignorespaces}
+\def\endCaption{\egroup
+  \setbox\box_one=\hbox{\bf\cap_label.\space}%
+  \ifx\_ins\tab_ins
+    \vbox{\hangindent=\wd\box_one \hangafter=1
+      \noindent\unhbox\cap_box}%
+  \else
+    \dimen_one=\hsize %\advance\dimen_one by -2\parindent
+    \ifdim\wd\cap_box>\dimen_one
+      \vbox{%\advance\leftskip by \parindent
+      \advance\leftskip by \wd\box_one
+      %\advance\rightskip by \parindent
+      \noindent\kern-\wd\box_one\unhbox\cap_box}
+    \else
+      \centerline{\unhbox\cap_box}
+    \fi
+  \fi}
+
+% Miscellaneous stuff
+\def\eqNo#1$${\eqno\hbox{(#1)}$$}
+
+% Parameters
+\def\parameter_setup{
+  \normalSize\rm
+  \abs_inset=2em
+  \parindent=2em
+  \item_indent=2em
+  \aboveauthors_skip=2.0\line_ht plus 0.5\line_ht
+  \belowauthors_skip=2.0\line_ht plus 0.5\line_ht
+  \belowabs_skip=\line_ht minus 0.25\line_ht
+  \belowkw_skip=2.0\line_ht plus \line_ht minus 0.5\line_ht
+  \abovesec_skip=1.5\line_ht plus 0.3\line_ht
+  \belowsec_skip=0.7\line_ht plus 0.05\line_ht
+  \abovesubsec_skip=1.2\line_ht plus 0.2\line_ht
+  \belowsubsec_skip=0.5\line_ht plus 0.05\line_ht
+  \abovesss_skip=1.2\line_ht plus 0.2\line_ht
+  \belowsss_skip=0.5\line_ht plus 0.05\line_ht
+  \cap_skip=\line_ht plus 0.1\line_ht minus 0.2\line_ht
+  \skip\footins=\line_ht plus 0.15\line_ht minus 0.3\line_ht
+  \dimen\footins=30\line_ht
+  \widowpenalty=300
+  \def\subsectionFont{\normalSize\bf}
+  \def\sssectionFont{\normalSize\bf}
+}
+
+% Change catcodes back to normal values
+\catcode`\_=8 % make _ again subscript symbol
+\catcode`@=12 % at signs are no longer letters

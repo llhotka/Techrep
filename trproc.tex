@@ -1,0 +1,197 @@
+% -*- mode: fundamental; -*-
+
+% Author: Ladislav Lhotka
+% © CESNET, 2007, 2008
+
+\input trcommon
+
+\catcode`_=11 % to hide private macros
+\catcode`@=11 % to borrow plain TeX macros
+
+% Allocation of registers
+\newcount\part_count % part counter
+\newskip\tocnum_skip % space for page numbers in ToC
+\newif\ifin_rep % indicates open report
+\newif\ifmake_toc % controls output of table-of-contents file
+\newif\iffirst_pass % indicates first pass of final run
+\newbox\proc_box % citation of the proceedings
+\newwrite\toc % table of contents
+\newwrite\endp % end pages of report
+
+% Front matter
+\def\proceedings{\let\start_page=\empty}
+\def\endProceedings{\write_endpage}
+\def\citation#1{\def\cite_proc{#1}}
+\def\copyrightNotice#1{\def\copyright_notice{#1}}
+
+% Processing modes
+\def\finalMode{\handle_option{final_mode}}
+\def\final_mode[#1]{\proof_modefalse
+    \def\opt_val{#1}\def\excl_char{!}
+    \ifx\opt_val\excl_char \overfullrule=0pt \first_passfalse
+	\input endpages 
+    \else
+	\first_passtrue
+	\immediate\openout\endp=endpages
+    \fi}
+\def\cleanPage{\bgroup\footline={}%
+  \def\makeheadline{\vbox to 0pt{\skip0=\topskip
+      \advance\skip0 by -2.75\baselineskip \vskip\skip0
+      \hbox to \hsize{\hfill}\vss}%
+    \nointerlineskip}\null\vfill\eject\egroup}
+
+% Foot line
+\footline={\ifinfo_down
+    \ifnum\pageno<0 \hfil\folio\hfil \else
+        \box\proc_box\fi\fi}
+
+\def\part#1{\par\vfill\eject
+    \write_endpage\let\start_page=\empty
+    \incr\part_count
+    \ifodd\pageno\else
+        \ifproof_mode
+            \advancepageno
+        \else
+            \cleanPage
+        \fi
+    \fi
+    \edef\part_label{\uppercase\expandafter{\romannumeral\part_count}}
+    \ifmake_toc\write_toc_part{\part_label}{#1}{\noexpand\folio}\fi
+    \null\vfill
+    {\rightRunHead={\hfil}\seventeenPoint\bf
+    \centerline{Part~\part_label}
+    \vskip15mm
+    \vbox{\leftskip=3em plus 1fill \rightskip=3em plus 1fill
+    \parfillskip=0pt #1}\vfill\eject}}
+
+% For Preface and such
+\def\looseChapter#1{\par\eject\ifodd\pageno\else\advancepageno\fi
+    \null\vskip1in
+    \title_pagetrue
+    \leftRunHead={{\normalSize\rm\folio}\kern2em{\petit\it#1}}
+    \rightRunHead={{\petit\it#1}\kern2em{\normalSize\rm\folio}}
+    \leftline{\seventeenPoint\bf #1}
+    \vskip1cm
+    \ignorespaces}    
+
+\def\endLooseChapter{\vfil\supereject}
+
+\let\rep_number=\empty \let\rec_date=\empty
+
+\def\write_endpage{\ifx\start_page\empty\else
+    {\decr\pageno
+      \immediate\write\endp{%
+        \string\defMacro{to_\start_page}{\number\pageno}}}\fi}
+
+\def\report{\ifin_rep
+        \errmessage{Previous report not finished yet!}\fi
+  \par\vfill\eject
+  \ruler_count=0
+  \foot_count=0 \auth_count=0
+  \@uthors={}
+  \let\short_title=\empty
+  \ifproof_mode\else\write_endpage\fi
+  \ifodd\pageno\else
+    \ifproof_mode \advancepageno \else
+      \cleanPage
+    \fi
+  \fi
+  \ifproof_mode\else
+    \edef\start_page{\romannumeral\pageno}
+    \setbox\proc_box=\vbox{
+      \ifproof_mode\hbox{\vii_rm \number\day.\number}\else
+        \vtop{\baselineskip=9pt \vii_rm
+          \hbox{\cite_proc, p.~\number\pageno--\iffirst_pass??\else
+            \macro{to_\start_page}\fi}
+    \hbox{{\normalSize ©}~\copyright_notice}}\fi}%
+  \fi
+  \in_reptrue \title_pagetrue}
+
+\def\endReport{\in_repfalse\vfill\supereject}
+
+\def\makeTitle{\edef\the_title{\the\titl@}%
+    \ifmake_toc\expandafter\write_toc_article\expandafter{\the_title}%
+        {\the\@uthors}{\noexpand\folio}\fi
+    \leftRunHead={{\petit{\normalSize\rm\folio}\kern2em%
+        {\sc\ifnum\auth_count>3
+        \first_author~et~al.\else \the\auth_names\fi}}}%
+    \rightRunHead={{\petit\it\ifx\short_title\empty
+        \the\titl@\else\short_title\fi\kern2em{\normalSize\rm\folio}}}%
+    \box\title_box
+    \vskip\aboveauthors_skip
+    \vbox{\leftskip=3em plus 1fill \rightskip=3em plus 1fill
+    \parfillskip=0pt
+    \normalSize\noindent\sc\the\@uthors}
+    \vskip\belowauthors_skip}
+
+% Table of contents macros (0=part, 1=article)
+
+\tocnum_skip=1cm plus1fil minus.5cm
+
+\def\tocPart#1#2#3{\medskip\line{\bf
+    Part~#1: #2 \hrulefill\hbox to\tocnum_skip{\hfil#3}}\null}
+\def\tocReport#1#2#3{\vbox{\hyphenpenalty=10000
+    \parfillskip=0pt \advance\rightskip by\tocnum_skip
+    \noindent{\it#1}\dotfill\rlap{\hbox to\tocnum_skip{\hfil#3}}\par
+    \noindent #2}
+    \medskip}
+\def\makeToc{\make_toctrue\immediate\openout\toc=toc-new}
+\def\write_toc_part#1#2#3{\suppress_expansion{#2}%
+    \edef\pris{\write\toc{\string\tocPart{#1}{\token_string}{#3}}}%
+    \pris}
+\def\write_toc_article#1#2#3{\suppress_expansion{#1}%
+    \edef\pris{\write\toc{%
+        \string\tocReport{\token_string}{#2}{#3}}}%
+    \pris}
+\def\suppress_expansion#1{{%
+    \aftergroup\def\aftergroup\token_string\aftergroup{%
+    \assign_next#1\end_tokens}}}
+\def\suppress_auth_exp#1{{%
+    \aftergroup\def\aftergroup\auth_string\aftergroup{%
+    \assign_next#1\end_tokens}}}
+\def\assign_next{\futurelet\pris\analyze_next}
+\def\analyze_next{\ifx\pris\end_tokens
+    \else\ifcat\noexpand\pris\space
+      \aftergroup\space\let\pris=\kill_token
+    \else\ifcat\noexpand\pris\bgroup
+      \aftergroup{\let\pris=\kill_token
+    \else\ifcat\noexpand\pris\egroup
+      \aftergroup}\let\pris=\kill_token
+    \else\let\pris=\copy_token\fi\fi\fi\fi \pris}
+\def\kill_token{\afterassignment\assign_next\let\pris= }
+\def\copy_token#1{%
+    \ifcat\noexpand#1\relax\aftergroup\noexpand
+      \aftergroup\noexpand\aftergroup\noexpand
+    \else\ifcat\noexpand#1\noexpand~\aftergroup\noexpand
+      \aftergroup\noexpand\aftergroup\noexpand\fi\fi
+    \aftergroup#1\assign_next}
+\def\end_tokens\end_tokens{}
+
+\def\tocEntry#1#2#3#4{%
+    \ifcase#1\vskip1.5ex plus2pt minus1pt \ctoc_line{1.5em}{}{#3}{#4}%
+    \or\vskip1.5ex plus 0.3ex\ctoc_line{1.5em}{#2}{#3}{#4}
+    \or\stoc_line{1.5em}{2.5em}{#2}{#3}{#4}%
+    \or\stoc_line{4em}{3.5em}{#2}{#3}{#4}% 
+    \or\stoc_line{7.5em}{1em}{#2}{#3}{#4}% 
+    \else\message{Unknown type of toc-entry}%
+    \fi
+    \vskip0pt plus1pt
+    \ignorespaces}
+\def\ctoc_line#1#2#3#4{\line{\bf\hbox to#1{#2\hfil}#3\hfil#4}}
+\def\stoc_line#1#2#3#4#5{\line{\hskip#1\relax
+    \hbox to#2{#3\hfil}#4\leaders\hbox to 1em{\hss.\hss}\hfil#5}}
+
+% Parameters
+\hsize=130mm \hoffset=12mm
+\vsize=516pt \voffset=26.5mm
+\let\normalSize=\tenPoint
+\let\petit=\ninePoint
+\def\titleFont{\fourteenPoint\bf}
+\def\sectionFont{\twelvePoint\bf}
+
+% Final setup
+\parameter_setup
+\proofMode
+
+\catcode`\_=8 % make _ again subscript symbol
+\catcode`@=12 % at signs are no longer letters
