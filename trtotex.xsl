@@ -79,7 +79,7 @@ Author: Ladislav Lhotka
       </xsl:variable>
       <xsl:choose>
 	<xsl:when test="string-length($colspec)=1">
-	  <xsl:value-of select="concat($result,'\cr ')"/>
+	  <xsl:value-of select="concat($result,'\tabskip=0pt\cr ')"/>
 	</xsl:when>
 	<xsl:otherwise>
 	  <xsl:value-of select="concat($result,'&amp;')"/>

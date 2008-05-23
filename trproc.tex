@@ -62,11 +62,11 @@
     \centerline{Part~\part_label}
     \vskip15mm
     \vbox{\leftskip=3em plus 1fill \rightskip=3em plus 1fill
-    \parfillskip=0pt #1}\vfill\eject}}
+    \parfillskip=0pt \noindent#1}\vfill\eject}}
 
 % For Preface and such
 \def\looseChapter#1{\par\eject\ifodd\pageno\else\advancepageno\fi
-    \null\vskip1in
+    \null
     \title_pagetrue
     \leftRunHead={{\normalSize\rm\folio}\kern2em{\petit\it#1}}
     \rightRunHead={{\petit\it#1}\kern2em{\normalSize\rm\folio}}
@@ -111,7 +111,7 @@
 
 \def\makeTitle{\edef\the_title{\the\titl@}%
     \ifmake_toc\expandafter\write_toc_article\expandafter{\the_title}%
-        {\the\@uthors}{\noexpand\folio}\fi
+        {\the\auth_names}{\noexpand\folio}\fi
     \leftRunHead={{\petit{\normalSize\rm\folio}\kern2em%
         {\sc\ifnum\auth_count>3
         \first_author~et~al.\else \the\auth_names\fi}}}%
@@ -129,7 +129,7 @@
 \tocnum_skip=1cm plus1fil minus.5cm
 
 \def\tocPart#1#2#3{\medskip\line{\bf
-    Part~#1: #2 \hrulefill\hbox to\tocnum_skip{\hfil#3}}\null}
+    Part~#1: #2 \hrulefill\hbox to\tocnum_skip{\hfil#3}}\nobreak\null}
 \def\tocReport#1#2#3{\vbox{\hyphenpenalty=10000
     \parfillskip=0pt \advance\rightskip by\tocnum_skip
     \noindent{\it#1}\dotfill\rlap{\hbox to\tocnum_skip{\hfil#3}}\par
