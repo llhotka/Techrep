@@ -313,6 +313,11 @@
   \set_line_sizes{21pt}{0pt}{0pt}%
   \macro{\the\font_style}}
 
+\def\twentyonePoint{\set_styles{xvii}%
+  \set_families{xxi}{xiv}{xii}%
+  \set_line_sizes{26pt}{0pt}{0pt}%
+  \macro{\the\font_style}}
+
 % mapping of special characters (via XeTeX)
 
 \catcode`＃=\active
@@ -471,10 +476,12 @@
              \else\eject\fi\fi}
 
 \def\section#1#2{\ifvmode\else\par\fi
+    \def\pris{#1}
+    \edef\sec_no{\ifx\pris\empty\else#1\kern1em\fi}
     \ifin_rep\else
         \errmessage{Report not started yet!}\fi
     \set_heading_box\abovesec_skip\sectionFont
-        {#1\kern1em}{#2}\belowsec_skip
+        {\sec_no}{#2}\belowsec_skip
     \check_leftspace
     \set_heading}
 
