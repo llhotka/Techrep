@@ -207,9 +207,8 @@ Author: Ladislav Lhotka
 	    <xsl:with-param name="en">CESNET technical report</xsl:with-param>
 	  </xsl:call-template>
 	</xsl:element>
-	<xsl:text> number&#xA0;</xsl:text>
+	<xsl:text>&#xA0;</xsl:text>
 	<xsl:value-of select="@number"/>
-	<xsl:text>,</xsl:text>
       </xsl:element>
       <xsl:element name="br"/>
       <xsl:element name="a">
@@ -228,10 +227,12 @@ Author: Ladislav Lhotka
 	      <xsl:text>, </xsl:text>
 	    </xsl:if>
 	  </xsl:for-each>
-	  <xsl:element name="br"/>
-	  <xsl:value-of select="tr:date"/>
 	</xsl:element>
       </xsl:element>
+    </xsl:element>
+    <xsl:element name="p">
+      <xsl:text>Received </xsl:text>
+      <xsl:value-of select="tr:date"/>
     </xsl:element>
     <xsl:apply-templates select="tr:abstract"/>
     <xsl:apply-templates select="tr:keywords"/>
@@ -256,7 +257,7 @@ Author: Ladislav Lhotka
 
   <xsl:template match="tr:keywords">
     <xsl:element name="p">
-      <xsl:element name="strong">
+      <xsl:element name="em">
 	<xsl:call-template name="select-local">
 	  <xsl:with-param name="cs">Klíčová slova</xsl:with-param>
 	  <xsl:with-param name="en">Keywords</xsl:with-param>

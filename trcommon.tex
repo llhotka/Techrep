@@ -8,7 +8,7 @@
 
 % Allocation of registers
 \newcount\count_one % temporary counter
-\newcount\auth_count % number authors
+\newcount\auth_count % number of authors
 \newcount\itemCount % counter for list items
 \newcount\foot_count % counter for footnotes
 \newcount\tab_count % counter for tables
@@ -34,9 +34,6 @@
 \newskip\list_skip % above and below lists
 \newskip\cap_skip % above/below caption
 \newif\ifproof_mode % proof mode switch
-\newif\ifin_sec % indicates open section
-\newif\ifin_subsec % indicates open subsection
-\newif\ifin_sssec % indicates open subsubsection
 \newif\iftitle_page % indicates report title page
 \newif\ifinfo_up % controls whether headline is set
 \newif\ifinfo_down % controls whether footline is set
@@ -478,8 +475,6 @@
 \def\section#1#2{\ifvmode\else\par\fi
     \def\pris{#1}
     \edef\sec_no{\ifx\pris\empty\else#1\kern1em\fi}
-    \ifin_rep\else
-        \errmessage{Report not started yet!}\fi
     \set_heading_box\abovesec_skip\sectionFont
         {\sec_no}{#2}\belowsec_skip
     \check_leftspace

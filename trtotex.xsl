@@ -10,10 +10,6 @@ Author: Ladislav Lhotka
 		xmlns:tr="http://cesnet.cz/ns/techrep/base/2.0"
                 version="1.0">
 
-  <!-- This parameter control whether we are processing proceedings (1)
-       or single technical report (0, default) -->
-  <xsl:param name="proceedings" select="0"/>
-
   <!-- Item labels for an unordered list with respect to its depth -->
   <xsl:param name="bullets">&#x2014;&#x2022;&#x2013;-------</xsl:param>
 
@@ -215,14 +211,10 @@ Author: Ladislav Lhotka
       <xsl:value-of select="$NL"/>
     </xsl:if>
     <xsl:value-of select="concat('\report',$NL)"/>
-    <xsl:if test="$proceedings=0">
-      <xsl:apply-templates select="@number"/>
-    </xsl:if>
+    <xsl:apply-templates select="@number"/>
     <xsl:apply-templates select="tr:title"/>
     <xsl:apply-templates select="tr:author"/>
-    <xsl:if test="$proceedings=0">
-      <xsl:apply-templates select="tr:date"/>
-    </xsl:if>
+    <xsl:apply-templates select="tr:date"/>
     <xsl:if test="tr:title">
       <xsl:text>\makeTitle</xsl:text>
       <xsl:value-of select="$NLNL"/>
@@ -641,7 +633,15 @@ Author: Ladislav Lhotka
   <xsl:template match="tr:em">
     <xsl:call-template name="TeXgroup">
       <xsl:with-param name="arg">
-	<xsl:text>\it </xsl:text>
+	<xsl:choose>
+	  <xsl:when test="parent::tr:title|parent::tr:h1|
+			  parent::tr:h2|parent::tr:h3">
+	    <xsl:text>\ib </xsl:text>
+	  </xsl:when>
+	  <xsl:otherwise>
+	    <xsl:text>\it </xsl:text>
+	  </xsl:otherwise>
+	</xsl:choose>
 	<xsl:apply-templates/>
 	<xsl:variable name="nextchar"
 		      select="substring(normalize-space(following-sibling::text()[1]),1,1)"/>
