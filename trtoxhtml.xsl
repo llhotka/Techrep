@@ -12,11 +12,7 @@ Author: Ladislav Lhotka
 		xmlns="http://www.w3.org/1999/xhtml"
                 version="1.0">
 
-  <xsl:output method="xml" indent="yes"/>
-
-  <xsl:include href="cesnet-head.xsl"/>
-  <xsl:include href="cesnet-body.xsl"/>
-  <xsl:include href="cesnet-back.xsl"/>
+  <xsl:output method="xml" omit-xml-declaration="yes" indent="yes"/>
 
   <xsl:variable name="version">2.0</xsl:variable>
 
@@ -148,58 +144,35 @@ Author: Ladislav Lhotka
   <!-- Root element -->
 
   <xsl:template match="/">
-    <xsl:element name="html">
-      <xsl:element name="head">
-	<xsl:element name="meta">
-	  <xsl:attribute name="http-equiv">Content-Type</xsl:attribute>
-	  <xsl:attribute name="content">text/html</xsl:attribute>
-	  <xsl:attribute name="charset">utf-8</xsl:attribute>
-	</xsl:element>
-	<xsl:element name="meta">
-	  <xsl:attribute name="name">generator</xsl:attribute>
-	  <xsl:attribute name="content">
-	     <xsl:value-of select="concat('trtoxhtml ', $version)"/>
-	  </xsl:attribute>
-	</xsl:element>
-	<xsl:call-template name="ceshead"/>
-	<xsl:element name="title">
-	  <xsl:call-template name="select-local">
-	    <xsl:with-param name="cs">Technická zpráva - </xsl:with-param>
-	    <xsl:with-param name="en">Technical report - </xsl:with-param>
-	  </xsl:call-template>
-	  <xsl:value-of select="tr:report/tr:title"/>
-	</xsl:element>
-      </xsl:element>
-      <xsl:element name="body">
-	<xsl:call-template name="cesbody"/>
-	<xsl:element name="div">
-	  <xsl:attribute name="id">ramecek</xsl:attribute>
-	  <xsl:element name="div">
-	    <xsl:attribute name="id">main</xsl:attribute>
-	    <xsl:comment>stranka</xsl:comment>
-	    <xsl:apply-templates select="tr:report"/>
-	    <xsl:if test="tr:report//tr:footnote">
-	      <xsl:element name="hr"/>
-	      <xsl:element name="p">
-		<xsl:element name="strong">
-		  <xsl:text>Footnotes:</xsl:text>
-		</xsl:element>
-	      </xsl:element>
-	      <xsl:element name="table">
-		<xsl:element name="tbody">
-		  <xsl:attribute name="valign">top</xsl:attribute>
-		  <xsl:attribute name="border">0</xsl:attribute>
-		  <xsl:apply-templates select="tr:report//tr:footnote"
-				       mode="list"/>
-		</xsl:element>
-	      </xsl:element>
-	    </xsl:if>
-	  </xsl:element>
-	  <xsl:comment>stranka</xsl:comment>
-	</xsl:element>
-	<xsl:call-template name="cesback"/>
-      </xsl:element>
+    <xsl:comment>#include virtual="/doc/i-start1.html"</xsl:comment>
+    <xsl:element name="title">
+      <xsl:call-template name="select-local">
+	<xsl:with-param name="cs">Technická zpráva - </xsl:with-param>
+	<xsl:with-param name="en">Technical report - </xsl:with-param>
+      </xsl:call-template>
+      <xsl:value-of select="tr:report/tr:title"/>
     </xsl:element>
+    <xsl:comment>#include virtual="/doc/i-start2.html"</xsl:comment>
+    <xsl:element name="body">
+      <xsl:apply-templates select="tr:report"/>
+      <xsl:if test="tr:report//tr:footnote">
+	<xsl:element name="hr"/>
+	<xsl:element name="p">
+	  <xsl:element name="strong">
+	    <xsl:text>Footnotes:</xsl:text>
+	  </xsl:element>
+	</xsl:element>
+	<xsl:element name="table">
+	  <xsl:element name="tbody">
+	    <xsl:attribute name="valign">top</xsl:attribute>
+	    <xsl:attribute name="border">0</xsl:attribute>
+	    <xsl:apply-templates select="tr:report//tr:footnote"
+				 mode="list"/>
+	  </xsl:element>
+	</xsl:element>
+      </xsl:if>
+    </xsl:element>
+    <xsl:comment>#include virtual="/doc/i-stop.html"</xsl:comment>
   </xsl:template>
 
   <xsl:template match="@xml:id">
@@ -239,21 +212,12 @@ Author: Ladislav Lhotka
 	<xsl:text>,</xsl:text>
       </xsl:element>
       <xsl:element name="br"/>
-      <xsl:text>also available in </xsl:text>
       <xsl:element name="a">
 	<xsl:attribute name="href">
 	  <xsl:value-of select="concat($basename, '.pdf')"/>
 	</xsl:attribute>
-	<xsl:text>PDF</xsl:text>
+	<xsl:text>PDF format</xsl:text>
       </xsl:element>
-      <xsl:text> and </xsl:text>
-      <xsl:element name="a">
-	<xsl:attribute name="href">
-	  <xsl:value-of select="concat($basename, '.ctr')"/>
-	</xsl:attribute>
-	<xsl:text>XML</xsl:text>
-      </xsl:element>
-      <xsl:text> formats.</xsl:text>
     </xsl:element>
     <xsl:element name="p">
       <xsl:element name="big">
