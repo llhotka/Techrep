@@ -257,8 +257,8 @@
 
 \def\set_styles#1{%
   \def\rm{\macro{#1_rm}\fam0 \font_style={rm}}%
-  \def\it{\macro{#1_it}\fam\itfam \font_style={it}}%
-  \def\bf{\macro{#1_bf}\fam\bffam \font_style={bf}}%
+  \def\it{\macro{#1_it}\fam\itfam \let\bf=\ib \font_style={it}}%
+  \def\bf{\macro{#1_bf}\fam\bffam \let\it=\ib \font_style={bf}}%
   \def\ib{\macro{#1_ib}\font_style={ib}}% bold italic
   \def\sc{\macro{#1_sc}\font_style={sc}}% small caps
   \def\cout{\macro{#1_cout}\font_style={cout}}% callout numbers
