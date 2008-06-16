@@ -9,7 +9,6 @@ Author: Ladislav Lhotka
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 		xmlns:tr="http://cesnet.cz/ns/techrep/base/2.0"
-		xmlns="http://www.w3.org/1999/xhtml"
                 version="1.0">
 
   <xsl:output method="xml" omit-xml-declaration="yes" indent="yes"/>
@@ -153,25 +152,23 @@ Author: Ladislav Lhotka
       <xsl:value-of select="tr:report/tr:title"/>
     </xsl:element>
     <xsl:comment>#include virtual="/doc/i-start2.html"</xsl:comment>
-    <xsl:element name="body">
-      <xsl:apply-templates select="tr:report"/>
-      <xsl:if test="tr:report//tr:footnote">
-	<xsl:element name="hr"/>
-	<xsl:element name="p">
-	  <xsl:element name="strong">
-	    <xsl:text>Footnotes:</xsl:text>
-	  </xsl:element>
+    <xsl:apply-templates select="tr:report"/>
+    <xsl:if test="tr:report//tr:footnote">
+      <xsl:element name="hr"/>
+      <xsl:element name="p">
+	<xsl:element name="strong">
+	  <xsl:text>Footnotes:</xsl:text>
 	</xsl:element>
-	<xsl:element name="table">
-	  <xsl:element name="tbody">
-	    <xsl:attribute name="valign">top</xsl:attribute>
-	    <xsl:attribute name="border">0</xsl:attribute>
-	    <xsl:apply-templates select="tr:report//tr:footnote"
-				 mode="list"/>
-	  </xsl:element>
+      </xsl:element>
+      <xsl:element name="table">
+	<xsl:element name="tbody">
+	  <xsl:attribute name="valign">top</xsl:attribute>
+	  <xsl:attribute name="border">0</xsl:attribute>
+	  <xsl:apply-templates select="tr:report//tr:footnote"
+			       mode="list"/>
 	</xsl:element>
-      </xsl:if>
-    </xsl:element>
+      </xsl:element>
+    </xsl:if>
     <xsl:comment>#include virtual="/doc/i-stop.html"</xsl:comment>
   </xsl:template>
 
