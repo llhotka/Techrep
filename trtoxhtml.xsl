@@ -173,11 +173,9 @@ Author: Ladislav Lhotka
   </xsl:template>
 
   <xsl:template match="@xml:id">
-    <xsl:element name="a">
-      <xsl:attribute name="name">
-	<xsl:value-of select="."/>
-      </xsl:attribute>
-    </xsl:element>
+    <xsl:attribute name="id">
+      <xsl:value-of select="."/>
+    </xsl:attribute>
   </xsl:template>
 
   <xsl:template match="tr:report">
