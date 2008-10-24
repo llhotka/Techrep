@@ -10,6 +10,9 @@ Author: Ladislav Lhotka
 		xmlns:tr="http://cesnet.cz/ns/techrep/base/2.0"
                 version="1.0">
 
+  <!-- Final mode switch -->
+  <xsl:param name="final" select="0"/>
+
   <!-- Item labels for an unordered list with respect to its depth -->
   <xsl:param name="bullets">&#x2014;&#x2022;&#x2013;-------</xsl:param>
 
@@ -203,6 +206,10 @@ Author: Ladislav Lhotka
   <xsl:template match="tr:report">
     <xsl:text>\input techrep</xsl:text>
     <xsl:value-of select="$NL"/>
+    <xsl:if test="$final=1 or @status='final'">
+      <xsl:text>\finalMode</xsl:text>
+      <xsl:value-of select="$NL"/>
+    </xsl:if>
     <xsl:if test="@xml:lang">
       <xsl:text>\setlang</xsl:text>
       <xsl:call-template name="TeXgroup">

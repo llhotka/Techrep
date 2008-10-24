@@ -125,6 +125,14 @@ version of the title that can be used in page headings etc.
     </a:rest>
     <ref name="common-attributes"/>
     <optional>
+      <attribute name="status">
+	<choice>
+	  <value>proof</value>
+	  <value>final</value>
+	</choice>
+      </attribute>
+    </optional>
+    <optional>
       <attribute name="number"/>
     </optional>
     <element name="title">
