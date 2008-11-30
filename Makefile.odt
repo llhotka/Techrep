@@ -1,0 +1,35 @@
+FN = trname
+NAZEV = "Report Title"
+AUTOR = "Author(s)"
+TRNO = XX/2008
+DATE = 6.12.2008
+H1L = 1
+TTS = Teletype
+XSLDIR = /home/lhotka/Projekty/Techrep
+ODT2TR = $(XSLDIR)/odt2tr-notempl.xsl
+TR2TEX = $(XSLDIR)/trtotex.xsl
+TR1TO2 = $(XSLDIR)/tr1to2.xsl
+TR2XHTML = $(XSLDIR)/trtoxhtml.xsl
+
+.PHONY: all
+
+all: $(FN).html $(FN).pdf
+
+content.xml: $(FN).odt
+	unzip $<
+	touch $@
+
+$(FN).xml: content.xml
+	xsltproc $(GOPTS) -o $@ $(ODT2TR) $<
+
+%.ctr: %.xml
+	xsltproc --novalid -o $@ $(TR1TO2) $<
+
+%.tex: %.ctr
+	xsltproc -o $@ $(TR2TEX) $<
+
+%.pdf: %.tex
+	ixetex $<
+
+%.html: %.ctr
+	xsltproc -o $@ $(TR2XHTML) $<
