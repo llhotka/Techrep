@@ -53,17 +53,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
     <xsl:value-of select="$NL"/>
   </xsl:variable>
   
-  <xsl:variable name="chfrom">&#x2011;&#x2013;&#x2014;&#x2018;&#x2019;&#x201C;&#x201D;&#x201E;&#xA0;&#x2026;&#xD7;</xsl:variable>
-
-  <xsl:variable name="chto">-&#xA7;&#xA7;`&#x27;&#34;&#34;&#34;~€x</xsl:variable>
-
   <!-- Global parameters -->
 
   <!-- Value of text:h/@text:outline-level for h1 elements -->
   <xsl:param name="tr-nazev">FIXME</xsl:param>
   <xsl:param name="tr-autor">FIXME</xsl:param>
   <xsl:param name="tr-datum">FIXME</xsl:param>
-  <xsl:param name="tr-number">XX/2006</xsl:param>
+  <xsl:param name="tr-number">XX/2008</xsl:param>
   <xsl:param name="h1-level" select="1"/>
   <xsl:param name="tr-date">24.12.2006</xsl:param>
   <xsl:param name="tt-style">Teletype</xsl:param>
@@ -278,10 +274,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 
   <xsl:template match="text:s">
     <xsl:text> </xsl:text>
-  </xsl:template>
-
-  <xsl:template match="text()">
-    <xsl:value-of select="translate(.,$chfrom,$chto)"/>
   </xsl:template>
 
 </xsl:stylesheet>
