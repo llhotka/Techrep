@@ -162,10 +162,17 @@
   </xsl:template>
 
   <xsl:template match="block_quote">
-    <xsl:value-of select="$NLNL"/>
-    <xsl:element name="blockquote">
-      <xsl:apply-templates/>
-    </xsl:element>
+    <xsl:choose>
+      <xsl:when test="not (bullet_list|enumerated_list|definition_list)">
+	<xsl:value-of select="$NLNL"/>
+	<xsl:element name="blockquote">
+	  <xsl:apply-templates/>
+	</xsl:element>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:apply-templates/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
   <xsl:template match="reference">
