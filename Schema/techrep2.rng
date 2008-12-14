@@ -221,9 +221,9 @@ elements.
   <define name="hybrid-content">
     <a:rest>
 This is a hybrid model for various text structures such as abstract,
-table cells and list items. It may be formed either by the *inline
-content* of a single paragraph (no tables, figures and lists) or any
-number of block elements.
+footnotes, table cells and list items. It may be formed either by the
+*inline content* of a single paragraph (no tables, figures and lists)
+or any number of block elements.
     </a:rest>
     <choice>
       <ref name="inline-content"/>
@@ -529,13 +529,12 @@ Markup for file names.
 
   <define name="footnote-element">
     <a:rest>
-Footnotes are restricted to simple inline content, i.e., a single
-paragraph without figures, tables and lists.      
+Footnotes use the hybrid content model.
 
 .. _footnote: `footnote-element`_
     </a:rest>
     <element name="footnote">
-      <ref name="inline-content"/>
+      <ref name="hybrid-content"/>
     </element>
   </define>
 
