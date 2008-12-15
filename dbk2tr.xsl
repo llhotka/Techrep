@@ -2,12 +2,12 @@
 
 <!--
 
-Program name: odt2tr.xsl
-Description: This style sheet transforms Open Document Format v1.0
-             to CESNET technical report format 
+Program name: dbk2tr.xsl
+Description: This style sheet transforms DocBook v. 4.5
+             to CESNET technical report format, version 2. 
 Author: Ladislav Lhotka <Lhotka@cesnet.cz>
 
-Copyright (C) 2006 CESNET
+Copyright (C) 2008 CESNET
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of version 2 of the GNU General Public
@@ -26,13 +26,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+		xmlns:tr="http://cesnet.cz/ns/techrep/base/2.0"
                 version="1.0">
 
   <xsl:output method="xml"
 	      indent="yes"
-	      omit-xml-declaration="no"
-	      doctype-public="zprava"
-	      doctype-system="techrep.dtd"/>
+	      omit-xml-declaration="no"/>
 
   <xsl:variable name="NL">
     <xsl:text>
@@ -50,48 +49,47 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
   <xsl:param name="tr-lang">en</xsl:param>
 
   <xsl:template match="article">
-    <xsl:element name="zprava">
-      <xsl:attribute name="cislo">
+    <xsl:element name="tr:report">
+      <xsl:attribute name="number">
 	<xsl:value-of select="$tr-number"/>
       </xsl:attribute>
-      <xsl:attribute name="jazyk">
+      <xsl:attribute name="xml:lang">
 	<xsl:value-of select="$tr-lang"/>
       </xsl:attribute>
-      <xsl:value-of select="$NL"/>
-      <xsl:element name="nazev">
-	<xsl:apply-templates select="articleinfo/title"/>
-      </xsl:element>
-      <xsl:value-of select="$NL"/>
-      <xsl:element name="autor">
-	<xsl:value-of select="articleinfo/author/firstname"/>
-	<xsl:text> </xsl:text>
-	<xsl:value-of select="articleinfo/author/surname"/>
-      </xsl:element>
-      <xsl:value-of select="$NL"/>
-      <xsl:element name="datum">
-	<xsl:value-of select="articleinfo/date"/>
-      </xsl:element>
-      <xsl:value-of select="$NLNL"/>
       <xsl:apply-templates/>
     </xsl:element>
   </xsl:template>
 
-  <xsl:template match="articleinfo"/>
+  <xsl:template match="articleinfo">
+    <xsl:apply-templates select="title"/>
+    <xsl:apply-templates select="author"/>
+  </xsl:template>
 
-  <xsl:template match="title"/>
-  <xsl:template match="title" mode="active">
+  <xsl:template match="articleinfo/title">
+    <xsl:element name="tr:title">
+      <xsl:apply-templates/>
+    </xsl:element>
+  </xsl:template>
+
+  <xsl:template match="figure/title|table/title">
+    <xsl:element name="tr:caption">
+      <xsl:apply-templates/>
+    </xsl:element>
+  </xsl:template>
+
+  <!-- Title of sections etc. -->
+  <xsl:template match="title">
     <xsl:apply-templates/>
   </xsl:template>
 
   <xsl:template match="abstract">
-    <xsl:element name="h1">
-      <xsl:text>Abstract</xsl:text>
+    <xsl:element name="tr:abstract">
+      <xsl:apply-templates/>
     </xsl:element>
-    <xsl:apply-templates/>
   </xsl:template>
 
   <xsl:template match="para">
-    <xsl:element name="p">
+    <xsl:element name="tr:p">
       <xsl:apply-templates/>
     </xsl:element>
   </xsl:template>
@@ -100,18 +98,18 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
     <xsl:variable name="secl" select="count(ancestor-or-self::section)"/>
     <xsl:choose>
       <xsl:when test="$secl=1">
-	<xsl:element name="h1">
-	  <xsl:apply-templates select="title" mode="active"/>
+	<xsl:element name="tr:h1">
+	  <xsl:apply-templates select="title"/>
 	</xsl:element>
       </xsl:when>
       <xsl:when test="$secl=2">
-	<xsl:element name="h2">
-	  <xsl:apply-templates select="title" mode="active"/>
+	<xsl:element name="tr:h2">
+	  <xsl:apply-templates select="title"/>
 	</xsl:element>
       </xsl:when>
       <xsl:when test="$secl=3">
-	<xsl:element name="h3">
-	  <xsl:apply-templates select="title" mode="active"/>
+	<xsl:element name="tr:h3">
+	  <xsl:apply-templates select="title"/>
 	</xsl:element>
       </xsl:when>
     </xsl:choose>
@@ -119,35 +117,35 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
   </xsl:template>
 
   <xsl:template match="sect1">
-    <xsl:element name="h1">
-      <xsl:apply-templates select="title" mode="active"/>
+    <xsl:element name="tr:h1">
+      <xsl:apply-templates select="title"/>
     </xsl:element>
     <xsl:apply-templates/>
   </xsl:template>
   
   <xsl:template match="sect2">
-    <xsl:element name="h2">
-      <xsl:apply-templates select="title" mode="active"/>
+    <xsl:element name="tr:h2">
+      <xsl:apply-templates select="title"/>
     </xsl:element>
     <xsl:apply-templates/>
   </xsl:template>
   
   <xsl:template match="sect3">
-    <xsl:element name="h3">
-      <xsl:apply-templates select="title" mode="active"/>
+    <xsl:element name="tr:h3">
+      <xsl:apply-templates select="title"/>
     </xsl:element>
     <xsl:apply-templates/>
   </xsl:template>
   
   <xsl:template match="simplesect">
-    <xsl:element name="h3">
-      <xsl:apply-templates select="title" mode="active"/>
+    <xsl:element name="tr:h3">
+      <xsl:apply-templates select="title"/>
     </xsl:element>
     <xsl:apply-templates/>
   </xsl:template>
 
   <xsl:template match="ulink">
-    <xsl:element name="a">
+    <xsl:element name="tr:a">
       <xsl:attribute name="href">
 	<xsl:value-of select="@url"/>
       </xsl:attribute>
@@ -156,13 +154,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
   </xsl:template>
 
   <xsl:template match="itemizedlist">
-    <xsl:element name="ul">
+    <xsl:element name="tr:ul">
       <xsl:apply-templates/>
     </xsl:element>
   </xsl:template>
 
   <xsl:template match="listitem">
-    <xsl:element name="li">
+    <xsl:element name="tr:li">
       <xsl:apply-templates/>
     </xsl:element>
   </xsl:template>
@@ -172,25 +170,25 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
   </xsl:template>
 
   <xsl:template match="programlisting">
-    <xsl:element name="pre">
+    <xsl:element name="tr:pre">
       <xsl:apply-templates/>
     </xsl:element>
   </xsl:template>
 
   <xsl:template match="command">
-    <xsl:element name="prikaz">
+    <xsl:element name="tr:command">
       <xsl:apply-templates/>
     </xsl:element>
   </xsl:template>
 
   <xsl:template match="filename">
-    <xsl:element name="soubor">
+    <xsl:element name="tr:file">
       <xsl:apply-templates/>
     </xsl:element>
   </xsl:template>
 
   <xsl:template match="varname|productname">
-    <xsl:element name="i">
+    <xsl:element name="tr:em">
       <xsl:apply-templates/>
     </xsl:element>
   </xsl:template>
@@ -198,16 +196,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
   <xsl:template match="link">
     <xsl:choose>
       <xsl:when test="local-name(id(@linkend))='biblioentry'">
-	<xsl:element name="cite">
-	  <xsl:attribute name="href">
+	<xsl:element name="tr:cite">
+	  <xsl:attribute name="bibref">
 	    <xsl:value-of select="@linkend"/>
 	  </xsl:attribute>
 	</xsl:element>
       </xsl:when>
       <xsl:otherwise>
-	<xsl:element name="a">
-	  <xsl:attribute name="href">
-	    <xsl:value-of select="concat('#',@linkend)"/>
+	<xsl:element name="tr:xref">
+	  <xsl:attribute name="linkend">
+	    <xsl:value-of select="@linkend"/>
 	  </xsl:attribute>
 	</xsl:element>
       </xsl:otherwise>
@@ -215,13 +213,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
   </xsl:template>
 
   <xsl:template match="bibliography">
-    <xsl:element name="seznamknih">
+    <xsl:element name="tr:biblist">
       <xsl:apply-templates/>
     </xsl:element>
   </xsl:template>
 
   <xsl:template match="biblioentry">
-    <xsl:element name="kniha">
+    <xsl:element name="tr:bibitem">
       <xsl:apply-templates select="@id"/>
       <xsl:for-each select=".//author">
 	<xsl:value-of select="surname"/>
@@ -245,9 +243,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
   </xsl:template>
 
   <xsl:template match="@id">
-    <xsl:copy>
+    <xsl:attribute name="xml:id">
       <xsl:value-of select="."/>
-    </xsl:copy>
+    </xsl:attribute>
   </xsl:template>
 
   <xsl:template match="biblioentry/title|biblioentry/subtitle|
@@ -261,13 +259,31 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
     <xsl:text>, </xsl:text>
   </xsl:template>
 
+  <xsl:template match="table">
+    <xsl:element name="tab">
+      <xsl:apply-templates/>
+    </xsl:element>
+  </xsl:template>
+
+  <xsl:template match="
+
   <xsl:template match="figure">
-    <xsl:element name="obr">
-      <xsl:attribute name="src">
-	<xsl:value-of
-	    select="mediaobject/imageobject/imagedata/@fileref"/>
+    <xsl:element name="tr:figure">
+      <xsl:apply-templates select="@id"/>
+      <xsl:apply-templates/>
+    </xsl:element>
+  </xsl:template>
+
+  <xsl:template match="mediaobject|imageobject">
+    <xsl:apply-templates/>
+  </xsl:template>
+
+  <xsl:template match="imagedata">
+    <xsl:element name="tr:image">
+      <xsl:apply-templates select="@format"/>
+      <xsl:attribute name="file">
+	<xsl:value-of select="@fileref"/>
       </xsl:attribute>
-      <xsl:apply-templates select="title" mode="active"/>
     </xsl:element>
   </xsl:template>
 
