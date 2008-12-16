@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-		xmlns:tr="http://cesnet.cz/ns/techrep/base/2.0"
+		xmlns="http://cesnet.cz/ns/techrep/base/2.0"
                 version="1.0">
 
   <xsl:output method="xml"
@@ -49,7 +49,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
   <xsl:param name="tr-lang">en</xsl:param>
 
   <xsl:template match="article">
-    <xsl:element name="tr:report">
+    <xsl:element name="report">
       <xsl:attribute name="number">
 	<xsl:value-of select="$tr-number"/>
       </xsl:attribute>
@@ -57,7 +57,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 	<xsl:value-of select="$tr-lang"/>
       </xsl:attribute>
       <xsl:apply-templates select="articleinfo|abstract"/>
-      <xsl:element name="tr:body">
+      <xsl:element name="body">
 	<xsl:apply-templates select="section|sect1|para"/>
       </xsl:element>
     </xsl:element>
@@ -74,8 +74,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
   </xsl:template>
 
   <xsl:template match="author">
-    <xsl:element name="tr:author">
-      <xsl:element name="tr:name">
+    <xsl:element name="author">
+      <xsl:element name="name">
 	<xsl:value-of select="firstname"/>
 	<xsl:text> </xsl:text>
 	<xsl:value-of select="surname"/>
@@ -84,13 +84,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
   </xsl:template>
 
   <xsl:template match="title" mode="top">
-    <xsl:element name="tr:title">
+    <xsl:element name="title">
       <xsl:apply-templates/>
     </xsl:element>
   </xsl:template>
 
   <xsl:template match="title" mode="float">
-    <xsl:element name="tr:caption">
+    <xsl:element name="caption">
       <xsl:apply-templates/>
     </xsl:element>
   </xsl:template>
@@ -107,7 +107,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
   <xsl:template match="title"/>
 
   <xsl:template match="keywordset">
-    <xsl:element name="tr:keywords">
+    <xsl:element name="keywords">
       <xsl:for-each select="keyword">
 	<xsl:value-of select="."/>
 	<xsl:if test="position()!=last()">, </xsl:if>
@@ -116,7 +116,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
   </xsl:template>
 
   <xsl:template match="abstract">
-    <xsl:element name="tr:abstract">
+    <xsl:element name="abstract">
       <xsl:apply-templates/>
     </xsl:element>
   </xsl:template>
@@ -127,7 +127,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 	<xsl:apply-templates/>
       </xsl:when>
       <xsl:otherwise>
-	<xsl:element name="tr:p">
+	<xsl:element name="p">
 	  <xsl:apply-templates/>
 	</xsl:element>
       </xsl:otherwise>
@@ -135,7 +135,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
   </xsl:template>
 
   <xsl:template match="para|simpara">
-    <xsl:element name="tr:p">
+    <xsl:element name="p">
       <xsl:apply-templates/>
     </xsl:element>
   </xsl:template>
@@ -144,17 +144,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
     <xsl:variable name="secl" select="count(ancestor-or-self::section)"/>
     <xsl:choose>
       <xsl:when test="$secl=1">
-	<xsl:element name="tr:h1">
+	<xsl:element name="h1">
 	  <xsl:apply-templates select="title" mode="sec"/>
 	</xsl:element>
       </xsl:when>
       <xsl:when test="$secl=2">
-	<xsl:element name="tr:h2">
+	<xsl:element name="h2">
 	  <xsl:apply-templates select="title" mode="sec"/>
 	</xsl:element>
       </xsl:when>
       <xsl:when test="$secl=3">
-	<xsl:element name="tr:h3">
+	<xsl:element name="h3">
 	  <xsl:apply-templates select="title" mode="sec"/>
 	</xsl:element>
       </xsl:when>
@@ -163,35 +163,35 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
   </xsl:template>
 
   <xsl:template match="sect1">
-    <xsl:element name="tr:h1">
+    <xsl:element name="h1">
       <xsl:apply-templates select="title" mode="sec"/>
     </xsl:element>
     <xsl:apply-templates/>
   </xsl:template>
   
   <xsl:template match="sect2">
-    <xsl:element name="tr:h2">
+    <xsl:element name="h2">
       <xsl:apply-templates select="title" mode="sec"/>
     </xsl:element>
     <xsl:apply-templates/>
   </xsl:template>
   
   <xsl:template match="sect3">
-    <xsl:element name="tr:h3">
+    <xsl:element name="h3">
       <xsl:apply-templates select="title" mode="sec"/>
     </xsl:element>
     <xsl:apply-templates/>
   </xsl:template>
   
   <xsl:template match="simplesect">
-    <xsl:element name="tr:h3">
+    <xsl:element name="h3">
       <xsl:apply-templates select="title" mode="sec"/>
     </xsl:element>
     <xsl:apply-templates/>
   </xsl:template>
 
   <xsl:template match="ulink">
-    <xsl:element name="tr:a">
+    <xsl:element name="a">
       <xsl:attribute name="href">
 	<xsl:value-of select="@url"/>
       </xsl:attribute>
@@ -200,31 +200,31 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
   </xsl:template>
 
   <xsl:template match="itemizedlist">
-    <xsl:element name="tr:ul">
+    <xsl:element name="ul">
       <xsl:apply-templates/>
     </xsl:element>
   </xsl:template>
 
   <xsl:template match="orderedlist">
-    <xsl:element name="tr:ol">
+    <xsl:element name="ol">
       <xsl:apply-templates/>
     </xsl:element>
   </xsl:template>
 
   <xsl:template match="varlistentry/listitem">
-    <xsl:element name="tr:dd">
+    <xsl:element name="dd">
       <xsl:apply-templates/>
     </xsl:element>
   </xsl:template>
 
   <xsl:template match="listitem">
-    <xsl:element name="tr:li">
+    <xsl:element name="li">
       <xsl:apply-templates/>
     </xsl:element>
   </xsl:template>
 
   <xsl:template match="variablelist">
-    <xsl:element name="tr:dl">
+    <xsl:element name="dl">
       <xsl:apply-templates/>
     </xsl:element>
   </xsl:template>
@@ -235,7 +235,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
   </xsl:template>
 
   <xsl:template match="term">
-    <xsl:element name="tr:dt">
+    <xsl:element name="dt">
       <xsl:apply-templates/>
     </xsl:element>
   </xsl:template>
@@ -245,25 +245,25 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
   </xsl:template>
 
   <xsl:template match="programlisting">
-    <xsl:element name="tr:pre">
+    <xsl:element name="pre">
       <xsl:apply-templates/>
     </xsl:element>
   </xsl:template>
 
   <xsl:template match="command">
-    <xsl:element name="tr:command">
+    <xsl:element name="command">
       <xsl:apply-templates/>
     </xsl:element>
   </xsl:template>
 
   <xsl:template match="filename">
-    <xsl:element name="tr:file">
+    <xsl:element name="file">
       <xsl:apply-templates/>
     </xsl:element>
   </xsl:template>
 
   <xsl:template match="varname|productname">
-    <xsl:element name="tr:em">
+    <xsl:element name="em">
       <xsl:apply-templates/>
     </xsl:element>
   </xsl:template>
@@ -271,14 +271,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
   <xsl:template match="link">
     <xsl:choose>
       <xsl:when test="local-name(id(@linkend))='biblioentry'">
-	<xsl:element name="tr:cite">
+	<xsl:element name="cite">
 	  <xsl:attribute name="bibref">
 	    <xsl:value-of select="@linkend"/>
 	  </xsl:attribute>
 	</xsl:element>
       </xsl:when>
       <xsl:otherwise>
-	<xsl:element name="tr:xref">
+	<xsl:element name="xref">
 	  <xsl:attribute name="linkend">
 	    <xsl:value-of select="@linkend"/>
 	  </xsl:attribute>
@@ -288,7 +288,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
   </xsl:template>
 
   <xsl:template match="xref">
-    <xsl:element name="tr:xref">
+    <xsl:element name="xref">
       <xsl:attribute name="linkend">
 	<xsl:value-of select="@linkend"/>
       </xsl:attribute>
@@ -296,13 +296,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
   </xsl:template>
 
   <xsl:template match="bibliography">
-    <xsl:element name="tr:biblist">
+    <xsl:element name="biblist">
       <xsl:apply-templates/>
     </xsl:element>
   </xsl:template>
 
   <xsl:template match="biblioentry">
-    <xsl:element name="tr:bibitem">
+    <xsl:element name="bibitem">
       <xsl:apply-templates select="@id"/>
       <xsl:for-each select=".//author">
 	<xsl:value-of select="surname"/>
@@ -342,7 +342,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
   </xsl:template>
 
   <xsl:template match="figure">
-    <xsl:element name="tr:figure">
+    <xsl:element name="figure">
       <xsl:apply-templates select="@id"/>
       <xsl:apply-templates select="title" mode="float"/>
       <xsl:apply-templates/>
@@ -350,7 +350,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
   </xsl:template>
 
   <xsl:template match="mediaobject">
-    <xsl:element name="tr:image">
+    <xsl:element name="image">
       <xsl:apply-templates/>
     </xsl:element>
   </xsl:template>
@@ -360,7 +360,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
   </xsl:template>
 
   <xsl:template match="imageobject">
-    <xsl:element name="tr:source">
+    <xsl:element name="source">
       <xsl:apply-templates select="imagedata/@format"/>
       <xsl:attribute name="file">
 	<xsl:value-of select="imagedata/@fileref"/>
@@ -375,7 +375,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
   </xsl:template>
 
   <xsl:template match="table">
-    <xsl:element name="tr:table">
+    <xsl:element name="table">
       <xsl:apply-templates select="@id"/>
       <xsl:apply-templates select="title" mode="float"/>
       <xsl:apply-templates/>
@@ -383,7 +383,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
   </xsl:template>
 
   <xsl:template match="tgroup">
-    <xsl:element name="tr:tabular">
+    <xsl:element name="tabular">
       <xsl:attribute name="colspec">
 	<xsl:apply-templates select="colspec"/>
       </xsl:attribute>
@@ -421,7 +421,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
   </xsl:template>
 
   <xsl:template match="row">
-    <xsl:element name="tr:tr">
+    <xsl:element name="tr">
       <xsl:apply-templates/>
     </xsl:element>
   </xsl:template>
@@ -429,8 +429,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
   <xsl:template match="entry">
     <xsl:variable name="cel">
       <xsl:choose>
-	<xsl:when test="ancestor::thead">tr:th</xsl:when>
-	<xsl:otherwise>tr:td</xsl:otherwise>
+	<xsl:when test="ancestor::thead">th</xsl:when>
+	<xsl:otherwise>td</xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
     <xsl:element name="{$cel}">
@@ -440,25 +440,25 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
   </xsl:template>
 
   <xsl:template match="emphasis">
-    <xsl:element name="tr:em">
+    <xsl:element name="em">
       <xsl:apply-templates/>
     </xsl:element>
   </xsl:template>
 
   <xsl:template match="uri">
-    <xsl:element name="tr:uri">
+    <xsl:element name="uri">
       <xsl:apply-templates/>
     </xsl:element>
   </xsl:template>
 
   <xsl:template match="footnote">
-    <xsl:element name="tr:footnote">
+    <xsl:element name="footnote">
       <xsl:apply-templates/>
     </xsl:element>
   </xsl:template>
 
   <xsl:template match="quote">
-    <xsl:element name="tr:q">
+    <xsl:element name="q">
       <xsl:apply-templates/>
     </xsl:element>
   </xsl:template>
