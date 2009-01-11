@@ -342,13 +342,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
     </xsl:element>
   </xsl:template>
 
-  <xsl:template match="entry[../../../thead]">
+  <xsl:template match="entry[ancestor::thead]">
     <xsl:element name="th">
       <xsl:apply-templates/>
     </xsl:element>
   </xsl:template>
 
-  <xsl:template match="entry[../../../tbody]">
+  <xsl:template match="entry[ancestor::tbody]">
     <xsl:element name="td">
       <xsl:apply-templates/>
     </xsl:element>
