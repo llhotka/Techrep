@@ -506,44 +506,38 @@ Author: Ladislav Lhotka
     <xsl:value-of select="$NL"/>
   </xsl:template>
 
-  <xsl:template match="tr:figure">
-    <xsl:text>\figure</xsl:text>
+  <xsl:template name="figtab-body">
     <xsl:call-template name="TeXgroup">
       <xsl:with-param name="arg">
 	<xsl:apply-templates select="." mode="number"/>
       </xsl:with-param>
     </xsl:call-template>
     <xsl:value-of select="$NL"/>
-    <xsl:text>\centerline{\vbox{</xsl:text>
+    <xsl:value-of select="concat('\medskip',$NL)"/>
+    <xsl:text>\setbox\box_one=\vbox{</xsl:text>
     <xsl:apply-templates select="tr:p|tr:pre|tr:blockquote|tr:image|
 				 tr:tabular|tr:ol|tr:ul|tr:dl"/>
-    <xsl:value-of select="concat('}}',$NL)"/>
-    <xsl:value-of select="concat('\medskip',$NL)"/>
+    <xsl:value-of select="concat('}',$NL)"/>
+    <xsl:text>\centerline{\box\box_one}</xsl:text>
     <xsl:apply-templates select="tr:caption"/>
+  </xsl:template>
+
+  <xsl:template match="tr:figure">
+    <xsl:text>\figure</xsl:text>
+    <xsl:call-template name="figtab-body"/>
     <xsl:text>\endFigure</xsl:text>
     <xsl:value-of select="$NLNL"/>
   </xsl:template>
 
   <xsl:template match="tr:table">
     <xsl:text>\table</xsl:text>
-    <xsl:call-template name="TeXgroup">
-      <xsl:with-param name="arg">
-	<xsl:apply-templates select="." mode="number"/>
-      </xsl:with-param>
-    </xsl:call-template>
-    <xsl:value-of select="$NL"/>
-    <xsl:apply-templates select="tr:caption"/>
-    <xsl:value-of select="concat('\medskip',$NL)"/>
-    <xsl:text>\centerline{\vbox{</xsl:text>
-    <xsl:apply-templates select="tr:p|tr:pre|tr:blockquote|tr:image|
-				 tr:tabular|tr:ol|tr:ul|tr:dl"/>
-    <xsl:value-of select="concat('}}',$NL)"/>
     <xsl:text>\endTable</xsl:text>
     <xsl:value-of select="$NLNL"/>
   </xsl:template>
 
   <xsl:template match="tr:image">
     <xsl:text>\image</xsl:text>
+    <xsl:call-template name="figtab-body"/>
     <xsl:variable name="pdf-source"
 		  select="tr:source[@format='PDF']/@file"/>
     <xsl:choose>
