@@ -285,6 +285,7 @@ Author: Ladislav Lhotka
   <xsl:template match="tr:abstract">
     <xsl:text>\abstract</xsl:text>
     <xsl:value-of select="$NL"/>
+    <xsl:text>\noindent </xsl:text>
     <xsl:apply-templates/>
     <xsl:text>\endAbstract</xsl:text>
     <xsl:value-of select="$NLNL"/>
@@ -374,8 +375,7 @@ Author: Ladislav Lhotka
   <xsl:template match="tr:p">
     <xsl:if test="name(preceding-sibling::*[1])='h1' or
 		  name(preceding-sibling::*[1])='h2' or
-		  name(preceding-sibling::*[1])='h3' or
-		  parent::tr:abstract">
+		  name(preceding-sibling::*[1])='h3'">
       <xsl:text>\noindent </xsl:text>
     </xsl:if>
     <xsl:apply-templates/>
