@@ -3,6 +3,8 @@ NAZEV = "Report Title"
 AUTOR = "Author(s)"
 TRNO = XX/2008
 DATE = 6.12.2008
+GOPTS = --stringparam tr-nazev $(NAZEV) --stringparam tr-autor $(AUTOR) \
+        --stringparam tr-number $(TRNO) --stringparam tr-datum $(DATE)
 FINAL = 0
 H1L = 1
 TTS = Teletype
