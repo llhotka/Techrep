@@ -671,6 +671,7 @@
 \def\endTable{\smallskip\end_insert}
 
 \def\image{\handle_option{image_}}
+% #1 is scale - original scale is 1000
 \def\image_[#1]#2#3{\def\pris{#1}%
   \def\pic_fmt{#2}%
   \ifx\pic_fmt\pdf_fmt

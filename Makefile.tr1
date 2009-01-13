@@ -1,5 +1,5 @@
 FN = trname
-TEXFLAGS = --stringparam final 0
+FINAL = 0
 XSLDIR = /home/lhotka/Projekty/Techrep
 RXML2TR = $(XSLDIR)/rxml2tr.xsl
 TR2TEX = $(XSLDIR)/trtotex.xsl
@@ -19,7 +19,7 @@ all: $(FN).html $(FN).pdf
 	xsltproc --novalid --stringparam nbsp-tilde 1 -o $@ $(TR1TO2) $<
 
 %.tex: %.ctr
-	xsltproc $(TEXFLAGS) -o $@ $(TR2TEX) $<
+	xsltproc --stringparam final $(FINAL) -o $@ $(TR2TEX) $<
 
 %.pdf: %.tex
 	ixetex $<

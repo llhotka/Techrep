@@ -3,6 +3,7 @@ NAZEV = "Report Title"
 AUTOR = "Author(s)"
 TRNO = XX/2008
 DATE = 6.12.2008
+FINAL = 0
 H1L = 1
 TTS = Teletype
 XSLDIR = /home/lhotka/Projekty/Techrep
@@ -26,7 +27,7 @@ $(FN).xml: content.xml
 	xsltproc --novalid -o $@ $(TR1TO2) $<
 
 %.tex: %.ctr
-	xsltproc -o $@ $(TR2TEX) $<
+	xsltproc --stringparam final $(FINAL) -o $@ $(TR2TEX) $<
 
 %.pdf: %.tex
 	ixetex $<
