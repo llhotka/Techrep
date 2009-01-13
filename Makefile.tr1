@@ -6,9 +6,20 @@ TR2TEX = $(XSLDIR)/trtotex.xsl
 TR1TO2 = $(XSLDIR)/tr1to2.xsl
 TR2XHTML = $(XSLDIR)/trtoxhtml.xsl
 
-.PHONY: all
+.PHONY: all init pdf html tarball
 
-all: $(FN).html $(FN).pdf
+all: $(FN)/index.html $(FN)/$(FN).pdf
+
+pdf: $(FN)/$(FN).pdf
+
+html: $(FN)/index.html
+
+init:
+	if [ ! -d $(FN) ] ; then mkdir $(FN) ; fi
+
+tarball:
+	tar czvf $(FN).tar.gz $(FN)
+
 %.rxml: %.rxt
 	rst2xml -i ISO-8859-2 $< $@
 
@@ -21,8 +32,9 @@ all: $(FN).html $(FN).pdf
 %.tex: %.ctr
 	xsltproc --stringparam final $(FINAL) -o $@ $(TR2TEX) $<
 
-%.pdf: %.tex
+$(FN)/$(FN).pdf: $(FN).tex
 	ixetex $<
+	mv $(FN).pdf $(FN)/
 
-%.html: %.ctr
-	xsltproc -o $@ $(TR2XHTML) $<
+$(FN)/index.html: $(FN).ctr
+	xsltproc --stringparam tr-name $(FN) -o $@ $(TR2XHTML) $<
