@@ -242,6 +242,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
       <xsl:attribute name="href">
 	<xsl:value-of select="@refuri"/>
       </xsl:attribute>
+      <xsl:value-of select="@name"/>
     </xsl:element>
   </xsl:template>
 
