@@ -92,6 +92,8 @@
 \font\x_i=eurm10
 \font\x_eubf=eurb10
 \font\x_euex=euex10
+\font\x_ex=cmex10
+\font\x_fr=eufm10
 \font\x_tt="\mono_fam" at 9pt
 \font\x_tti="\mono_fam/I" at 9pt
 \font\x_ttb="\mono_fam/B" at 9pt
@@ -107,6 +109,8 @@
 \font\ix_i=eurm9
 \font\ix_eubf=eurb9
 \font\ix_euex=euex9
+\font\ix_ex=cmex10
+\font\ix_fr=eufm9
 \font\ix_tt="\mono_fam" at 8pt
 \font\ix_tti="\mono_fam/I" at 8pt
 \font\ix_ttb="\mono_fam/B" at 8pt
@@ -120,6 +124,8 @@
 \font\vii_i=eurm7
 \font\vii_eubf=eurb7
 \font\vii_euex=euex7
+\font\vii_ex=cmex7
+\font\vii_fr=eufm7
 \font\vii_sy=cmsy7
 
 \font\vi_rm="\text_fam:\text_opts" at 6pt	% 6-point fonts
@@ -128,6 +134,8 @@
 \font\vi_tt="\mono_fam" at 6pt
 \font\vi_i=eurm6
 \font\vi_eubf=eurb6
+\font\vi_ex=cmex10
+\font\vi_fr=eufm6
 \font\vi_sy=cmsy6
 
 \font\v_rm="\text_fam:\text_opts" at 5pt	% 5-point fonts
@@ -136,6 +144,8 @@
 \font\v_tt="\mono_fam" at 5pt
 \font\v_i=eurm5
 \font\v_eubf=eurb5
+\font\v_ex=cmex10
+\font\v_fr=eufm5
 \font\v_sy=cmsy5
 
 \font\xii_rm="\text_fam:\text_opts" at 12pt	% 12-point fonts
@@ -147,6 +157,8 @@
 \font\xii_i=eurm10 at 12pt
 \font\xii_eubf=eurb10 at 12pt
 \font\xii_euex=euex10 at 12pt 
+\font\xii_ex=cmex10
+\font\xii_fr=eufm10 at 12pt
 \font\xii_tt="\mono_fam" at 11pt
 \font\xii_tti="\mono_fam/I" at 11pt
 \font\xii_ttb="\mono_fam/B" at 11pt
@@ -162,6 +174,8 @@
 \font\xiv_i=eurm10 at 14pt
 \font\xiv_eubf=eurb10 at 14pt
 \font\xiv_euex=euex10 at 14pt 
+\font\xiv_ex=cmex10
+\font\xiv_fr=eufm10 at 14pt
 \font\xiv_tt="\mono_fam" at 13pt
 \font\xiv_tti="\mono_fam/I" at 13pt
 \font\xiv_ttb="\mono_fam/B" at 13pt
@@ -177,6 +191,8 @@
 \font\xvii_i=eurm10 at 17pt
 \font\xvii_eubf=eurb10 at 17pt
 \font\xvii_euex=euex10 at 17pt 
+\font\xvii_ex=cmex10
+\font\xvii_fr=eufm10 at 17pt
 \font\xvii_tt="\mono_fam" at 16pt
 \font\xvii_tti="\mono_fam/I" at 16pt
 \font\xvii_ttb="\mono_fam/B" at 16pt
@@ -192,6 +208,8 @@
 \font\xxi_i=eurm10 at 21pt
 \font\xxi_eubf=eurb10 at 21pt
 \font\xxi_euex=euex10 at 21pt 
+\font\xxi_ex=cmex10
+\font\xxi_fr=eufm10 at 21pt
 \font\xxi_tt="\mono_fam" at 20pt
 \font\xxi_tti="\mono_fam/I" at 20pt
 \font\xxi_ttb="\mono_fam/B" at 20pt
@@ -199,7 +217,9 @@
 \font\xxi_sy=cmsy10 at 21pt
 
 % math stuff
-\newfam\euexfam % family 9
+\newfam\euexfam % family 8
+\newfam\frfam % family 9
+\def\hat{\mathaccent"95E }
 \mathcode`0="7130
 \mathcode`1="7131
 \mathcode`2="7132
@@ -210,6 +230,23 @@
 \mathcode`7="7137
 \mathcode`8="7138
 \mathcode`9="7139
+\mathchardef\Gamma="7100
+\mathchardef\Delta="7101
+\mathchardef\Theta="7102
+\mathchardef\Lambda="7103
+\mathchardef\Xi="7104
+\mathchardef\Pi="7105
+\mathchardef\Sigma="7106
+\mathchardef\Upsilon="7107
+\mathchardef\Phi="7108
+\mathchardef\Psi="7109
+\mathchardef\Omega="710A
+\let\varsigma=\sigma \let\varrho=\rho % Euler doesn't have these
+\mathcode`(="4928 \delcode`(="928300
+\mathcode`)="5929 \delcode`)="929301
+\mathcode`[="495B \delcode`[="95B302
+\mathcode`]="595D \delcode`]="95D303
+\mathcode`=="393D
 \mathchardef\intop="1852
 \mathchardef\ointop="1848
 \mathchardef\coprod="1860
@@ -218,7 +255,6 @@
 \mathchardef\braceld="87A \mathchardef\bracerd="87B
 \mathchardef\bracelu="87C \mathchardef\braceru="87D
 \mathchardef\infty="0831
-
 \mathchardef\nearrow="3825
 \mathchardef\searrow="3826
 \mathchardef\nwarrow="382D
@@ -247,11 +283,13 @@
     \scriptscriptfont1=\macro{#3_i}%
   \textfont2=\macro{#1_sy}\scriptfont2=\macro{#2_sy}%
     \scriptscriptfont2=\macro{#3_sy}%
-  \textfont3=\macro{#1_euex}\scriptfont3=\macro{#1_euex}%
-    \scriptscriptfont3=\macro{#1_euex}%
+  \textfont3=\macro{#1_ex}\scriptfont3=\macro{#1_ex}%
+    \scriptscriptfont3=\macro{#1_ex}%
   \textfont\bffam=\macro{#1_bf}%
   \textfont\itfam=\macro{#1_it}%
   \textfont\ttfam=\macro{#1_tt}%
+  \textfont\frfam=\macro{#1_fr}\scriptfont\frfam=\macro{#2_fr}%
+    \scriptscriptfont\frfam=\macro{#3_fr}%
   \textfont\euexfam=\macro{#1_euex}%
 }
 
@@ -602,6 +640,7 @@
 
 \def\bibList{\setbox\box_one\hbox{[99] }%
   \begin_list[\wd\box_one]\parskip=\smallskipamount
+  \raggedright
   \widowpenalty=2000 \clubpenalty=2000}
 
 \def\bibItem#1{\def\list_label{[#1]}\list_item}
