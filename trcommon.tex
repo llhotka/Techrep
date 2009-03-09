@@ -18,8 +18,6 @@
 \newdimen\line_ht % page height (fixed)
 \newdimen\abs_inset % left and right indentation of abstract
 \newdimen\item_indent % amount of item indentation
-\newdimen\fig_left % remaining height of withheld figure insertions
-\newdimen\tab_left % remaining height of withheld table insertions
 \newdimen\total_ins % total height of insertions on the page so far
 \newskip\belowabs_skip % below abstract
 \newskip\belowkw_skip % below keywords
@@ -44,13 +42,11 @@
 \newbox\page_box % contains entire page (in output routines)
 \newbox\title_box % box for report title
 \newbox\auth_box % box for authors
-\newbox\fig_box % box for figures
-\newbox\tab_box % box for tables
+\newbox\ins_box % box for insertions
 \newbox\cap_box % box for figure and table captions
 \newbox\vlinebox % vertical line accross the height of a line
 \newinsert\margin_ins % marginal insertions (index entries)
-\newinsert\fig_ins % figure insertions
-\newinsert\tab_ins % table insertions
+\newinsert\top_ins % top insertions (figures & tables)
 \newtoks\toks_one % temporary tokens
 \newtoks\font_style % current font style
 \newtoks\leftRunHead % contains left running head
@@ -384,26 +380,9 @@
 \dimen\margin_ins=\maxdimen
 \count\margin_ins=0 \skip\margin_ins=0pt % marginal inserts take up no space
 
-\def\put_insert#1{\bgroup
-  \_let\_ins{#1_ins}\_let\_left{#1_left}%
-  \ifdim\ht\_ins>0pt
-    \global\total_ins=\ht\_ins
-    \global\advance\total_ins by \dp\_ins
-    \global\advance\_left by -\bigskipamount
-    \global\advance\_left by -\total_ins
-    \unvbox\_ins
-    \bigskip
-  \fi\egroup}
-
 \def\pagecontents{\ifvoid\margin_ins\else % marginal info is present
     \rightline{\rlap{\kern1pc\vbox to\z@{\box\margin_ins \vss}}}\fi
-  \global\total_ins=0pt
-  \put_insert{fig}%
-  \advance\total_ins by \ht\tab_ins
-  \advance\total_ins by \dp\tab_ins
-  \ifdim\total_ins>\vsize\else
-    \put_insert{tab}%
-  \fi
+  \ifvoid\top_ins\else\unvbox\top_ins\fi
   \dimen@=\dp\@cclv \unvbox\@cclv % open up \box255
   \ifvoid\footins\else % footnote info is present
     \vskip\skip\footins
@@ -664,50 +643,45 @@
 
 % Figures and tables
 \def\pdf_fmt{PDF}
-\fig_left=0pt
-\tab_left=0pt
-\skip\fig_ins=\bigskipamount
-\count\fig_ins=1000
-\dimen\fig_ins=\maxdimen
-\skip\tab_ins=\bigskipamount
-\count\tab_ins=1000
-\dimen\tab_ins=\maxdimen
+\skip\top_ins=0pt
+\count\top_ins=1000
+\dimen\top_ins=\maxdimen
 
-\def\add_insert#1{\par\begingroup % #1 specifies insertion class
-  \_let\_ins{#1_ins} \_let\_left{#1_left} \_let\_box{#1_box}
-  \setbox\_box=\vbox\bgroup}
+\def\add_insert#1{\par\begingroup
+  \def\pris{#1}\ifx\pris\empty\ins_holdfalse\else\ins_holdtrue\fi
+  \setbox\ins_box=\vbox\bgroup}
 \def\end_insert{\egroup
-  \ifdim\_left>0pt \ins_holdtrue
+  \ifins_hold
   \else
-    \dimen_one=\ht\_box
-    \advance\dimen_one by \dp\_box
+    \dimen_one=\ht\ins_box
+    \advance\dimen_one by \dp\ins_box
     \advance\dimen_one by \bigskipamount
     \advance\dimen_one by \pagetotal
     \advance\dimen_one by -\pageshrink
     \advance\dimen_one by -0.333\line_ht % shrinkability of bigskip
-    \ifdim\dimen_one>\pagegoal \ins_holdtrue \else \ins_holdfalse \fi
+    \ifdim\dimen_one>\pagegoal \ins_holdtrue\fi
   \fi
   \ifins_hold
-    \global\advance\_left by \ht\_box
-    \global\advance\_left by \dp\_box
-    \global\advance\_left by \bigskipamount
-    \insert\_ins{\penalty100
-      \splittopskip=0pt \splitmaxdepth=\maxdimen
+    \insert\top_ins{\penalty100
+      \splittopskip=\bigskipamount \splitmaxdepth=\maxdimen
       \floatingpenalty=0
-      \bigskip
-      \box\_box
-      \nobreak}%
+      \box\ins_box
+      \nobreak\bigskip}%
   \else % insertion goes to the current page
-    \bigskip\box\_box\bigbreak
+    \bigskip\box\ins_box\bigbreak
   \fi\endgroup}
 
-\def\figure#1{\def\cap_label{Figure~#1}%
-  \add_insert{fig}}
+% \figure[+]{number} - forced floating insertion
+\def\figure{\handle_option{figure_}}
+\def\table{\handle_option{table_}}
+
+\def\figure_[#1]#2{\def\cap_label{Figure~#2}%
+  \add_insert{#1}}
 \let\endFigure=\end_insert
 
-\def\table#1{\def\cap_label{Table~#1}%
-  \add_insert{tab}\smallskip}
-\def\endTable{\smallskip\end_insert}
+\def\table_[#1]#2{\def\cap_label{Table~#2}%
+  \add_insert{#1}\smallskip}
+\let\endTable=\end_insert
 
 \def\image{\handle_option{image_}}
 % #1 is scale - original scale is 1000
