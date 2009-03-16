@@ -1,0 +1,36 @@
+FN = trname
+FINAL = 0
+XSLDIR = /home/lhotka/Projekty/Techrep
+RXML2TR = $(XSLDIR)/rxml2tr.xsl
+TR2TEX = $(XSLDIR)/trtotex.xsl
+TR2XHTML = $(XSLDIR)/trtoxhtml.xsl
+
+.PHONY: all init pdf html tarball
+
+all: $(FN)/index.html $(FN)/$(FN).pdf
+
+pdf: $(FN)/$(FN).pdf
+
+html: $(FN)/index.html
+
+init:
+	if [ ! -d $(FN) ] ; then mkdir $(FN) ; fi
+
+tarball:
+	tar czvf $(FN).tar.gz $(FN)
+
+%.rxml: %.rxt
+	rst2xml -i ISO-8859-2 $< $@
+
+%.ctr: %.rxml
+	xsltproc --novalid -o $@ $(RXML2TR) $<
+
+%.tex: %.ctr
+	xsltproc --stringparam final $(FINAL) -o $@ $(TR2TEX) $<
+
+$(FN)/$(FN).pdf: $(FN).tex
+	ixetex $<
+	mv $(FN).pdf $(FN)/
+
+$(FN)/index.html: $(FN).ctr
+	xsltproc --stringparam tr-name $(FN) -o $@ $(TR2XHTML) $<
