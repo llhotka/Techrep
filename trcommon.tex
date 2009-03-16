@@ -558,11 +558,11 @@
 
 \def\endList{\par\egroup\vskip\list_skip}
 
-\def\list_item{
+\def\list_item{\par\goodbreak
   \iffirst_item
-    \par\first_itemfalse
+    \first_itemfalse
   \else
-    \par\goodbreak \ifcompact_list\vskip-\parskip\fi
+    \ifcompact_list\vskip-\parskip\fi
   \fi
   \incr\itemCount
   \noindent
@@ -622,7 +622,17 @@
   \raggedright
   \widowpenalty=2000 \clubpenalty=2000}
 
-\def\bibItem#1{\def\list_label{[#1]}\list_item}
+\def\bibItem#1{\def\list_label{[#1]}\bib_list_item}
+
+\def\bib_list_item{
+  \iffirst_item
+    \nobreak\first_itemfalse
+  \else
+    \goodbreak
+  \fi
+  \noindent
+  \llap{\hbox to \item_indent{\hss\list_label\the\item_sep\kern2mm}}%
+  \ignorespaces}
 
 % Footnotes
 \def\foot_mark{${}^{\number\foot_count}$}
