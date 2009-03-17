@@ -576,7 +576,8 @@
 \def\unorderedList{\handle_option{unorderedList_}}
 \def\unorderedList_[#1]{\begin_list
     \def\pris{#1}%
-    \edef\list_label{\ifx\pris\empty •\else\pris\fi}
+    \item_sep={}%
+    \edef\list_label{\ifx\pris\empty •\else\pris\fi}%
     \let\item=\list_item}
 
 \def\orderedList{\handle_option{orderedList_}}
