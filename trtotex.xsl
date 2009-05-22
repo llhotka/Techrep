@@ -158,6 +158,17 @@ Author: Ladislav Lhotka
     </xsl:choose>
   </xsl:template>
 
+  <xsl:template match="tr:ol/tr:li" mode="label">
+    <xsl:choose>
+      <xsl:when test="ancestor-or-self::*[@xml:lang='cs']">
+	<xsl:text>položka</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:text>item</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
   <!-- "number" mode generates the number of the matched element -->
 
   <xsl:template match="tr:h1[not(@role='loose')]" mode="number">
@@ -199,6 +210,22 @@ Author: Ladislav Lhotka
   <xsl:template match="tr:bibitem"
 		mode="number">
     <xsl:number value="count(preceding-sibling::tr:bibitem)+1"/>
+  </xsl:template>
+
+  <xsl:template match="tr:ol/tr:li" mode="number">
+    <xsl:variable name="prev">
+      <xsl:choose>
+	<xsl:when test="../@continue">
+	  <xsl:apply-templates select="id(../@continue)"
+			       mode="itemcount"/>
+	</xsl:when>
+	<xsl:otherwise>0</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="this">
+      <xsl:number/>
+    </xsl:variable>
+    <xsl:value-of select="$prev+$this"/>
   </xsl:template>
 
   <!-- Root element -->

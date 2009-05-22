@@ -140,14 +140,30 @@ Author: Ladislav Lhotka
     <xsl:text>]</xsl:text>
   </xsl:template>
 
+  <xsl:template match="tr:ol/tr:li" mode="number">
+    <xsl:variable name="prev">
+      <xsl:choose>
+	<xsl:when test="../@continue">
+	  <xsl:apply-templates select="id(../@continue)"
+			       mode="itemcount"/>
+	</xsl:when>
+	<xsl:otherwise>0</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="this">
+      <xsl:number/>
+    </xsl:variable>
+    <xsl:value-of select="$prev+$this"/>
+  </xsl:template>
+
   <!-- Root element -->
 
   <xsl:template match="/">
     <xsl:comment>#include virtual="/doc/i-start1.html"</xsl:comment>
     <xsl:element name="title">
       <xsl:call-template name="select-local">
-	<xsl:with-param name="cs">Technická zpráva - </xsl:with-param>
-	<xsl:with-param name="en">Technical report - </xsl:with-param>
+	<xsl:with-param name="cs">Technická zpráva &#x2013; </xsl:with-param>
+	<xsl:with-param name="en">Technical report &#x2013; </xsl:with-param>
       </xsl:call-template>
       <xsl:value-of select="tr:report/tr:title"/>
     </xsl:element>
@@ -307,11 +323,40 @@ Author: Ladislav Lhotka
     </xsl:element>
   </xsl:template>
 
-  <xsl:template match="tr:p|tr:pre|tr:ol|tr:ul|tr:dl|tr:dd|tr:li">
+  <xsl:template match="tr:p|tr:pre|tr:ul|tr:dl|tr:dd|tr:li">
     <xsl:element name="{local-name()}">
       <xsl:apply-templates select="@xml:id"/>
       <xsl:apply-templates/>
     </xsl:element>
+  </xsl:template>
+
+  <xsl:template match="tr:ol">
+    <xsl:element name="ol">
+      <xsl:apply-templates select="@xml:id"/>
+      <xsl:if test="@continue">
+	<xsl:attribute name="start">
+	  <xsl:variable name="prev">
+	    <xsl:apply-templates select="id(@continue)" mode="itemcount"/>
+	  </xsl:variable>
+	  <xsl:value-of select="$prev+1"/>
+	</xsl:attribute>
+      </xsl:if>
+      <xsl:apply-templates/>
+    </xsl:element>
+  </xsl:template>
+
+  <xsl:template match="tr:ol" mode="itemcount">
+    <xsl:choose>
+      <xsl:when test="@continue">
+	<xsl:variable name="prev">
+	  <xsl:apply-templates select="id(@continue)" mode="itemcount"/>
+	</xsl:variable>
+	<xsl:value-of select="$prev+count(tr:li)"/>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:number value="count(tr:li)"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
   <xsl:template match="tr:strong|tr:sup|tr:sub|tr:blockquote">
