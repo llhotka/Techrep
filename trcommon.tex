@@ -692,6 +692,9 @@
   \add_insert{#1}\smallskip}
 \let\endTable=\end_insert
 
+\def\tableRule{\noalign{\smallskip}\noalign{\hrule}
+    \noalign{\smallskip}}
+
 \def\image{\handle_option{image_}}
 % #1 is scale - original scale is 1000
 \def\image_[#1]#2#3{\def\pris{#1}%
