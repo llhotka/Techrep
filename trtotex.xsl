@@ -10,6 +10,8 @@ Author: Ladislav Lhotka
 		xmlns:tr="http://cesnet.cz/ns/techrep/base/2.0"
                 version="1.0">
 
+  <xsl:include href="trto-lib.xsl"/>
+
   <!-- Final mode switch -->
   <xsl:param name="final" select="0"/>
 
@@ -110,122 +112,6 @@ Author: Ladislav Lhotka
     <xsl:call-template name="TeXgroup">
       <xsl:with-param name="arg" select="."/>
     </xsl:call-template>
-  </xsl:template>
-
-  <!-- "label" mode generates the element's label for crossrefs -->
-
-  <xsl:template match="tr:h1|tr:h2|tr:h3" mode="label">
-    <xsl:choose>
-      <xsl:when test="ancestor-or-self::*[@xml:lang='cs']">
-	<xsl:text>Oddíl</xsl:text>
-      </xsl:when>
-      <xsl:otherwise>
-	<xsl:text>Section</xsl:text>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:template>
-
-  <xsl:template match="tr:appendix" mode="label">
-    <xsl:choose>
-      <xsl:when test="ancestor-or-self::*[@xml:lang='cs']">
-	<xsl:text>Dodatek</xsl:text>
-      </xsl:when>
-      <xsl:otherwise>
-	<xsl:text>Appendix</xsl:text>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:template>
-
-  <xsl:template match="tr:figure" mode="label">
-    <xsl:choose>
-      <xsl:when test="ancestor-or-self::*[@xml:lang='cs']">
-	<xsl:text>Obrázek</xsl:text>
-      </xsl:when>
-      <xsl:otherwise>
-	<xsl:text>Figure</xsl:text>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:template>
-
-  <xsl:template match="tr:table" mode="label">
-    <xsl:choose>
-      <xsl:when test="ancestor-or-self::*[@xml:lang='cs']">
-	<xsl:text>Tabulka</xsl:text>
-      </xsl:when>
-      <xsl:otherwise>
-	<xsl:text>Table</xsl:text>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:template>
-
-  <xsl:template match="tr:ol/tr:li" mode="label">
-    <xsl:choose>
-      <xsl:when test="ancestor-or-self::*[@xml:lang='cs']">
-	<xsl:text>položka</xsl:text>
-      </xsl:when>
-      <xsl:otherwise>
-	<xsl:text>item</xsl:text>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:template>
-
-  <!-- "number" mode generates the number of the matched element -->
-
-  <xsl:template match="tr:h1[not(@role='loose')]" mode="number">
-    <xsl:number value="count(preceding-sibling::tr:h1)+1"/>
-  </xsl:template>
-  
-  <xsl:template match="tr:h2" mode="number">
-    <xsl:variable name="mysec"
-		  select="(preceding-sibling::tr:h1|preceding-sibling::tr:appendix)[last()]"/>
-    <xsl:apply-templates select="$mysec" mode="number"/>
-    <xsl:text>.</xsl:text>
-    <xsl:number
-	value="count(preceding-sibling::tr:h2[preceding-sibling::tr:h1[1]=$mysec])+1"/>
-  </xsl:template>
-
-  <xsl:template match="tr:h3" mode="number">
-    <xsl:variable name="mysubsec" select="preceding-sibling::tr:h2[1]"/>
-    <xsl:apply-templates select="$mysubsec" mode="number"/>
-    <xsl:text>.</xsl:text>
-    <xsl:number
-	value="count(preceding-sibling::tr:h3[preceding-sibling::tr:h2[1]=$mysubsec])+1 "/>
-  </xsl:template>
-
-  <xsl:template match="tr:appendix" mode="number">
-    <xsl:number value="count(preceding-sibling::tr:appendix)+1"
-		format="A"/>
-  </xsl:template>
-  
-  <xsl:template match="tr:figure"
-		mode="number">
-    <xsl:number value="count(preceding-sibling::tr:figure)+1"/>
-  </xsl:template>
-
-  <xsl:template match="tr:table"
-		mode="number">
-    <xsl:number value="count(preceding-sibling::tr:table)+1"/>
-  </xsl:template>
-
-  <xsl:template match="tr:bibitem"
-		mode="number">
-    <xsl:number value="count(preceding-sibling::tr:bibitem)+1"/>
-  </xsl:template>
-
-  <xsl:template match="tr:ol/tr:li" mode="number">
-    <xsl:variable name="prev">
-      <xsl:choose>
-	<xsl:when test="../@continue">
-	  <xsl:apply-templates select="id(../@continue)"
-			       mode="itemcount"/>
-	</xsl:when>
-	<xsl:otherwise>0</xsl:otherwise>
-      </xsl:choose>
-    </xsl:variable>
-    <xsl:variable name="this">
-      <xsl:number/>
-    </xsl:variable>
-    <xsl:value-of select="$prev+$this"/>
   </xsl:template>
 
   <!-- Root element -->
@@ -783,9 +669,7 @@ Author: Ladislav Lhotka
   </xsl:template>
 
   <xsl:template match="tr:cite">
-    <xsl:text>[</xsl:text>
     <xsl:apply-templates select="id(@bibref)" mode="number"/> 
-    <xsl:text>]</xsl:text>
   </xsl:template>
 
   <xsl:template match="tr:index">
