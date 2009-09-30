@@ -5,10 +5,11 @@ RXML2TR = $(XSLDIR)/rxml2tr.xsl
 TR2TEX = $(XSLDIR)/trtotex.xsl
 TR1TO2 = $(XSLDIR)/tr1to2.xsl
 TR2XHTML = $(XSLDIR)/trtoxhtml.xsl
+TR2RSS = $(XSLDIR)/trtorss.xsl
 
 .PHONY: all init pdf html tarball
 
-all: $(FN)/index.html $(FN)/$(FN).pdf
+all: $(FN)/index.html $(FN)/$(FN).pdf $(FN)/$(FN).rss
 
 pdf: $(FN)/$(FN).pdf
 
@@ -38,3 +39,6 @@ $(FN)/$(FN).pdf: $(FN).tex
 
 $(FN)/index.html: $(FN).ctr
 	xsltproc --stringparam tr-name $(FN) -o $@ $(TR2XHTML) $<
+
+$(FN)/$(FN).rss: $(FN).ctr
+        xsltproc --stringparam tr-name $(FN) -o $@ $(TR2RSS) $<
