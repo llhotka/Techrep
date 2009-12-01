@@ -216,12 +216,23 @@ Author: Ladislav Lhotka
     <xsl:element name="ol">
       <xsl:apply-templates select="@xml:id"/>
       <xsl:if test="@continue">
-	<xsl:attribute name="start">
-	  <xsl:variable name="prev">
-	    <xsl:apply-templates select="id(@continue)" mode="itemcount"/>
-	  </xsl:variable>
-	  <xsl:value-of select="$prev+1"/>
-	</xsl:attribute>
+	<xsl:variable name="cnt" select="id(@continue)"/>
+	<xsl:choose>
+	  <xsl:when test="$cnt">
+	    <xsl:attribute name="start">
+	      <xsl:variable name="prev">
+		<xsl:apply-templates select="$cnt" mode="itemcount"/>
+	      </xsl:variable>
+	      <xsl:value-of select="$prev+1"/>
+	    </xsl:attribute>
+	  </xsl:when>
+	  <xsl:otherwise>
+	    <xsl:message terminate="no">
+	      <xsl:text>Continued list not found: </xsl:text>
+	      <xsl:value-of select="@continue"/>
+	    </xsl:message>
+	  </xsl:otherwise>
+	</xsl:choose>
       </xsl:if>
       <xsl:apply-templates/>
     </xsl:element>
@@ -337,27 +348,34 @@ Author: Ladislav Lhotka
       <xsl:attribute name="href">
 	<xsl:value-of select="concat('#',@linkend)"/>
       </xsl:attribute>
+      <xsl:variable name="tgt" select="id(@linkend)"/>
       <xsl:choose>
-	<xsl:when test="id(@linkend)">
+	<xsl:when test="$tgt">
 	  <xsl:choose>
 	    <xsl:when test="descendant::text()">
 	      <xsl:apply-templates/>
 	      <xsl:text>&#xA0;</xsl:text>
-	      <xsl:apply-templates select="id(@linkend)"
+	      <xsl:apply-templates select="$tgt"
 				   mode="number"/>
 	    </xsl:when>
 	    <xsl:otherwise>
 	      <xsl:if test="not(@raw='true' or @raw=1)">
-		<xsl:apply-templates select="id(@linkend)"
+		<xsl:apply-templates select="$tgt"
 				     mode="label"/>
 		<xsl:text>&#xa0;</xsl:text>
 	      </xsl:if>
-	      <xsl:apply-templates select="id(@linkend)"
+	      <xsl:apply-templates select="$tgt"
 				   mode="number"/>
 	    </xsl:otherwise>
 	  </xsl:choose>
 	</xsl:when>
-	<xsl:otherwise>??</xsl:otherwise>
+	<xsl:otherwise>
+	  <xsl:message terminate="no">
+	    <xsl:text>Reference target not found: </xsl:text>
+	    <xsl:value-of select="@linkend"/>
+	  </xsl:message>
+	  <xsl:text>??</xsl:text>
+	</xsl:otherwise>
       </xsl:choose>
     </xsl:element>
   </xsl:template>
@@ -367,7 +385,19 @@ Author: Ladislav Lhotka
       <xsl:attribute name="href">
 	<xsl:value-of select="concat('#', @bibref)"/>
       </xsl:attribute>
-      <xsl:apply-templates select="id(@bibref)" mode="number"/>
+      <xsl:variable name="cit" select="id(@bibref)"/>
+      <xsl:choose>
+	<xsl:when test="$cit">
+	  <xsl:apply-templates select="$cit" mode="number"/>
+	</xsl:when>
+	<xsl:otherwise>
+	  <xsl:message terminate="no">
+	    <xsl:text>Bibliographic reference not found: </xsl:text>
+	    <xsl:value-of select="@bibref"/>
+	  </xsl:message>
+	  <xsl:text>[??]</xsl:text>
+	</xsl:otherwise>
+      </xsl:choose>
     </xsl:element>
   </xsl:template>
 
