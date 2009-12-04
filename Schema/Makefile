@@ -1,5 +1,5 @@
 SCHEMA = techrep2
-RNGREST = /home/lhotka/Devel/rngrest/rngrest.xsl
+RNGREST = /home/lhotka/lib/XML/XSLT/rngrest.xsl
 .PHONY : all
 
 all: $(SCHEMA).rnc $(SCHEMA).html

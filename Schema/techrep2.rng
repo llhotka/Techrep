@@ -1038,9 +1038,9 @@ ordered list items:
  
 * ``ROMAN`` &#x2013; uppercase roman numerals (I,II, ...)
  
-* ``alpha`` &#x2013; lowercase characters (a,b, ...)
+* ``alpha`` &#x2013; lowercase letters (a,b, ...)
  
-* ``ALPHA`` &#x2013; uppercase characters (A,B, ...)
+* ``ALPHA`` &#x2013; uppercase letters (A,B, ...)
     </a:rest>
     <choice>
       <value>arabic</value>
