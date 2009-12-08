@@ -549,7 +549,7 @@
 \def\begin_list{\handle_option{begin_list_}}
 \def\begin_list_[#1]{\par\goodbreak
     \def\pris{#1}
-    \vskip\list_skip\bgroup
+    \vskip\list_skip\bgroup\parindent=0pt
     \advance\leftskip by \ifx\pris\empty \item_indent \else\pris\fi
     \first_itemtrue
     \itemCount=0}

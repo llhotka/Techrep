@@ -780,17 +780,20 @@ This is a single paragraph. Note that it can be empty.
   <define name="p-choice">
     <a:rest>
 These elements can be contained in a paragraph. Apart from standard
-inline elements simple lists (ul_ and ol_) are also allowed, but they
-are treated as single-sentence lists, can be only single-level and are
-rendered differently from lists appearing outside paragraphs.
+inline elements, compact lists ul_ and ol_ are also allowed (however,
+`compact` attribute is not allowed as the list can only be compact).
     </a:rest>
     <choice>
       <ref name="inline-choice"/>
       <element name="ol">
-	<ref name="single-sentence-list-content"/>
+	<oneOrMore>
+	  <ref name="compact-li-element"/>
+	</oneOrMore>
       </element>
       <element name="ul">
-	<ref name="single-sentence-list-content"/>
+	<oneOrMore>
+	  <ref name="compact-li-element"/>
+	</oneOrMore>
       </element>
     </choice>
   </define>
@@ -1063,36 +1066,34 @@ determined from the level of embedding.
     </element>
   </define>
 
-  <define name="single-sentence-list-content">
-    <a:rest>
-The common content of single sentence lists (ordered or unordered).
-    </a:rest>
-    <ref name="common-attributes"/>
-    <optional>
-      <attribute name="compact">
-	<data type="boolean"/>
-      </attribute>
-    </optional>
-    <oneOrMore>
-      <ref name="simple-li-element"/>
-    </oneOrMore>
-  </define>
-
   <define name="list-content">
     <a:rest>
-The common content of ordered and unordered lists. The optional
-attribute `compact` may be used to reduce the vertical spacing between
-list items. This is typically useful if all items are one-liners.
+The common content of ordered and unordered lists. The attribute
+`compact` set to "true" signals a *compact list* with reduced vertical
+spacing between items. Items of a compact list may only contain inline
+elements (see `compact-li-element`_).
     </a:rest>
     <ref name="common-attributes"/>
-    <optional>
-      <attribute name="compact">
-	<data type="boolean"/>
-      </attribute>
-    </optional>
-    <oneOrMore>
-      <ref name="li-element"/>
-    </oneOrMore>
+    <choice>
+      <group>
+	<attribute name="compact">
+	  <value>true</value>
+	</attribute>
+	<oneOrMore>
+	  <ref name="compact-li-element"/>
+	</oneOrMore>
+      </group>
+      <group>
+	<optional>
+	  <attribute name="compact">
+	    <value>false</value>
+	  </attribute>
+	</optional>
+	<oneOrMore>
+	  <ref name="li-element"/>
+	</oneOrMore>
+      </group>
+    </choice>
   </define>
 
   <define name="li-element">
@@ -1107,10 +1108,10 @@ This element represents an item of an (un)ordered list.
     </element>
   </define>
 
-  <define name="simple-li-element">
+  <define name="compact-li-element">
     <a:rest>
-This element represents an item of single-sentence list. Being part of
-a sentence, it may only contain inline content.
+This element represents an item of a compact list which may only
+contain inline content.
     </a:rest>
     <element name="li">
       <ref name="common-attributes"/>
@@ -1139,7 +1140,7 @@ or more `dt` elements (terms) and exactly one `dd` element
 
   <define name="dt-element">
     <a:rest>
-The definition term is simple inline content.      
+The definition term has simple inline content.      
 
 .. _dt: `dt-element`_
     </a:rest>
