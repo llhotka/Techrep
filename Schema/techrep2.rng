@@ -56,9 +56,6 @@ may be optionally attached to all block elements and some inlines,
 too.
     </a:rest>
     <optional>
-      <ref name="id-attribute"/>
-    </optional>
-    <optional>
       <ref name="lang-attribute"/>
     </optional>
     <optional>
@@ -125,6 +122,9 @@ version of the title that can be used in page headings etc.
     </a:rest>
     <ref name="common-attributes"/>
     <optional>
+      <ref name="id-attribute"/>
+    </optional>
+    <optional>
       <attribute name="status">
 	<choice>
 	  <value>proof</value>
@@ -136,6 +136,7 @@ version of the title that can be used in page headings etc.
       <attribute name="number"/>
     </optional>
     <element name="title">
+      <ref name="common-attributes"/>
       <optional>
 	<attribute name="short"/>
       </optional>
@@ -156,7 +157,7 @@ version of the title that can be used in page headings etc.
 	<ref name="keywords-content"/>
       </element>
       <element name="abstract">
-	<ref name="abstract-content"/>
+	<ref name="hybrid-content"/>
       </element>
     </interleave>
     <element name="body">
@@ -165,6 +166,7 @@ version of the title that can be used in page headings etc.
   </define>
 
   <define name="date-content">
+    <ref name="common-attributes"/>
     <a:rest>
 We don't currently impose any restrictions to the date format. This
 can be done later if necessary.       
@@ -196,6 +198,7 @@ version&#xA0;1.
   </define>
 
   <define name="email-content">
+    <ref name="common-attributes"/>
     <a:rest>
 Email address is not restricted, this can possibly be done later.       
     </a:rest>
@@ -203,19 +206,11 @@ Email address is not restricted, this can possibly be done later.
   </define>
 
   <define name="keywords-content">
+    <ref name="common-attributes"/>
     <a:rest>
 Keywords are free text. Perhaps is should be made more structured.      
     </a:rest>
     <text/>
-  </define>
-
-  <define name="abstract-content">
-    <a:rest>
-Abstract may contain just one paragraph or one or more block
-elements.
-    </a:rest>
-    <ref name="common-attributes"/>
-    <ref name="hybrid-content"/>
   </define>
 
   <define name="hybrid-content">
@@ -226,10 +221,13 @@ footnotes, table cells and list items. It may be formed either by the
 or any number of block elements.
     </a:rest>
     <choice>
-      <ref name="inline-content"/>
-      <zeroOrMore>
-	<ref name="block-choice"/>
-      </zeroOrMore>
+      <ref name="p-content"/>
+      <group>
+	<ref name="common-attributes"/>
+	<zeroOrMore>
+	  <ref name="block-choice"/>
+	</zeroOrMore>
+      </group>
     </choice>
   </define>
 
@@ -237,6 +235,7 @@ or any number of block elements.
     <a:rest>
 Mixed content of paragraph-like structures.       
     </a:rest>
+    <ref name="common-attributes"/>
     <mixed>
       <zeroOrMore>
 	  <ref name="inline-choice"/>
@@ -308,12 +307,16 @@ single biblist (list of references) and any number of appendices.
 option is better but since techrep v1 required the list of references
 to be at the very end, we allow the latter option, too.
     </a:rest>
+    <ref name="common-attributes"/>
     <zeroOrMore>
       <ref name="toplevel-choice"/>
     </zeroOrMore>
     <zeroOrMore>
       <element name="h1">
-	<ref name="heading-content"/>
+	<optional>
+	  <ref name="id-attribute"/>
+	</optional>
+	<ref name="inline-content"/>
       </element>
       <ref name="sect1-content"/>
     </zeroOrMore>
@@ -325,19 +328,14 @@ to be at the very end, we allow the latter option, too.
       </optional>
       <zeroOrMore>
 	<element name="appendix">
-	  <ref name="heading-content"/>
+	  <optional>
+	    <ref name="id-attribute"/>
+	  </optional>
+	  <ref name="inline-content"/>
 	</element>
 	<ref name="sect1-content"/>
       </zeroOrMore>
     </interleave>
-  </define>
-
-  <define name="heading-content">
-    <a:rest>
-This pattern specifies the content of section and appendix headings.
-    </a:rest>
-    <ref name="common-attributes"/>
-    <ref name="inline-content"/>
   </define>
 
   <define name="sect1-content">
@@ -349,7 +347,10 @@ Content of top-level sections and appendices.
 	<ref name="toplevel-choice"/>
 	<group>
 	  <element name="h2">
-	    <ref name="heading-content"/>
+	    <optional>
+	      <ref name="id-attribute"/>
+	    </optional>
+	    <ref name="inline-content"/>
 	  </element>
 	  <ref name="sect2-content"/>
 	</group>
@@ -366,7 +367,10 @@ Content of subsections.
 	<ref name="toplevel-choice"/>
 	<group>
 	  <element name="h3">
-	    <ref name="heading-content"/>
+	    <optional>
+	      <ref name="id-attribute"/>
+	    </optional>
+	    <ref name="inline-content"/>
 	  </element>
 	  <ref name="toplevel-choice"/>
 	</group>
@@ -395,12 +399,7 @@ probably be more structured. The `xml:id`_ attribute is mandatory for
 this element.
     </a:rest>
     <ref name="id-attribute"/>
-    <optional>
-      <ref name="lang-attribute"/>
-    </optional>
-    <optional>
-      <ref name="role-attribute"/>
-    </optional>
+    <ref name="common-attributes"/>
     <ref name="inline-content"/>
   </define>
 
@@ -629,7 +628,6 @@ value of the raw attribute is ``false``.
 	  <data type="boolean"/>
 	</attribute>
       </optional>
-      <ref name="common-attributes"/>
       <attribute name="linkend">
 	<data type="IDREF"/>
       </attribute>
@@ -692,6 +690,9 @@ the main text it refers to:
     </a:rest>
     <element name="index">
       <optional>
+	<ref name="lang-attribute"/>
+      </optional>
+      <optional>
 	<attribute name="silent">
 	  <data type="boolean"/>
 	</attribute>
@@ -722,6 +723,7 @@ This element forces a line break within a paragraph.
 .. _br: `br-element`_
     </a:rest>
     <element name="br">
+      <ref name="common-attributes"/>
       <empty/>
     </element>
   </define>
@@ -755,6 +757,7 @@ it may not contain “floating” elements (`figure`_ or `table`_)
 .. _blockquote: `blockquote-element`_
     </a:rest>
     <element name="blockquote">
+      <ref name="common-attributes"/>
       <zeroOrMore>
 	<ref name="block-choice"/>
       </zeroOrMore>
@@ -768,14 +771,21 @@ This is a single paragraph. Note that it can be empty.
 .. _p: `p-element`_
     </a:rest>
     <element name="p">
-      <ref name="common-attributes"/>
-      <mixed>
-	<zeroOrMore>
-	  <ref name="p-choice"/>
-	</zeroOrMore>
-      </mixed>
+      <ref name="p-content"/>
     </element>
     </define>
+
+  <define name="p-content">
+    <a:rest>
+Special inline content model for paragraphs and hybrid elements.
+    </a:rest>
+    <ref name="common-attributes"/>
+    <mixed>
+      <zeroOrMore>
+	<ref name="p-choice"/>
+      </zeroOrMore>
+    </mixed>
+  </define>
 
   <define name="p-choice">
     <a:rest>
@@ -784,7 +794,23 @@ inline elements, compact lists ul_ and ol_ are also allowed (however,
 `compact` attribute is not allowed as the list can only be compact).
     </a:rest>
     <choice>
-      <ref name="inline-choice"/>
+      <ref name="tt-element"/>
+      <ref name="sup-element"/>
+      <ref name="sub-element"/>
+      <ref name="em-element"/>
+      <ref name="strong-element"/>
+      <ref name="phrase-element"/>
+      <ref name="command-element"/>
+      <ref name="input-element"/>
+      <ref name="uri-element"/>
+      <ref name="file-element"/>
+      <ref name="footnote-element"/>
+      <ref name="q-element"/>
+      <ref name="a-element"/>
+      <ref name="xref-element"/>
+      <ref name="cite-element"/>
+      <ref name="index-element"/>
+      <ref name="br-element"/>
       <element name="ol">
 	<oneOrMore>
 	  <ref name="compact-li-element"/>
@@ -807,8 +833,10 @@ each file anf `file` the file name. Both attributes are mandatory.
 .. _image: `image-element`_
     </a:rest>
     <element name="image">
+      <ref name="common-attributes"/>
       <oneOrMore>
 	<element name="source">
+	  <ref name="common-attributes"/>
 	  <attribute name="format">
 	    <ref name="format-choice"/>
 	  </attribute>
@@ -932,7 +960,6 @@ used to override the default column alignment. Finally, the `colspan`
 attribute gives the number of table columns to be spanned by the
 cell. The default is&#xA0;1.
     </a:rest>
-    <ref name="common-attributes"/>
     <ref name="bgcolor-attribute"/>
     <optional>
       <attribute name="align">
@@ -962,6 +989,9 @@ contain a `caption`_ element describing the contents.
 .. _figure: `figure-element`_
     </a:rest>
     <element name="figure">
+      <optional>
+	<ref name="id-attribute"/>
+      </optional>
       <ref name="common-attributes"/>
       <interleave>
 	<oneOrMore>
@@ -981,6 +1011,9 @@ numbered (independently from figures). A `caption` element is required.
 .. _table: `table-element`_
     </a:rest>
     <element name="table">
+      <optional>
+	<ref name="id-attribute"/>
+      </optional>
       <ref name="common-attributes"/>
       <interleave>
 	<oneOrMore>
@@ -1103,7 +1136,9 @@ This element represents an item of an (un)ordered list.
 .. _li: `li-element`_
     </a:rest>
     <element name="li">
-      <ref name="common-attributes"/>
+      <optional>
+	<ref name="id-attribute"/>
+      </optional>
       <ref name="hybrid-content"/>
     </element>
   </define>
@@ -1114,7 +1149,6 @@ This element represents an item of a compact list which may only
 contain inline content.
     </a:rest>
     <element name="li">
-      <ref name="common-attributes"/>
       <ref name="inline-content"/>
     </element>
   </define>
@@ -1145,6 +1179,9 @@ The definition term has simple inline content.
 .. _dt: `dt-element`_
     </a:rest>
     <element name="dt">
+      <optional>
+	<ref name="id-attribute"/>
+      </optional>
       <ref name="inline-content"/>
     </element>
   </define>
@@ -1156,7 +1193,6 @@ The description has the same content model as items in (un)ordered lists.
 .. _dd: `dd-element`_
     </a:rest>
     <element name="dd">
-      <ref name="common-attributes"/>
       <ref name="hybrid-content"/>
     </element>
   </define>

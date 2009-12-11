@@ -2,8 +2,9 @@
 
 <!--
 trtoxhtml.xsl: translates techrep XML v2 to XHTML
-Copyright © 2008 CESNET
+Copyright © 2009 CESNET
 Author: Ladislav Lhotka
+Last modified: 2009-12-11
 -->
 
 
@@ -145,7 +146,16 @@ Author: Ladislav Lhotka
 	<xsl:with-param name="en">Abstract</xsl:with-param>
       </xsl:call-template>
     </xsl:element>
-    <xsl:apply-templates/>
+    <xsl:choose>
+      <xsl:when test="text()">
+	<xsl:element name="p">
+	  <xsl:apply-templates/>
+	</xsl:element>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:apply-templates/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
   <xsl:template match="tr:keywords">
