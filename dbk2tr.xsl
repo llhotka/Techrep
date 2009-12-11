@@ -7,7 +7,7 @@ Description: This style sheet transforms DocBook v. 4.5
              to CESNET technical report format, version 2. 
 Author: Ladislav Lhotka <Lhotka@cesnet.cz>
 
-Copyright (C) 2008 CESNET
+Copyright (C) 2009 CESNET
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of version 2 of the GNU General Public

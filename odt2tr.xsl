@@ -7,7 +7,7 @@ Description: This style sheet transforms Open Document Format v1.0
              to CESNET technical report format 
 Author: Ladislav Lhotka <Lhotka@cesnet.cz>
 
-Copyright (C) 2006 CESNET
+Copyright (C) 2009 CESNET
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of version 2 of the GNU General Public

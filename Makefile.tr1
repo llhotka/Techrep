@@ -21,12 +21,6 @@ init:
 tarball:
 	tar czvf $(FN).tar.gz $(FN)
 
-%.rxml: %.rxt
-	rst2xml -i ISO-8859-2 $< $@
-
-%.xml: %.rxml
-	xsltproc --novalid -o $@ $(RXML2TR) $<
-
 %.ctr: %.xml
 	xsltproc --novalid --stringparam nbsp-tilde 1 -o $@ $(TR1TO2) $<
 

@@ -1,11 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-trto-lib.xsl: common templates for techrep v2
-Copyright © 2009 CESNET
-Author: Ladislav Lhotka
--->
 
+Program name: trto-lib.xsl
+Description: Library of common XSLT templates for translating Techrep2
+             to various output formats. 
+Author: Ladislav Lhotka <Lhotka@cesnet.cz>
+
+Copyright (C) 2009 CESNET
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of version 2 of the GNU General Public
+License as published by the Free Software Foundation.
+
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+02111-1307, USA.
+
+-->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 		xmlns:tr="http://cesnet.cz/ns/techrep/base/2.0"
