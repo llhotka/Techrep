@@ -21,7 +21,7 @@ tarball:
 	tar czvf $(FN).tar.gz $(FN)
 
 %.rxml: %.rxt
-	rst2xml -i ISO-8859-2 $< $@
+	rst2xml $< $@
 
 %.ctr: %.rxml
 	xsltproc --novalid -o $@ $(RXML2TR) $<
