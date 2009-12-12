@@ -32,7 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
   <xsl:output method="xml" indent="yes"/>
 
   <xsl:param name="lang">en</xsl:param>
-  <xsl:param name="tr-number">XX/2008</xsl:param>
+  <xsl:param name="tr-number">XX/20XX</xsl:param>
 
   <xsl:template name="parse-authors">
     <xsl:param name="authors"/>

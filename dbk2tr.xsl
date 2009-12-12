@@ -45,7 +45,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
   
   <!-- Global parameters -->
 
-  <xsl:param name="tr-number">XX/2006</xsl:param>
+  <xsl:param name="tr-number">XX/20XX</xsl:param>
   <xsl:param name="tr-lang">en</xsl:param>
 
   <xsl:template match="article">

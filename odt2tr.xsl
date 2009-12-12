@@ -59,9 +59,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
   <xsl:param name="tr-nazev">FIXME</xsl:param>
   <xsl:param name="tr-autor">FIXME</xsl:param>
   <xsl:param name="tr-datum">FIXME</xsl:param>
-  <xsl:param name="tr-number">XX/2008</xsl:param>
+  <xsl:param name="tr-number">XX/20XX</xsl:param>
   <xsl:param name="h1-level" select="1"/>
-  <xsl:param name="tr-date">24.12.2006</xsl:param>
+  <xsl:param name="tr-date">XX.XX.20XX</xsl:param>
   <xsl:param name="tt-style">Teletype</xsl:param>
 
   <!-- Style variables -->
