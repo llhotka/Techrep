@@ -21,9 +21,9 @@ Makefile.odt
     Makefile for reports submitted as ODT.
 
 Makefile.rest
-    Makefile for reports submitted as reStructuredText.
+    Makefile for reports submitted as reStructuredText or DocBook.
 
-Makefile.rest
+Makefile.tr1
     Makefile for reports submitted as Techrep (v1 or v2).
 
 odt2tr.xsl

@@ -3,6 +3,7 @@ TRNO = XX/20XX
 FINAL = 0
 XSLDIR = /home/lhotka/Projekty/Techrep
 RXML2TR = $(XSLDIR)/rxml2tr.xsl
+DBK2TR = $(XSLDIR)/dbk2tr.xsl
 TR2TEX = $(XSLDIR)/trtotex.xsl
 TR2XHTML = $(XSLDIR)/trtoxhtml.xsl
 TR2RSS = $(XSLDIR)/trtorss.xsl
@@ -24,6 +25,9 @@ tarball:
 
 %.rxml: %.rxt
 	rst2xml $< $@
+
+%.ctr: %.dbk
+	xsltproc --novalid $(RXOPTS) -o $@ $(DBK2TR) $<
 
 %.ctr: %.rxml
 	xsltproc --novalid $(RXOPTS) -o $@ $(RXML2TR) $<
