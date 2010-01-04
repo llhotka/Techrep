@@ -50,4 +50,4 @@ $(FN)/index.html: $(FN).ctr
 	xsltproc --stringparam tr-name $(FN) -o $@ $(TR2XHTML) $<
 
 $(FN)/$(FN).rss: $(FN).ctr
-        xsltproc --stringparam tr-name $(FN) -o $@ $(TR2RSS) $<
+	xsltproc --stringparam tr-name $(FN) -o $@ $(TR2RSS) $<
