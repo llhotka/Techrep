@@ -557,18 +557,18 @@
     \llap{\hbox to\parindent{%
         \hfil{\ix_i\number\verb_lno\ \ }}}}}
 
-\def\verbatim{\par\medskip\begingroup\tt\parindent=0pt
+\def\verbatim{\par\begingroup\tt\parindent=0pt
   \obeylines\uncatcode_specials\obeyspaces}
 
-\def\endVerbatim{\endgroup\medbreak}
+\let\endVerbatim=\endgroup
 \catcode`\¤=\active \let¤=\endVerbatim
 
-\def\blockQuote{\par\begingroup
+\def\blockQuote{\par\medbreak\begingroup
   \advance\leftskip by\parskip
   \advance\rightskip by\parskip
   \nobreak}
 
-\let\endBlockQuote=\endgroup
+\def\endBlockQuote{\medbreak\endgroup}
 
 % Lists
 

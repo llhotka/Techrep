@@ -48,6 +48,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
   <xsl:param name="tr-number">XX/20XX</xsl:param>
   <xsl:param name="tr-lang">en</xsl:param>
 
+  <xsl:template match="@id">
+    <xsl:attribute name="xml:id">
+      <xsl:value-of select="."/>
+    </xsl:attribute>
+  </xsl:template>
+
   <xsl:template match="article">
     <xsl:element name="report">
       <xsl:attribute name="number">
@@ -145,16 +151,19 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
     <xsl:choose>
       <xsl:when test="$secl=1">
 	<xsl:element name="h1">
+	  <xsl:apply-templates select="@id"/>
 	  <xsl:apply-templates select="title" mode="sec"/>
 	</xsl:element>
       </xsl:when>
       <xsl:when test="$secl=2">
 	<xsl:element name="h2">
+	  <xsl:apply-templates select="@id"/>
 	  <xsl:apply-templates select="title" mode="sec"/>
 	</xsl:element>
       </xsl:when>
       <xsl:when test="$secl=3">
 	<xsl:element name="h3">
+	  <xsl:apply-templates select="@id"/>
 	  <xsl:apply-templates select="title" mode="sec"/>
 	</xsl:element>
       </xsl:when>
@@ -164,6 +173,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 
   <xsl:template match="sect1">
     <xsl:element name="h1">
+      <xsl:apply-templates select="@id"/>
       <xsl:apply-templates select="title" mode="sec"/>
     </xsl:element>
     <xsl:apply-templates/>
@@ -171,6 +181,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
   
   <xsl:template match="sect2">
     <xsl:element name="h2">
+      <xsl:apply-templates select="@id"/>
       <xsl:apply-templates select="title" mode="sec"/>
     </xsl:element>
     <xsl:apply-templates/>
@@ -178,6 +189,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
   
   <xsl:template match="sect3">
     <xsl:element name="h3">
+      <xsl:apply-templates select="@id"/>
       <xsl:apply-templates select="title" mode="sec"/>
     </xsl:element>
     <xsl:apply-templates/>
@@ -185,6 +197,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
   
   <xsl:template match="simplesect">
     <xsl:element name="h3">
+      <xsl:apply-templates select="@id"/>
       <xsl:apply-templates select="title" mode="sec"/>
     </xsl:element>
     <xsl:apply-templates/>
@@ -244,7 +257,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
     <xsl:apply-templates/>
   </xsl:template>
 
-  <xsl:template match="programlisting">
+  <xsl:template match="programlisting|screen">
     <xsl:element name="pre">
       <xsl:apply-templates/>
     </xsl:element>
@@ -441,6 +454,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 
   <xsl:template match="emphasis">
     <xsl:element name="em">
+      <xsl:apply-templates/>
+    </xsl:element>
+  </xsl:template>
+
+  <xsl:template match="literal">
+    <xsl:element name="tt">
       <xsl:apply-templates/>
     </xsl:element>
   </xsl:template>

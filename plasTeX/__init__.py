@@ -21,7 +21,7 @@ def handle_bibitem(node):
     return u'\n<kniha id="%s">%s</kniha>\n' % (node.attributes['key'],
                                                unicode(node))
 def handle_cite(node):
-    return u'<cite href="%s"/>' % node.attributes['keys'][0]
+    return u'<cite href="%s"/>' % node.attributes['bibkeys'][0]
 
 def handle_description(node):
     TechRep.dlist = True
