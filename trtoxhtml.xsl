@@ -164,13 +164,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
       </xsl:call-template>
     </xsl:element>
     <xsl:choose>
-      <xsl:when test="text()">
+      <xsl:when test="tr:p">
+	<xsl:apply-templates/>
+      </xsl:when>
+      <xsl:otherwise>
 	<xsl:element name="p">
 	  <xsl:apply-templates/>
 	</xsl:element>
-      </xsl:when>
-      <xsl:otherwise>
-	<xsl:apply-templates/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
