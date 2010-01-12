@@ -98,7 +98,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
     </xsl:call-template>
   </xsl:template>
 
-  <xsl:template match="tr:figure" mode="number">
+  <xsl:template match="tr:figure|tr:table" mode="number">
     <xsl:number/>
   </xsl:template>
 
@@ -107,10 +107,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
       <xsl:with-param name="cs">Tabulka</xsl:with-param>
       <xsl:with-param name="en">Table</xsl:with-param>
     </xsl:call-template>
-  </xsl:template>
-
-  <xsl:template match="tr:table" mode="number">
-    <xsl:number/>
   </xsl:template>
 
   <xsl:template match="tr:ol/tr:li" mode="label">

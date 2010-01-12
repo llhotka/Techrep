@@ -49,6 +49,7 @@
 \newskip\list_skip % above and below lists
 \newskip\cap_skip % above/below caption
 \newif\ifproof_mode % proof mode switch
+\newif\iffirst_affil % first affiliation in the list
 \newif\iftitle_page % indicates report title page
 \newif\ifinfo_up % controls whether headline is set
 \newif\ifinfo_down % controls whether footline is set
@@ -59,6 +60,7 @@
 \newbox\page_box % contains entire page (in output routines)
 \newbox\title_box % box for report title
 \newbox\auth_box % box for authors
+\newbox\affil_box % box for affiliations
 \newbox\ins_box % box for insertions
 \newbox\cap_box % box for figure and table captions
 \newbox\vlinebox % vertical line accross the height of a line
@@ -97,6 +99,7 @@
 \def\text_opts{mapping=tex-text}
 
 \font\x_rm="\text_fam:\text_opts"		% 10-point fonts
+\font\x_sups="\text_fam:+sups"
 \font\x_it="\text_fam/I:\text_opts"
 \font\x_bf="\text_fam/B:\text_opts"
 \font\x_ib="\text_fam/IB:\text_opts"
@@ -115,6 +118,7 @@
 \font\x_sy=cmsy10
 
 \font\ix_rm="\text_fam:\text_opts" at 9pt	% 9-point fonts
+\font\ix_sups="\text_fam:+sups" at 9pt
 \font\ix_it="\text_fam/I:\text_opts" at 9pt
 \font\ix_bf="\text_fam/B:\text_opts" at 9pt
 \font\ix_ib="\text_fam/IB:\text_opts" at 9pt
@@ -133,6 +137,7 @@
 \font\ix_sy=cmsy9
 
 \font\vii_rm="\text_fam:\text_opts" at 7pt	% 7-point fonts
+\font\vii_sups="\text_fam:+sups" at 7pt
 \font\vii_it="\text_fam/I:\text_opts" at 7pt
 \font\vii_bf="\text_fam/B:\text_opts" at 7pt
 \font\vii_tt="\mono_fam" at 7pt
@@ -145,6 +150,7 @@
 \font\vii_sy=cmsy7
 
 \font\vi_rm="\text_fam:\text_opts" at 6pt	% 6-point fonts
+\font\vi_sups="\text_fam:+sups" at 6pt
 \font\vi_it="\text_fam/I:\text_opts" at 6pt
 \font\vi_bf="\text_fam/B:\text_opts" at 6pt
 \font\vi_tt="\mono_fam" at 6pt
@@ -156,6 +162,7 @@
 \font\vi_sy=cmsy6
 
 \font\v_rm="\text_fam:\text_opts" at 5pt	% 5-point fonts
+\font\v_sups="\text_fam:+sups" at 5pt
 \font\v_it="\text_fam/I:\text_opts" at 5pt
 \font\v_bf="\text_fam/B:\text_opts" at 5pt
 \font\v_tt="\mono_fam" at 5pt
@@ -167,6 +174,7 @@
 \font\v_sy=cmsy5
 
 \font\xii_rm="\text_fam:\text_opts" at 12pt	% 12-point fonts
+\font\xii_sups="\text_fam:+sups" at 12pt
 \font\xii_it="\text_fam/I:\text_opts" at 12pt
 \font\xii_bf="\text_fam/B:\text_opts" at 12pt
 \font\xii_ib="\text_fam/IB:\text_opts" at 12pt
@@ -185,6 +193,7 @@
 \font\xii_sy=cmsy10 at 12pt
 
 \font\xiv_rm="\text_fam:\text_opts" at 14pt	% 14-point fonts
+\font\xiv_sups="\text_fam:+sups" at 14pt
 \font\xiv_it="\text_fam/I:\text_opts" at 14pt
 \font\xiv_bf="\text_fam/B:\text_opts" at 14pt
 \font\xiv_ib="\text_fam/IB:\text_opts" at 14pt
@@ -203,6 +212,7 @@
 \font\xiv_sy=cmsy10 at 14pt
 
 \font\xvii_rm="\text_fam:\text_opts" at 17pt	% 17-point fonts
+\font\xvii_sups="\text_fam:+sups" at 17pt
 \font\xvii_it="\text_fam/I:\text_opts" at 17pt
 \font\xvii_bf="\text_fam/B:\text_opts" at 17pt
 \font\xvii_ib="\text_fam/IB:\text_opts" at 17pt
@@ -221,6 +231,7 @@
 \font\xvii_sy=cmsy10 at 17pt
 
 \font\xxi_rm="\text_fam:\text_opts" at 21pt	% 21-point fonts
+\font\xxi_sups="\text_fam:+sups" at 21pt
 \font\xxi_it="\text_fam/I:\text_opts" at 21pt
 \font\xxi_bf="\text_fam/B:\text_opts" at 21pt
 \font\xxi_ib="\text_fam/IB:\text_opts" at 21pt
@@ -329,6 +340,7 @@
   \def\tt{\macro{#1_tt}\fam\ttfam \font_style={tt}}%
   \def\tti{\macro{#1_tti}\font_style={tti}}%
   \def\ttib{\macro{#1_ttib}\font_style={ttib}}%
+  \def\sups{\macro{#1_sups}\font_style={sups}}%
   }
 
 \def\sl{\it}
@@ -458,6 +470,7 @@
 \hbox to \hsize{\the\footline}}
 
 \let\rep_number=\empty \let\rec_date=\empty
+\first_affiltrue
 \def\repnumber#1{\def\rep_number{#1}}
 \def\recdate#1{\def\rec_date{#1}}
 
@@ -471,15 +484,20 @@
 
 \def\append_author#1{\@uthors=\expandafter{\the\@uthors#1}}
 
-\def\author#1#2#3{\def\@ffil{#2}%
+\def\author#1#2#3{
   \ifnum\auth_count=0
-    \append_author{#1\ifx\@ffil\empty\else (#2)\fi}
+    \append_author{#1$^{\hbox{\vii_rm#2}}$}
     \auth_names={#1}
     \def\first_author{#1}
   \else
-    \append_author{, #1\ifx\@ffil\empty\else (#2)\fi}
+    \append_author{, #1$^{\hbox{\vii_rm#2}}$}
     \auth_names=\expandafter{\the\auth_names, #1}\fi
   \incr\auth_count}
+
+\def\affiliation#1#2{\setbox\affil_box=\vbox{
+  \iffirst_affil \bigskip\global\first_affilfalse \else \unvbox\affil_box \fi
+  \vbox{\leftskip=6em plus1fill \rightskip=6em plus1fill
+    \noindent\petit\it$^{\hbox{\vii_rm#2}}\,$#1\par}}}
 
 \def\abstract{\bgroup\petit
     \centerline{\bf Abstract}

@@ -150,7 +150,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
     <xsl:value-of select="concat('\report',$NL)"/>
     <xsl:apply-templates select="@number"/>
     <xsl:apply-templates select="tr:title"/>
-    <xsl:apply-templates select="tr:author"/>
+    <xsl:apply-templates select="tr:authors"/>
     <xsl:apply-templates select="tr:date"/>
     <xsl:if test="tr:title">
       <xsl:text>\makeTitle</xsl:text>
@@ -198,16 +198,39 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
     </xsl:if>
   </xsl:template>
 
+  <xsl:template match="tr:authors">
+    <xsl:apply-templates select="tr:author"/>
+    <xsl:apply-templates select="tr:affiliation"/>
+  </xsl:template>
+
   <xsl:template match="tr:author">
     <xsl:text>\author</xsl:text>
     <xsl:call-template name="TeXgroup">
-      <xsl:with-param name="arg" select="tr:name"/>
+      <xsl:with-param name="arg" select="."/>
     </xsl:call-template>
     <xsl:call-template name="TeXgroup">
-      <xsl:with-param name="arg" select="tr:affiliation"/>
+      <xsl:with-param name="arg">
+	<xsl:for-each select="id(@affil)">
+	  <xsl:number/>
+	  <xsl:if test="position()!=last()">,</xsl:if>
+	</xsl:for-each>
+      </xsl:with-param>
     </xsl:call-template>
     <xsl:call-template name="TeXgroup">
       <xsl:with-param name="arg" select="tr:email"/>
+    </xsl:call-template>
+    <xsl:value-of select="$NL"/>
+  </xsl:template>
+
+  <xsl:template match="tr:affiliation">
+    <xsl:text>\affiliation</xsl:text>
+    <xsl:call-template name="TeXgroup">
+      <xsl:with-param name="arg" select="."/>
+    </xsl:call-template>
+    <xsl:call-template name="TeXgroup">
+      <xsl:with-param name="arg">
+	<xsl:number/>
+      </xsl:with-param>
     </xsl:call-template>
     <xsl:value-of select="$NL"/>
   </xsl:template>
@@ -749,4 +772,3 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
   </xsl:template>
 
 </xsl:stylesheet>
-

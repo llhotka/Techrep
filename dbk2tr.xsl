@@ -71,7 +71,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 
   <xsl:template match="articleinfo">
     <xsl:apply-templates select="title" mode="top"/>
-    <xsl:apply-templates select="author|authorgroup"/>
+    <xsl:element name="authors">
+      <xsl:apply-templates select="author|authorgroup"/>
+    </xsl:element>
     <xsl:apply-templates select="keywordset"/>
   </xsl:template>
 

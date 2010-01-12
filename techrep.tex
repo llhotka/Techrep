@@ -60,6 +60,7 @@
     \vbox{\leftskip=3em plus 1fill \rightskip=3em plus 1fill
     \parfillskip=0pt
     \normalSize\noindent\sc\the\@uthors}
+    \iffirst_affil\else\box\affil_box\fi
     \ifx\rec_date\empty\else
       \medskip
       \centerline{\petit\rm Received~\rec_date}

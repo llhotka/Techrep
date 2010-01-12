@@ -31,7 +31,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 
   <xsl:include href="trto-lib.xsl"/>
 
-  <xsl:output method="xml" omit-xml-declaration="yes" indent="yes"/>
+  <xsl:output method="xml" omit-xml-declaration="yes"/>
 
   <xsl:variable name="version">2.0</xsl:variable>
 
@@ -129,18 +129,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 	<xsl:text>PDF format</xsl:text>
       </xsl:element>
     </xsl:element>
-    <xsl:element name="p">
-      <xsl:element name="big">
-	<xsl:element name="strong">
-	  <xsl:for-each select="tr:author">
-	    <xsl:value-of select="tr:name"/>
-	    <xsl:if test="position() != last()">
-	      <xsl:text>, </xsl:text>
-	    </xsl:if>
-	  </xsl:for-each>
-	</xsl:element>
-      </xsl:element>
-    </xsl:element>
+    <xsl:apply-templates select="tr:authors"/>
     <xsl:element name="p">
       <xsl:text>Received </xsl:text>
       <xsl:value-of select="tr:date"/>
@@ -148,6 +137,46 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
     <xsl:apply-templates select="tr:abstract"/>
     <xsl:apply-templates select="tr:keywords"/>
     <xsl:apply-templates select="tr:body"/>
+  </xsl:template>
+
+  <xsl:template match="tr:authors">
+    <xsl:element name="p">
+      <xsl:apply-templates select="tr:author"/>
+    </xsl:element>
+    <xsl:element name="p">
+      <xsl:apply-templates select="tr:affiliation"/>
+    </xsl:element>
+  </xsl:template>
+
+  <xsl:template match="tr:author">
+    <xsl:element name="big">
+      <xsl:element name="strong">
+	<xsl:apply-templates/>
+      </xsl:element>
+    </xsl:element>
+    <xsl:element name="sup">
+      <xsl:for-each select="id(@affil)">
+	<xsl:number/>
+	<xsl:if test="position()!=last()">,</xsl:if>
+      </xsl:for-each>
+    </xsl:element>
+    <xsl:if test="following-sibling::tr:author">
+      <xsl:element name="big">
+	<xsl:element name="strong">
+	  <xsl:text>, </xsl:text>
+	</xsl:element>
+      </xsl:element>
+    </xsl:if>
+  </xsl:template>
+
+  <xsl:template match="tr:affiliation">
+    <xsl:element name="sup">
+      <xsl:number/>
+    </xsl:element>
+    <xsl:element name="em">
+      <xsl:apply-templates/>
+    </xsl:element>
+    <xsl:element name="br"/>
   </xsl:template>
 
   <xsl:template match="tr:title">

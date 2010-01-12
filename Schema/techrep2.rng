@@ -168,11 +168,9 @@ version of the title that can be used in page headings etc.
       </optional>
       <ref name="inline-content"/>
     </element>
-    <oneOrMore>
-      <element name="author">
-	<ref name="author-content"/>
-      </element>
-    </oneOrMore>
+    <element name="authors">
+      <ref name="authors-content"/>
+    </element>
     <optional>
       <element name="date">
 	<ref name="date-content"/>
@@ -200,26 +198,33 @@ can be done later if necessary.
     <text/>
   </define>
 
-  <define name="author-content">
+  <define name="authors-content">
     <a:rest>
-The data about author(s) are slightly more structured than in
-version&#xA0;1.      
+Names of one or more authors and optionally their affiliations. The
+correspondence between an author and an affiliation is established via
+the `affil` attribute attached to the author and pointing the
+the affiliation's `xml:id` attribute.
     </a:rest>
-    <ref name="common-attributes"/>
-    <element name="name">
-      <text/>
-    </element>
     <interleave>
-      <optional>
+      <zeroOrMore>
 	<element name="affiliation">
+	  <ref name="id-attribute"/>
 	  <text/>
 	</element>
-      </optional>
-      <optional>
-	<element name="email">
-	  <ref name="email-content"/>
+      </zeroOrMore>
+      <oneOrMore>
+	<element name="author">
+	  <optional>
+	    <attribute name="affil">
+	      <data type="IDREFS"/>
+	    </attribute>
+	  </optional>
+	  <optional>
+	    <attribute name="email"/>
+	  </optional>
+	  <text/>
 	</element>
-      </optional>
+      </oneOrMore>
     </interleave>
   </define>
 
