@@ -154,12 +154,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 	<xsl:apply-templates/>
       </xsl:element>
     </xsl:element>
-    <xsl:element name="sup">
-      <xsl:for-each select="id(@affil)">
-	<xsl:number/>
-	<xsl:if test="position()!=last()">,</xsl:if>
-      </xsl:for-each>
-    </xsl:element>
+    <xsl:if test="id(@affil)">
+      <xsl:element name="sup">
+	<xsl:for-each select="id(@affil)">
+	  <xsl:number/>
+	  <xsl:if test="position()!=last()">,</xsl:if>
+	</xsl:for-each>
+      </xsl:element>
+    </xsl:if>
     <xsl:if test="following-sibling::tr:author">
       <xsl:element name="big">
 	<xsl:element name="strong">
