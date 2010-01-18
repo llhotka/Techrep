@@ -36,25 +36,23 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 
   <xsl:template name="parse-authors">
     <xsl:param name="authors"/>
-    <xsl:element name="authors">
-      <xsl:variable name="ret" select="normalize-space($authors)"/>
-      <xsl:choose>
-	<xsl:when test="contains($ret,',')">
-	  <xsl:element name="author">
-	    <xsl:value-of
-		select="normalize-space(substring-before($ret,','))"/>
-	  </xsl:element>
-	  <xsl:call-template name="parse-authors">
-	    <xsl:with-param name="authors" select="substring-after($ret,',')"/>
-	  </xsl:call-template>
-	</xsl:when>
-	<xsl:otherwise>
-	  <xsl:element name="author">
-	    <xsl:value-of select="$ret"/>
-	  </xsl:element>
-	</xsl:otherwise>
-      </xsl:choose>
-    </xsl:element>
+    <xsl:variable name="ret" select="normalize-space($authors)"/>
+    <xsl:choose>
+      <xsl:when test="contains($ret,',')">
+	<xsl:element name="author">
+	  <xsl:value-of
+	      select="normalize-space(substring-before($ret,','))"/>
+	</xsl:element>
+	<xsl:call-template name="parse-authors">
+	  <xsl:with-param name="authors" select="substring-after($ret,',')"/>
+	</xsl:call-template>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:element name="author">
+	  <xsl:value-of select="$ret"/>
+	</xsl:element>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
   <xsl:template name="guess-img-format">
@@ -126,9 +124,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
   </xsl:template>
 
   <xsl:template match="docinfo/author">
-    <xsl:call-template name="parse-authors">
-      <xsl:with-param name="authors" select="."/>
-    </xsl:call-template>
+    <xsl:element name="authors">
+      <xsl:call-template name="parse-authors">
+	<xsl:with-param name="authors" select="."/>
+      </xsl:call-template>
+    </xsl:element>
   </xsl:template>
 
   <xsl:template match="docinfo/date">
