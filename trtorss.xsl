@@ -62,10 +62,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
       </xsl:element>
       <xsl:element name="description">
 	<xsl:text>AUTHORS: </xsl:text>
-	<xsl:for-each select="tr:author">
+	<xsl:for-each select="tr:authors/tr:author">
 	  <xsl:call-template name="cit-name">
 	    <xsl:with-param name="aname"
-			    select="normalize-space(tr:name)"/>
+			    select="normalize-space()"/>
 	  </xsl:call-template>
 	  <xsl:choose>
 	    <xsl:when test="position() = last()">
