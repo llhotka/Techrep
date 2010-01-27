@@ -336,6 +336,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
   </xsl:template>
 
   <xsl:template match="tr:pre">
+    <xsl:if test="not(parent::tr:blockquote)">
+      <xsl:text>\medbreak</xsl:text>
+      <xsl:value-of select="$NL"/>
+    </xsl:if>
     <xsl:choose>
       <xsl:when test="@numbered='true'">
 	<xsl:text>\numberedVerbatim</xsl:text>
@@ -347,6 +351,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
     <xsl:value-of select="$NL"/>
     <xsl:value-of select="."/>
     <xsl:value-of select="concat('&#xa4;',$NLNL)"/>
+    <xsl:if test="not(parent::tr:blockquote)">
+      <xsl:text>\medbreak</xsl:text>
+      <xsl:value-of select="$NL"/>
+    </xsl:if>
   </xsl:template>
 
   <xsl:template match="tr:blockquote">
@@ -681,35 +689,60 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
   </xsl:template>
 
   <xsl:template match="tr:xref">
-    <xsl:apply-templates/>
+    <xsl:variable name="notraw" select="not(@raw='true' or @raw=1)"/>
+    <xsl:variable name="reftext">
+      <xsl:choose>
+	<xsl:when test="id(@linkend)">
+	  <xsl:if test="$notraw">
+	    <xsl:apply-templates select="id(@linkend)" mode="label"/>
+	    <xsl:text>&#xA0;</xsl:text>
+	  </xsl:if>
+	  <xsl:apply-templates select="id(@linkend)" mode="number"/>
+	</xsl:when>
+	<xsl:otherwise>
+	  <xsl:message terminate="no">
+	    <xsl:text>Cross-reference target not found: </xsl:text>
+	    <xsl:value-of select="@linkend"/>
+	  </xsl:message>
+	  <xsl:text>{\bf??}</xsl:text>
+	</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
     <xsl:choose>
       <xsl:when test="descendant::text()">
-	<xsl:if test="not(@raw='true' or @raw=1)">
-	  <xsl:text> (</xsl:text>
-	  <xsl:apply-templates select="id(@linkend)"
-			       mode="label"/>
-	</xsl:if>
-	<xsl:text>&#xA0;</xsl:text>
-	<xsl:apply-templates select="id(@linkend)"
-			     mode="number"/>
-	<xsl:if test="not(@raw='true' or @raw=1)">
-	  <xsl:text>)</xsl:text>
-	</xsl:if>
+	<xsl:apply-templates/>
+	<xsl:choose>
+	  <xsl:when test="$notraw">
+	    <xsl:text> (</xsl:text>
+	    <xsl:value-of select="$reftext"/>
+	    <xsl:text>)</xsl:text>
+	  </xsl:when>
+	  <xsl:otherwise>
+	    <xsl:text>&#xA0;</xsl:text>
+	    <xsl:value-of select="$reftext"/>
+	  </xsl:otherwise>
+	</xsl:choose>
       </xsl:when>
       <xsl:otherwise>
-	<xsl:if test="not(@raw='true' or @raw=1)">
-	  <xsl:apply-templates select="id(@linkend)"
-			       mode="label"/>
-	  <xsl:text>&#xA0;</xsl:text>
-	</xsl:if>
-	<xsl:apply-templates select="id(@linkend)"
-			     mode="number"/>
+	<xsl:value-of select="$reftext"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
 
   <xsl:template match="tr:cite">
-    <xsl:apply-templates select="id(@bibref)" mode="number"/> 
+    <xsl:variable name="cit" select="id(@bibref)"/>
+    <xsl:choose>
+      <xsl:when test="$cit">
+	<xsl:apply-templates select="$cit" mode="number"/>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:message terminate="no">
+	  <xsl:text>Bibliographic reference not found: </xsl:text>
+	  <xsl:value-of select="@bibref"/>
+	</xsl:message>
+	<xsl:text>[??]</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
   <xsl:template match="tr:index">

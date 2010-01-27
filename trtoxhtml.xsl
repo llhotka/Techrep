@@ -402,37 +402,48 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
   </xsl:template>
 
   <xsl:template match="tr:xref">
+    <xsl:variable name="notraw" select="not(@raw='true' or @raw=1)"/>
+    <xsl:variable name="reftext">
+      <xsl:choose>
+	<xsl:when test="id(@linkend)">
+	  <xsl:if test="$notraw">
+	    <xsl:apply-templates select="id(@linkend)" mode="label"/>
+	    <xsl:text>&#xA0;</xsl:text>
+	  </xsl:if>
+	  <xsl:apply-templates select="id(@linkend)" mode="number"/>
+	</xsl:when>
+	<xsl:otherwise>
+	  <xsl:message terminate="no">
+	    <xsl:text>Cross-reference target not found: </xsl:text>
+	    <xsl:value-of select="@linkend"/>
+	  </xsl:message>
+	  <xsl:element name="strong">
+	    <xsl:text>??</xsl:text>
+	  </xsl:element>
+	</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
     <xsl:element name="a">
       <xsl:attribute name="href">
 	<xsl:value-of select="concat('#',@linkend)"/>
       </xsl:attribute>
-      <xsl:variable name="tgt" select="id(@linkend)"/>
       <xsl:choose>
-	<xsl:when test="$tgt">
+	<xsl:when test="descendant::text()">
+	  <xsl:apply-templates/>
 	  <xsl:choose>
-	    <xsl:when test="descendant::text()">
-	      <xsl:apply-templates/>
-	      <xsl:text>&#xA0;</xsl:text>
-	      <xsl:apply-templates select="$tgt"
-				   mode="number"/>
+	    <xsl:when test="$notraw">
+	      <xsl:text> (</xsl:text>
+	      <xsl:value-of select="$reftext"/>
+	      <xsl:text>)</xsl:text>
 	    </xsl:when>
 	    <xsl:otherwise>
-	      <xsl:if test="not(@raw='true' or @raw=1)">
-		<xsl:apply-templates select="$tgt"
-				     mode="label"/>
-		<xsl:text>&#xa0;</xsl:text>
-	      </xsl:if>
-	      <xsl:apply-templates select="$tgt"
-				   mode="number"/>
+	      <xsl:text>&#xA0;</xsl:text>
+	      <xsl:value-of select="$reftext"/>
 	    </xsl:otherwise>
 	  </xsl:choose>
 	</xsl:when>
 	<xsl:otherwise>
-	  <xsl:message terminate="no">
-	    <xsl:text>Reference target not found: </xsl:text>
-	    <xsl:value-of select="@linkend"/>
-	  </xsl:message>
-	  <xsl:text>??</xsl:text>
+	  <xsl:value-of select="$reftext"/>
 	</xsl:otherwise>
       </xsl:choose>
     </xsl:element>
