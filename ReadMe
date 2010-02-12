@@ -62,7 +62,7 @@ trtotex.xsl
     Translates Techrep2 to TeX source (to be used with either
     techrep.tex or trproc.tex format).
 
-trtotex.xsl
+trtoxhtml.xsl
     Translates Techrep2 to XHTML.
 
 tr1to2.xsl
