@@ -210,10 +210,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
     </xsl:call-template>
     <xsl:call-template name="TeXgroup">
       <xsl:with-param name="arg">
-	<xsl:for-each select="id(@affil)">
-	  <xsl:number/>
-	  <xsl:if test="position()!=last()">,</xsl:if>
-	</xsl:for-each>
+	<xsl:if test="count(parent::*/tr:affiliation)&gt;1
+		      and count(parent::*/tr:author)&gt;1">
+	  <xsl:for-each select="id(@affil)">
+	    <xsl:number/>
+	    <xsl:if test="position()!=last()">,</xsl:if>
+	  </xsl:for-each>
+	</xsl:if>
       </xsl:with-param>
     </xsl:call-template>
     <xsl:call-template name="TeXgroup">
@@ -229,7 +232,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
     </xsl:call-template>
     <xsl:call-template name="TeXgroup">
       <xsl:with-param name="arg">
-	<xsl:number/>
+	<xsl:if test="count(parent::*/tr:affiliation)&gt;1
+		      and count(parent::*/tr:author)&gt;1">
+	  <xsl:number/>
+	</xsl:if>
       </xsl:with-param>
     </xsl:call-template>
     <xsl:value-of select="$NL"/>
