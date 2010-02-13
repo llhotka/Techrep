@@ -28,7 +28,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   <xsl:output method="xml" omit-xml-declaration="yes" indent="yes"/>
 
   <xsl:param
-      name="basedir">http://www.cesnet.cz/doc/techzpravy/2009/</xsl:param>
+      name="basedir">http://www.cesnet.cz/doc/techzpravy/2010/</xsl:param>
   <xsl:param name="tr-name">REPORT</xsl:param>
 
   <xsl:template name="cit-name">
