@@ -1081,6 +1081,9 @@ from the level of the list.
     </a:rest>
     <element name="ol">
       <optional>
+	<ref name="id-attribute"/>
+      </optional>
+      <optional>
 	<attribute name="continue">
 	  <data type="IDREF"/>
 	</attribute>
