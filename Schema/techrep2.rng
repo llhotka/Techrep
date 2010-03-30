@@ -2,7 +2,7 @@
 
 <!--
 
-techrep2.rng - nnotated RELAX NG schema for Techrep2
+techrep2.rng - annotated RELAX NG schema for Techrep2
 Copyright © 2010 CESNET
 Author: Ladislav Lhotka <Lhotka@cesnet.cz>
 
@@ -31,18 +31,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 RELAX NG Schema for Techrep version 2.0
 =======================================
 
-This is the `RELAX NG`_ schema for version 2.0 of Techrep, which is
-the common format for CESNET technical reports and other documents.
+This is the `RELAX NG`_ schema for version 2.0 of Techrep, an XML
+markup language for CESNET technical reports and other documents.
+The language is described in&#xA0;[Lho10]_.
 
 The schema is annotated using the RNGreST method&#xA0;[Lho06]. The
 annotations are mainly used for documenting the design decisions for
 the particular data model, differences from version&#xA0;1 and other
-technical issues. For user-level instructions, see &#xA0;[Lho08].
-
-One of the most significant changes is the introduction of XML
-namespace http://cesnet.cz/ns/techrep/base/2.0. This will enable
-future extensions of the schema with well-established XML languages
-such as MathML_.
+technical issues.
 
 The schema is very modular so that minor changes can be done
 incrementally using the extension mechanisms of RELAX NG.
@@ -50,11 +46,14 @@ incrementally using the extension mechanisms of RELAX NG.
 .. [Lho06] Lhotka L.: *Annotating XML Schemas with
    reStructuredText*. Technical report `3/2006`_, Praha: CESNET, 2006.
 
-.. [Lho07] Lhotka L.: *Using Techrep 2.* To appear.
+.. [Lho10] Lhotka L.: *XML Markup Language for Technical Reports.*
+   Technical report `1/2010`_, Praha: CESNET, 2010.
 
 .. _RELAX NG: http://relaxng.org
 
 .. _3/2006: http://www.cesnet.cz/doc/techzpravy/2006/rngrest/
+
+.. _1/2010: http://www.cesnet.cz/doc/techzpravy/2010/techrep2/
 
 .. _MathML: http://www.w3.org/Math/
   </a:rest>
@@ -602,7 +601,8 @@ latter purpose.
 
   <define name="a-choice">
     <a:rest>
-An `a` element may contain all inline elements except `a` and `cite`_.
+An `a` element may contain all inline elements except `a`_, `xref`_
+and `cite`_.
     </a:rest>
     <choice>
       <ref name="tt-element"/>
@@ -617,6 +617,7 @@ An `a` element may contain all inline elements except `a` and `cite`_.
       <ref name="file-element"/>
       <ref name="footnote-element"/>
       <ref name="q-element"/>
+      <ref name="br-element"/>
       <ref name="index-element"/>
     </choice>
   </define>
@@ -942,7 +943,7 @@ This is a single table row containing header (`th`_) or data (`td`_) cells.
   <define name="bgcolor-attribute">
     <a:rest>
 Background colour of a table cell specified as a hexadecimal RGB
-value. The default value is ``#000000`` (white).
+value. The default value is ``#FFFFFF`` (white).
 
 .. _`bgcolor`: `bgcolor-attribute`_
     </a:rest>
