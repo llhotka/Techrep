@@ -28,7 +28,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   <xsl:output method="xml" omit-xml-declaration="yes" indent="yes"/>
 
   <xsl:param
-      name="basedir">http://www.cesnet.cz/doc/techzpravy/2010/</xsl:param>
+      name="basedir">http://www.cesnet.cz/doc/techzpravy/</xsl:param>
+  <xsl:param name="year">2010</xsl:param>
   <xsl:param name="tr-name">REPORT</xsl:param>
 
   <xsl:template name="cit-name">
@@ -55,7 +56,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	<xsl:value-of select="concat(tr:title, ' (', @number, ')')"/>
       </xsl:element>
       <xsl:element name="link">
-	<xsl:value-of select="concat($basedir, $tr-name)"/>
+	<xsl:value-of select="concat($basedir, $year, '/', $tr-name)"/>
       </xsl:element>
       <xsl:element name="description">
 	<xsl:text>AUTHORS: </xsl:text>

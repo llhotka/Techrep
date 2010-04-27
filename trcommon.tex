@@ -421,7 +421,7 @@
 \def\one_page_out{%
     \iftitle_page \info_upfalse \info_downtrue \global\title_pagefalse
     \else \info_uptrue \info_downfalse\fi
-    \ifproof_mode\proof_output\else\plainoutput\fi}
+    \plainoutput}
 \def\tick_rule{\hrule width1mm}
 \def\make_tick{\global\incr\ruler_count
   \vbox to \line_ht{\tick_rule

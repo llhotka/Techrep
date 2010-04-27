@@ -6,6 +6,7 @@
 
   <xsl:output method="xml" indent="yes"/>
   <xsl:param name="wwwpath">https://www.cesnet.cz/doc/tr/</xsl:param>
+  <xsl:param name="year">2010</xsl:param>
 
   <!-- Root element -->
 
@@ -24,7 +25,7 @@
   <xsl:template match="xh:h3/xh:span[@class='target']">
     <xsl:element name="a">
       <xsl:attribute name="href">
-	<xsl:value-of select="concat($wwwpath,.)"/>
+	<xsl:value-of select="concat($wwwpath,$year,'/',.)"/>
       </xsl:attribute>
       <xsl:value-of select="."/>
     </xsl:element>
