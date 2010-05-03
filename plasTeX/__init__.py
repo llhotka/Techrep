@@ -1,5 +1,5 @@
 # plasTeX renderer for Techrep version 1
-# Copyright © 2010 CESNET
+# Copyright (c) 2010 CESNET
 # Author: Ladislav Lhotka <Lhotka@cesnet.cz>
 #
 # This program is free software: you can redistribute it and/or modify
