@@ -666,8 +666,9 @@
     \goodbreak
   \fi
   \noindent
-  \llap{\hbox to \item_indent{\hss\list_label\the\item_sep\kern2mm}}%
-  \ignorespaces}
+  \llap{\raggedright
+    \hbox to \item_indent{\hss\list_label\the\item_sep\kern2mm}}%
+      \ignorespaces}
 
 % Footnotes
 \def\foot_mark{${}^{\number\foot_count}$}
@@ -754,13 +755,13 @@
 
 \def\caption{\setbox\cap_box=\hbox\bgroup
   {\bf\cap_label.}~\ignorespaces}
-\def\endCaption{\egroup
+\def\endCaption{\par\egroup
   \setbox\box_one=\hbox{\bf\cap_label.\space}%
   \dimen_one=\hsize %\advance\dimen_one by -2\parindent
   \ifdim\wd\cap_box>\dimen_one
     \vbox{%\advance\leftskip by \parindent
     \advance\leftskip by \wd\box_one
-    \noindent\kern-\wd\box_one\unhbox\cap_box}
+    \noindent\kern-\wd\box_one\unhbox\cap_box}\smallskip
   \else
     \centerline{\unhbox\cap_box}
   \fi}
