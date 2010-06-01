@@ -78,13 +78,30 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   </xsl:template>
 
   <xsl:template match="author">
+    <xsl:apply-templates select="affiliation" mode="list"/>
     <xsl:element name="author">
-      <xsl:element name="name">
-	<xsl:value-of select="firstname"/>
-	<xsl:text> </xsl:text>
-	<xsl:value-of select="surname"/>
-      </xsl:element>
+      <xsl:apply-templates select="affiliation" mode="ref"/>
+      <xsl:value-of select="firstname"/>
+      <xsl:text> </xsl:text>
+      <xsl:value-of select="surname"/>
     </xsl:element>
+  </xsl:template>
+
+  <xsl:template match="affiliation" mode="list">
+    <xsl:if test="not(orgname=preceding::affiliation/orgname)">
+      <xsl:element name="affiliation">
+	<xsl:attribute name="xml:id">
+	  <xsl:value-of select="generate-id()"/>
+	</xsl:attribute>
+	<xsl:value-of select="orgname"/>
+      </xsl:element>
+    </xsl:if>
+  </xsl:template>
+
+  <xsl:template match="affiliation" mode="ref">
+    <xsl:attribute name="affil">
+      <xsl:value-of select="generate-id((.|preceding::affiliation[orgname=current()/orgname])[1])"/>
+    </xsl:attribute>
   </xsl:template>
 
   <xsl:template match="title" mode="top">
