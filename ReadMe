@@ -4,8 +4,9 @@ Tools for CESNET technical reports
 This directory contains XSLT stylesheets and other tools that are used
 for processing CESNET technical reports.
 
-Any or all files may be distributed under the GPL licence, see the
-file license.txt or http://www.fsf.org/licensing/licenses/gpl.html.
+Any or all files may be distributed under the GPL licence, version 3,
+see the file license.txt or
+http://www.fsf.org/licensing/licenses/gpl.html.
 
 dbk2tr.xsl
     Translates DocBook v. 4.5 to Techrep2.
