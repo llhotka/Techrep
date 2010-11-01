@@ -1,46 +1,67 @@
-FN = trname
-TRNO = XX/20XX
+FN := techrep2
 FINAL = 0
+EPUBFIX = META-INF css cover-logo.png cover.png
 XSLDIR = /home/lhotka/Projekty/Techrep
-RXML2TR = $(XSLDIR)/rxml2tr.xsl
-DBK2TR = $(XSLDIR)/dbk2tr.xsl
-TR2TEX = $(XSLDIR)/trtotex.xsl
-TR2XHTML = $(XSLDIR)/trtoxhtml.xsl
-TR2RSS = $(XSLDIR)/trtorss.xsl
+TRNO = XX/201X
+RESTENC = ISO-8859-2
 RXOPTS = --stringparam tr-number $(TRNO)
 
-.PHONY: all init pdf html tarball
+.PHONY: all init pdf html rss epub tarball
 
-all: $(FN)/index.html $(FN)/$(FN).pdf $(FN)/$(FN).rss
+all: pdf html rss epub
 
-pdf: $(FN)/$(FN).pdf
+pdf: $(FN).pdf
 
-html: $(FN)/index.html
+html: index.html
+
+rss: $(FN).rss
+
+epub: $(FN).epub
 
 init:
-	if [ ! -d $(FN) ] ; then mkdir $(FN) ; fi
+	if [ ! -d META-INF ] ; then cp -r $(XSLDIR)/EPUB/* . ; fi
 
-tarball:
+tarball: $(FN).pdf index.html $(FN).rss $(FN).epub
+	mkdir $(FN)
+	cp $(shell xsltproc $(XSLDIR)/piclist.xsl $(FN).ctr) $^ $(FN)
 	tar czvf $(FN).tar.gz $(FN)
+	rm -rf $(FN)
 
 %.rxml: %.rxt
-	rst2xml $< $@
-
-%.ctr: %.dbk
-	xsltproc --novalid $(RXOPTS) -o $@ $(DBK2TR) $<
+	rst2xml -i $(RESTENC) $< $@
 
 %.ctr: %.rxml
-	xsltproc --novalid $(RXOPTS) -o $@ $(RXML2TR) $<
+	xsltproc --novalid $(RXOPTS) -o $@ $(XSLDIR)/rxml2tr.xsl $<
 
 %.tex: %.ctr
-	xsltproc --stringparam final $(FINAL) -o $@ $(TR2TEX) $<
+	xsltproc --stringparam final $(FINAL) -o $@ $(XSLDIR)/trtotex.xsl $<
 
-$(FN)/$(FN).pdf: $(FN).tex
+%.pdf: %.tex
 	ixetex $<
-	mv $(FN).pdf $(FN)/
 
-$(FN)/index.html: $(FN).ctr
-	xsltproc --stringparam tr-name $(FN) -o $@ $(TR2XHTML) $<
+index.html: $(FN).ctr
+	xsltproc --stringparam tr-name $(FN) -o $@ $(XSLDIR)/trtoxhtml.xsl $<
 
-$(FN)/$(FN).rss: $(FN).ctr
-	xsltproc --stringparam tr-name $(FN) -o $@ $(TR2RSS) $<
+$(FN).rss: $(FN).ctr
+	xsltproc --stringparam tr-name $(FN) -o $@ $(XSLDIR)/trtorss.xsl $<
+
+$(FN).epub: content.opf etr.html etr-title.html etr-toc.html toc.ncx
+	zip -DX0 $@ mimetype
+	zip -DrX9 $@ $^ $(EPUBFIX) \
+	    $(shell xsltproc $(XSLDIR)/piclist.xsl $(FN).ctr)
+
+content.opf: $(FN).ctr
+	xsltproc -o $@ $(XSLDIR)/trtoopf.xsl $<
+
+etr.html: $(FN).ctr
+	xsltproc -o $@ $(XSLDIR)/trtoepub.xsl $<
+
+etr-title.html: $(FN).ctr
+	xsltproc -o $@ $(XSLDIR)/trtoetitle.xsl $<
+
+etr-toc.html: $(FN).ctr
+	xsltproc -o $@ $(XSLDIR)/trtoetoc.xsl $<
+
+toc.ncx: $(FN).ctr
+	xsltproc --stringparam tr-name $(FN) -o $@ $(XSLDIR)/trtoncx.xsl $<
+
