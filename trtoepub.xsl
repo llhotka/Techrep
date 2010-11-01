@@ -428,28 +428,28 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	<xsl:with-param name="en">References</xsl:with-param>
       </xsl:call-template>
     </xsl:element>
-      <xsl:element name="table" namespace="http://www.w3.org/1999/xhtml">
-	<xsl:attribute name="border">0</xsl:attribute>
-	<xsl:element name="tbody" namespace="http://www.w3.org/1999/xhtml">
-	  <xsl:attribute name="valign">top</xsl:attribute>
-	  <xsl:apply-templates select="tr:bibitem"/>
-	</xsl:element>
-      </xsl:element>
+    <xsl:apply-templates select="tr:bibitem"/>
   </xsl:template>
 
   <xsl:template match="tr:bibitem">
-    <xsl:element name="tr" namespace="http://www.w3.org/1999/xhtml">
-      <xsl:element name="td" namespace="http://www.w3.org/1999/xhtml">
-	<xsl:element name="a" namespace="http://www.w3.org/1999/xhtml">
-	  <xsl:attribute name="name">
-	    <xsl:value-of select="@xml:id"/>
-	  </xsl:attribute>
-	  <xsl:apply-templates select="." mode="number"/>
+    <xsl:element name="table" namespace="http://www.w3.org/1999/xhtml">
+      <xsl:attribute name="border">0</xsl:attribute>
+      <xsl:element name="tbody" namespace="http://www.w3.org/1999/xhtml">
+	<xsl:attribute name="valign">top</xsl:attribute>
+	<xsl:element name="tr" namespace="http://www.w3.org/1999/xhtml">
+	  <xsl:element name="td" namespace="http://www.w3.org/1999/xhtml">
+	    <xsl:element name="a" namespace="http://www.w3.org/1999/xhtml">
+	      <xsl:attribute name="name">
+		<xsl:value-of select="@xml:id"/>
+	      </xsl:attribute>
+	      <xsl:apply-templates select="." mode="number"/>
+	    </xsl:element>
+	    <xsl:text>&#xA0;</xsl:text>
+	  </xsl:element>
+	  <xsl:element name="td" namespace="http://www.w3.org/1999/xhtml">
+	    <xsl:apply-templates/>
+	  </xsl:element>
 	</xsl:element>
-	<xsl:text>&#xA0;</xsl:text>
-      </xsl:element>
-      <xsl:element name="td" namespace="http://www.w3.org/1999/xhtml">
-	<xsl:apply-templates/>
       </xsl:element>
     </xsl:element>
   </xsl:template>
