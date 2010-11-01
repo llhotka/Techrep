@@ -1,10 +1,10 @@
-FN := techrep2
+FN := trname
 FINAL = 0
 EPUBFIX = META-INF css cover-logo.png cover.png
-XSLDIR = /home/lhotka/Projekty/Techrep
 TRNO = XX/201X
 RESTENC = ISO-8859-2
 RXOPTS = --stringparam tr-number $(TRNO)
+XSLDIR = /home/lhotka/Projekty/Techrep
 
 .PHONY: all init pdf html rss epub tarball
 
