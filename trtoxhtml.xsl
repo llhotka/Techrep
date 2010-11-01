@@ -89,18 +89,27 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	<xsl:text>&#xA0;</xsl:text>
 	<xsl:value-of select="@number"/>
       </xsl:element>
-      <xsl:element name="br"/>
-      <xsl:element name="a">
-	<xsl:attribute name="href">
-	  <xsl:value-of select="concat($basename, '.pdf')"/>
-	</xsl:attribute>
-	<xsl:text>PDF format</xsl:text>
-      </xsl:element>
     </xsl:element>
     <xsl:apply-templates select="tr:authors"/>
     <xsl:element name="p">
       <xsl:text>Received </xsl:text>
       <xsl:value-of select="tr:date"/>
+    </xsl:element>
+    <xsl:element name="p">
+      <xsl:text>Other formats: </xsl:text>
+      <xsl:element name="a">
+	<xsl:attribute name="href">
+	  <xsl:value-of select="concat($basename, '.pdf')"/>
+	</xsl:attribute>
+	<xsl:text>PDF</xsl:text>
+      </xsl:element>
+      <xsl:text>, </xsl:text>
+      <xsl:element name="a">
+	<xsl:attribute name="href">
+	  <xsl:value-of select="concat($basename, '.epub')"/>
+	</xsl:attribute>
+	<xsl:text>EPUB</xsl:text>
+      </xsl:element>
     </xsl:element>
     <xsl:apply-templates select="tr:abstract"/>
     <xsl:apply-templates select="tr:keywords"/>
