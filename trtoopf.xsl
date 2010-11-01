@@ -54,19 +54,35 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 				substring-after(@number,'/'),
 				' CESNET, z. s. p. o.')"/>
 	</dc:rights>
+	<meta name="cover" content="cover"/>
       </metadata>
       <manifest>
 	<item id="ncx" href="toc.ncx" media-type="application/x-dtbncx+xml"/>
+	<item id="cover" href="cover.png" media-type="image/png"/>
 	<item id="css" href="css/tr.css" media-type="application/x-dtbncx+xml"/>
-	<item id="font-main" href="css/DejaVuSerif.otf" media-type="font/opentype"/>
-	<item id="font-mono" href="css/DejaVuSansMono.otf" media-type="font/opentype"/>
-	<item id="contents" href="etr.html" media-type="application/xhtml+xml"/>
+	<item id="font-main" href="css/DejaVuSerif.otf"
+	      media-type="font/opentype"/>
+	<item id="font-mono" href="css/DejaVuSansMono.otf"
+	      media-type="font/opentype"/>
+	<item id="toc" href="etr-toc.html"
+	      media-type="application/xhtml+xml"/>
+	<item id="title" href="etr-title.html"
+	      media-type="application/xhtml+xml"/>	
+	<item id="tech-report" href="etr.html"
+	      media-type="application/xhtml+xml"/>
 	<xsl:apply-templates
 	    select="tr:body//tr:source[@format != 'PDF']" mode="item"/>
       </manifest>
       <spine toc="ncx">
-	<itemref idref="contents"/>
+	<itemref idref="title"/>
+	<itemref idref="toc"/>
+	<itemref idref="tech-report"/>
       </spine>
+      <guide>
+	<reference type="title-page" title="Title Page" href="etr-title.html"/>
+	<reference type="toc" title="Table of Contents" href="etr-toc.html"/>
+	<reference type="text" title="Text" href="etr.html"/>
+      </guide>
     </package>
   </xsl:template>
 

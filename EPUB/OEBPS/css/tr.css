@@ -1,6 +1,43 @@
-div, p, pre, h1, h2, h3, h4 {
-  margin-top: 0;
-  margin-bottom: 0;
+div, h1, h2, h3, h4 {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+dt, dd {
+  display: block;
+  float: left;
+  margin-top: 10px;
+}
+
+dt {
+  clear: both;
+}
+
+pre {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-family: "DejaVu Sans Mono", monospace;
+}
+
+p {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  text-indent: 0;
+}
+
+p.toc1 {
+  margin: 0;
+  text-indent: 0;
+}
+
+p.toc2 {
+  margin: 0 0 0 1em;
+  text-indent: 0;
+}
+
+p.toc3 {
+  margin: 0 0 0 2em;
+  text-indent: 0;
 }
 
 /* inlines */

@@ -134,4 +134,31 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <xsl:text>]</xsl:text>
   </xsl:template>
 
+  <!-- Copy or generate id attribute -->
+
+  <xsl:template match="tr:h1|tr:h2|tr:h3|tr:appendix|tr:biblist" mode="id">
+    <xsl:choose>
+      <xsl:when test="@xml:id">
+	<xsl:value-of select="@xml:id"/>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:apply-templates select="." mode="gen-id"/>
+	</xsl:otherwise>
+      </xsl:choose>
+  </xsl:template>
+
+  <xsl:template match="tr:h1|tr:h2|tr:h3" mode="gen-id">
+    <xsl:text>SECTION__</xsl:text>
+    <xsl:apply-templates select="." mode="number"/>
+  </xsl:template>
+
+  <xsl:template match="tr:appendix" mode="gen-id">
+    <xsl:text>APPENDIX__</xsl:text>
+    <xsl:apply-templates select="." mode="number"/>
+  </xsl:template>
+
+  <xsl:template match="tr:biblist" mode="gen-id">
+    <xsl:text>BIBLIO__REFS</xsl:text>
+  </xsl:template>
+
 </xsl:stylesheet>
