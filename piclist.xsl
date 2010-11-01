@@ -2,7 +2,7 @@
 
 <!--
 
-filelist.xsl - generates list of files belonging to the tarball.
+filelist.xsl - generates list of picture files referenced in a TR.
 Copyright © 2010 CESNET
 Author: Ladislav Lhotka <Lhotka@cesnet.cz>
 
@@ -27,13 +27,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
   <xsl:output method="text"/>
 
-  <xsl:param name="tr-name"/>
-
   <xsl:template match="tr:report">
-    <xsl:value-of select="concat($tr-name, '.pdf ')"/>
-    <xsl:value-of select="concat($tr-name, '.epub ')"/>
-    <xsl:value-of select="concat($tr-name, '.rss ')"/>
-    <xsl:text>index.html </xsl:text>
     <xsl:apply-templates
 	select="descendant::tr:image/tr:source[@format!='PDF']"/>
   </xsl:template>
