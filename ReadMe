@@ -11,6 +11,9 @@ http://www.fsf.org/licensing/licenses/gpl.html.
 dbk2tr.xsl
     Translates DocBook v. 4.5 to Techrep2.
 
+EPUB/
+    Constant parts of the EPUB tree.
+
 hlasform.py
     Python script that generates the voting form for selecting report
     for proceedings from an Org file.
@@ -62,6 +65,21 @@ trproc.tex
 trto-lib.xsl
     Common XSLT templates.
 
+trtoepub.xsl
+    Main EPUB file generator.
+
+trtoetitle.xsl
+    Generator of the title page for EPUB.
+
+trtoetoc.xsl
+    Generator of table of contents for EPUB.
+
+trtoncx.xsl
+    Generator of the toc.ncx file (part of EPUB).
+
+trtoopf.xsl
+    Generator of content.opf file (part of EPUB).
+
 trtorss.xsl
     RSS news generator.
 
@@ -74,4 +92,7 @@ trtoxhtml.xsl
 
 tr1to2.xsl
     Translates Techrep1 to Techrep2.
+
+xhtml-common.xsl
+    Common templates for XHTML translation (straight and EPUB).
 
