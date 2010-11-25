@@ -27,7 +27,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 		xmlns:opf="http://www.idpf.org/2007/opf"
                 version="1.0">
 
-  <xsl:output method="xml" omit-xml-declaration="no" indent="yes"/>
+  <xsl:output method="xml" omit-xml-declaration="no"
+	      indent="yes" encoding="UTF-8"/>
 
   <!-- Root element -->
 

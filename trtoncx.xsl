@@ -27,7 +27,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
   <xsl:include href="trto-lib.xsl"/>
 
-  <xsl:output method="xml" omit-xml-declaration="no" indent="yes"/>
+  <xsl:output method="xml" omit-xml-declaration="no"
+	      indent="yes" encoding="UTF-8"/>
 
   <xsl:template name="play-order">
     <xsl:attribute name="playOrder">
