@@ -77,6 +77,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <xsl:text>}</xsl:text>
   </xsl:template>
 
+  <xsl:template name="lang-spec">
+    <xsl:param name="code"/>
+      <xsl:text>\uselanguage</xsl:text>
+      <xsl:call-template name="TeXgroup">
+	<xsl:with-param name="arg">
+	  <xsl:choose>
+	    <xsl:when test="$code='cs'">czech</xsl:when>
+	    <xsl:otherwise>british</xsl:otherwise>
+	  </xsl:choose>
+	</xsl:with-param>
+      </xsl:call-template>
+      <xsl:value-of select="$NL"/>
+  </xsl:template>
+
   <xsl:template name="TeX-table-template">
     <xsl:param name="colspec"/>
     <xsl:if test="string-length($colspec)&gt;0">
@@ -139,11 +153,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       <xsl:value-of select="$NL"/>
     </xsl:if>
     <xsl:if test="@xml:lang">
-      <xsl:text>\setlang</xsl:text>
-      <xsl:call-template name="TeXgroup">
-	<xsl:with-param name="arg" select="@xml:lang"/>
+      <xsl:call-template name="lang-spec">
+	<xsl:with-param name="code" select="@xml:lang"/>
       </xsl:call-template>
-      <xsl:value-of select="$NL"/>
     </xsl:if>
     <xsl:value-of select="concat('\report',$NL)"/>
     <xsl:apply-templates select="@number"/>
