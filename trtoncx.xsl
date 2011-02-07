@@ -111,7 +111,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       <xsl:call-template name="navPoint-common"/>
       <xsl:apply-templates
 	  select="following-sibling::tr:h2
-		  [preceding-sibling::tr:h1[1] = current()]"/>
+		  [(preceding-sibling::tr:h1|
+		  preceding-sibling::tr:appendix)[last()]= current()]"/>
     </navPoint>
   </xsl:template>
 
@@ -154,7 +155,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       </content>
       <xsl:apply-templates
 	  select="following-sibling::tr:h2
-		  [preceding-sibling::tr:h1[1] = current()]"/>
+		  [preceding-sibling::tr:appendix[1] = current()]"/>
     </navPoint>
   </xsl:template>
 

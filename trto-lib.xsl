@@ -64,7 +64,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <xsl:text>.</xsl:text>
     <xsl:number
 	value="count(preceding-sibling::tr:h2
-	       [preceding-sibling::tr:h1[1]=$mysec])+1"/>
+	       [(preceding-sibling::tr:h1
+		|preceding-sibling::tr:appendix)[last()]=$mysec])+1"/>
   </xsl:template>
 
   <xsl:template match="tr:h3" mode="number">
