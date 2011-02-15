@@ -44,23 +44,25 @@ def process_tz(tzstr):
     
 
 trlist = file(sys.argv[1])
+raw=""
 toc = {}
 
-while 1:                        # find first TR
+while 1:
     rad = trlist.readline()
-    if rad.startswith("** PUBLISHED"): break
+    if rad.startswith("** "): break
+    
+while not rad.startswith("* Tabulka recenzent"):
+    raw += rad
+    rad = trlist.readline()
 
-while rad.startswith("** PUBLISHED"):
-    mo = nre.search(rad)
-    trno = int(mo.group(1))
-    tzrec = rad = trlist.readline()
-    while rad[0] != "*":
-        tzrec += rad
-        rad = trlist.readline()
+tzrecords = [x for x in raw.split("** ")[1:] if x.startswith("PUBLISHED")]
+
+for tzrec in tzrecords:
+    ix = tzrec.find("<<") + 2
+    trno = int(tzrec[ix:ix+2])
     data = process_tz(tzrec)
     toc[trno] = ("[ ] %2d. %s" % (trno, auth_line(data["Autoři"])),
                  tit_line(data["Název"]))
-    
 
 nos = toc.keys()
 nos.sort()
