@@ -25,7 +25,7 @@ tarball: $(FN).pdf index.html $(FN).rss $(FN).epub
 	rm -rf $(FN)
 
 %.ctr: %.xml
-	xsltproc --novalid -o $@ $(XSLDIR)/tr1to2.xsl$<
+	xsltproc --novalid -o $@ $(XSLDIR)/tr1to2.xsl $<
 
 %.tex: %.ctr
 	xsltproc --stringparam final $(FINAL) -o $@ $(XSLDIR)/trtotex.xsl $<
