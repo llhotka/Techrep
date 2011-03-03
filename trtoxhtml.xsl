@@ -32,37 +32,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
   <!-- Root element -->
 
-  <xsl:template match="/">
+  <xsl:template match="tr:report">
     <xsl:comment>#include virtual="/doc/i-start1.html"</xsl:comment>
     <xsl:element name="title">
       <xsl:call-template name="select-local">
 	<xsl:with-param name="cs">Technická zpráva &#x2013; </xsl:with-param>
 	<xsl:with-param name="en">Technical report &#x2013; </xsl:with-param>
       </xsl:call-template>
-      <xsl:value-of select="tr:report/tr:title"/>
+      <xsl:value-of select="tr:title"/>
     </xsl:element>
     <xsl:comment>#include virtual="/doc/i-start2.html"</xsl:comment>
-    <xsl:apply-templates select="tr:report"/>
-    <xsl:if test="tr:report//tr:footnote">
-      <xsl:element name="hr"/>
-      <xsl:element name="p">
-	<xsl:element name="strong">
-	  <xsl:text>Footnotes:</xsl:text>
-	</xsl:element>
-      </xsl:element>
-      <xsl:element name="table">
-	<xsl:element name="tbody">
-	  <xsl:attribute name="valign">top</xsl:attribute>
-	  <xsl:attribute name="border">0</xsl:attribute>
-	  <xsl:apply-templates select="tr:report//tr:footnote"
-			       mode="list"/>
-	</xsl:element>
-      </xsl:element>
-    </xsl:if>
-    <xsl:comment>#include virtual="/doc/i-stop.html"</xsl:comment>
-  </xsl:template>
-
-  <xsl:template match="tr:report">
     <xsl:variable name="basename">
       <xsl:choose>
 	<xsl:when test="$tr-name='REPORT'">
@@ -114,6 +93,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <xsl:apply-templates select="tr:abstract"/>
     <xsl:apply-templates select="tr:keywords"/>
     <xsl:apply-templates select="tr:body"/>
+    <xsl:if test="descendant::tr:footnote">
+      <xsl:element name="hr"/>
+      <xsl:element name="p">
+	<xsl:element name="strong">
+	  <xsl:text>Footnotes:</xsl:text>
+	</xsl:element>
+      </xsl:element>
+      <xsl:element name="table">
+	<xsl:element name="tbody">
+	  <xsl:attribute name="valign">top</xsl:attribute>
+	  <xsl:attribute name="border">0</xsl:attribute>
+	  <xsl:apply-templates select="descendant::tr:footnote"
+			       mode="list"/>
+	</xsl:element>
+      </xsl:element>
+    </xsl:if>
+    <xsl:comment>#include virtual="/doc/i-stop.html"</xsl:comment>
   </xsl:template>
 
   <xsl:template match="tr:authors">
@@ -294,7 +290,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </xsl:choose>
   </xsl:template>
 
-  <xsl:template match="tr:strong|tr:sup|tr:sub|tr:blockquote">
+  <xsl:template match="tr:strong|tr:sup|tr:sub|tr:blockquote|tr:br">
     <xsl:element name="{local-name()}">
       <xsl:apply-templates/>
     </xsl:element>
