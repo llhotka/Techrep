@@ -6,16 +6,16 @@
 
   <xsl:output method="xml" indent="yes"/>
   <xsl:param name="wwwpath">https://www.cesnet.cz/doc/tr/</xsl:param>
-  <xsl:param name="year">2010</xsl:param>
+  <xsl:param name="year">2011</xsl:param>
 
   <!-- Root element -->
 
   <xsl:template match="/xh:html">
-    <xsl:comment>#include virtual="../i-start1-u8.html"</xsl:comment>
+    <xsl:comment>#include virtual="/i-start1.html"</xsl:comment>
     <xsl:copy-of select="xh:head/xh:title"/>
-    <xsl:comment>#include virtual="../i-start2-u8.html"</xsl:comment>
+    <xsl:comment>#include virtual="/i-start2.html"</xsl:comment>
     <xsl:apply-templates select="xh:body"/>
-    <xsl:comment>#include virtual="../i-stop-u8.html"</xsl:comment>
+    <xsl:comment>#include virtual="/i-stop.html"</xsl:comment>
   </xsl:template>
 
   <xsl:template match="xh:body">

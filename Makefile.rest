@@ -4,7 +4,7 @@ EPUBFIX = META-INF css cover-logo.png cover.png
 TRNO = XX/201X
 RESTENC = ISO-8859-2
 RXOPTS = --stringparam tr-number $(TRNO)
-XSLDIR = /home/lhotka/Projekty/Techrep
+XSLDIR = /Users/lhotka/Projects/techrep
 
 .PHONY: all init pdf html rss epub tarball
 
@@ -37,7 +37,7 @@ tarball: $(FN).pdf index.html $(FN).rss $(FN).epub
 	xsltproc --stringparam final $(FINAL) -o $@ $(XSLDIR)/trtotex.xsl $<
 
 %.pdf: %.tex
-	ixetex $<
+	xetex $<
 
 index.html: $(FN).ctr
 	xsltproc --stringparam tr-name $(FN) -o $@ $(XSLDIR)/trtoxhtml.xsl $<

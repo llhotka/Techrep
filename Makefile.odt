@@ -9,7 +9,7 @@ GOPTS = --stringparam tr-nazev $(NAZEV) --stringparam tr-autor $(AUTOR) \
         --stringparam tr-number $(TRNO) --stringparam tr-datum $(DATE)
 H1L = 1
 TTS = Teletype
-XSLDIR = /home/lhotka/Projekty/Techrep
+XSLDIR = /Users/lhotka/Projects/techrep
 
 .PHONY: all init pdf html rss epub tarball
 
@@ -46,7 +46,7 @@ content.xml: $(FN).odt
 	xsltproc --stringparam final $(FINAL) -o $@ $(XSLDIR)/trtotex.xsl $<
 
 %.pdf: %.tex
-	ixetex $<
+	xetex $<
 
 index.html: $(FN).ctr
 	xsltproc --stringparam tr-name $(FN) -o $@ $(XSLDIR)/trtoxhtml.xsl $<
